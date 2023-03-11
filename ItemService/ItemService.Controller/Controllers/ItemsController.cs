@@ -25,29 +25,44 @@ public class ItemsController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ItemModel), statusCode: 200)]
     [ProducesResponseType(typeof(string), statusCode: 404)]
-    public ActionResult<ItemModel> GetItem(Guid id)
+    [ProducesResponseType(typeof(string), statusCode: 400)]
+    public ActionResult<ItemModel> GetItem(string id)
     {
         _logger.LogInformation("GetItem was called with id: [{id}]", id);
+        if (Guid.TryParse(id, out var guid))
+        {
+            var item = _backend.GetItem(guid);
 
-        var item = _backend.GetItem(id);
+            _logger.LogInformation("GetItem - Finished with: [{@item}]", item);
 
-        _logger.LogInformation("GetItem - Finished with: [{@item}]", item);
-
-        return item is null ? NotFound($"Item with id: {id} was not found") : Ok(item);
+            return item is null ? NotFound($"Item with id: {id} was not found") : Ok(item);
+        }
+        else
+        {
+            _logger.LogError("GetItem - [{id}] is not a valid Guid", id);
+            return BadRequest($"[{id}] is not a valid Guid");
+        }
     }
 
     [HttpGet()]
     [ProducesResponseType(typeof(List<ItemModel>), statusCode: 200)]
+    [ProducesResponseType(typeof(string), statusCode: 400)]
     [ProducesResponseType(typeof(string), statusCode: 404)]
-    public ActionResult<List<ItemModel>> GetItems([FromBody][MinLength(1)] List<Guid> ids)
+    public ActionResult<List<ItemModel>> GetItems([FromBody][MinLength(1)] List<string> ids)
     {
         _logger.LogInformation("GetItems was called with ids: [{@ids}]", ids);
+        if (ids.AreValidGuids(out var guids))
+        {
+            var items = _backend.GetItems(guids);
+            _logger.LogInformation("GetItems - Finished with: [{@items}]", items);
 
-        var items = _backend.GetItems(ids);
-
-        _logger.LogInformation("GetItems - Finished with: [{@items}]", items);
-
-        return items.Any() ? Ok(items) : NotFound("No item was found with the requested ids");
+            return items.Any() ? Ok(items) : NotFound("No item was found with the requested ids");
+        }
+        else
+        {
+            _logger.LogError("GetItems - One or more invalid guids received");
+            return BadRequest("One or more input id is not a valid Guid");
+        }
     }
 
     [HttpPost("Add")]
@@ -79,12 +94,17 @@ public class ItemsController : ControllerBase
     [ProducesResponseType(typeof(string), statusCode: 400)]
     [ProducesResponseType(typeof(string), statusCode: 404)]
     [ProducesResponseType(typeof(string), statusCode: 409)]
-    public ActionResult UpdateItem(Guid id, [FromBody] ItemInput item)
+    public ActionResult UpdateItem(string id, [FromBody] ItemInput item)
     {
         try
         {
             _logger.LogInformation("UpdateItem was called with: [{@item}]", item);
 
+            if (!Guid.TryParse(id, out var guid))
+            {
+                _logger.LogError("UpdateItem - [{id}] is not a valid Guid", id);
+                return BadRequest($"[{id}] is not a valid Guid");
+            }
             if (!item.IsValidInput(out var errors))
             {
                 _logger.LogError("UpdateItem - invalid input received with following issues: [{@errors}]", errors);
@@ -95,7 +115,7 @@ public class ItemsController : ControllerBase
                 """);
             }
 
-            _backend.UpdateItem(id, item);
+            _backend.UpdateItem(guid, item);
 
             _logger.LogInformation("UpdateItem - Item with [{@id}] was updated", id);
 
