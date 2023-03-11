@@ -8,7 +8,7 @@ public interface IItemServiceBackend
 
     List<ItemModel> GetItems(IEnumerable<Guid> ids);
 
-    Guid? AddItem(ItemInput item);
+    Guid AddItem(ItemInput item);
 
     void UpdateItem(Guid id, ItemInput item);
 }

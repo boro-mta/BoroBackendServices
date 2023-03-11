@@ -1,9 +1,14 @@
-﻿namespace ItemService.API.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ItemService.API.Models;
 
 public class ItemInput
 {
-    public string? Name { get; set; }
-    public string? CoverImage { get; set; }
-    public List<string>? Images { get; set; }
+    public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
+    [JsonIgnore]
+    public string? CoverImage { get; set; }
+    [JsonIgnore]
+    public List<string>? Images { get; set; }
+    public string OwnerId { get; set; } = string.Empty;
 }

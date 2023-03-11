@@ -23,9 +23,6 @@ public class ItemsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(ItemModel), statusCode: 200)]
-    [ProducesResponseType(typeof(string), statusCode: 404)]
-    [ProducesResponseType(typeof(string), statusCode: 400)]
     public ActionResult<ItemModel> GetItem(string id)
     {
         _logger.LogInformation("GetItem was called with id: [{id}]", id);
@@ -35,7 +32,7 @@ public class ItemsController : ControllerBase
 
             _logger.LogInformation("GetItem - Finished with: [{@item}]", item);
 
-            return item is null ? NotFound($"Item with id: {id} was not found") : Ok(item);
+            return item is null ? NotFound($"Item with id: {id} was not found") : item;
         }
         else
         {
@@ -45,9 +42,6 @@ public class ItemsController : ControllerBase
     }
 
     [HttpGet()]
-    [ProducesResponseType(typeof(List<ItemModel>), statusCode: 200)]
-    [ProducesResponseType(typeof(string), statusCode: 400)]
-    [ProducesResponseType(typeof(string), statusCode: 404)]
     public ActionResult<List<ItemModel>> GetItems([FromBody][MinLength(1)] List<string> ids)
     {
         _logger.LogInformation("GetItems was called with ids: [{@ids}]", ids);
@@ -56,7 +50,7 @@ public class ItemsController : ControllerBase
             var items = _backend.GetItems(guids);
             _logger.LogInformation("GetItems - Finished with: [{@items}]", items);
 
-            return items.Any() ? Ok(items) : NotFound("No item was found with the requested ids");
+            return items.Any() ? items : NotFound("No item was found with the requested ids");
         }
         else
         {
@@ -66,8 +60,6 @@ public class ItemsController : ControllerBase
     }
 
     [HttpPost("Add")]
-    [ProducesResponseType(typeof(Guid), statusCode: 200)]
-    [ProducesResponseType(typeof(string), statusCode: 400)]
     public ActionResult<Guid> PostItem([FromBody] ItemInput item)
     {
         _logger.LogInformation("PostItem was called with [{@item}]", item);
@@ -86,14 +78,10 @@ public class ItemsController : ControllerBase
 
         _logger.LogInformation("PostItem Finished with: [{guid}]", guid);
 
-        return Ok(guid);
+        return guid;
     }
 
     [HttpPost("{id}/Update")]
-    [ProducesResponseType(statusCode: 200)]
-    [ProducesResponseType(typeof(string), statusCode: 400)]
-    [ProducesResponseType(typeof(string), statusCode: 404)]
-    [ProducesResponseType(typeof(string), statusCode: 409)]
     public ActionResult UpdateItem(string id, [FromBody] ItemInput item)
     {
         try
@@ -110,9 +98,9 @@ public class ItemsController : ControllerBase
                 _logger.LogError("UpdateItem - invalid input received with following issues: [{@errors}]", errors);
                 return BadRequest(
                     $"""
-                Bad Request. Invalid input due to following issues:
-                {string.Join("\n", errors.Select(e => $"- {e}"))}
-                """);
+                    Bad Request. Invalid input due to following issues:
+                    {string.Join("\n", errors.Select(e => $"- {e}"))}
+                    """);
             }
 
             _backend.UpdateItem(guid, item);
