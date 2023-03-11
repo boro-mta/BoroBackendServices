@@ -1,20 +1,16 @@
-﻿using ItemService.Controller.DependencyInjection;
+﻿using Boro.AppBuilder;
+using Boro.Logging.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace ItemService.UnitTests
+namespace ItemService.UnitTests;
+
+internal static class TestUtilities
 {
-    internal static class TestUtilities
+    internal static WebApplication GenerateApp()
     {
-        internal static (IServiceProvider serviceProvider, WebApplication app) GenerateApp()
-        {
-            var builder = WebApplication.CreateBuilder();
-            var serviceProvider = builder.Services
-            .AddItemService()
-            .BuildServiceProvider();
-            var app = builder.Build();
-
-            return (serviceProvider, app);
-        }
+        var builder = AppBuilder.GetMinimalAppBuilder(Array.Empty<string>());
+        var app = builder.Build();
+        app.UseBoroLogging();
+        return app;
     }
 }

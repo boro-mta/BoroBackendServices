@@ -9,15 +9,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boro.App", "Boro.App\Boro.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boro.Logging", "Boro.Logging\Boro.Logging.csproj", "{BD630DEF-42F1-4D47-B3F5-346AF9218B73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemService.API", "ItemService\ItemService.API\ItemService.API.csproj", "{E54EC395-61C8-46EC-9691-599DEC0DB063}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemService.API", "ItemService\ItemService.API\ItemService.API.csproj", "{E54EC395-61C8-46EC-9691-599DEC0DB063}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemService.Controller", "ItemService\ItemService.Controller\ItemService.Controller.csproj", "{FCB852B1-B477-4CC9-AD9F-00560BE5C237}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemService.Controller", "ItemService\ItemService.Controller\ItemService.Controller.csproj", "{FCB852B1-B477-4CC9-AD9F-00560BE5C237}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemService.UnitTests", "ItemService\ItemService.UnitTests\ItemService.UnitTests.csproj", "{D8F67342-6CA6-4F44-A81D-752C634835FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemService.UnitTests", "ItemService\ItemService.UnitTests\ItemService.UnitTests.csproj", "{D8F67342-6CA6-4F44-A81D-752C634835FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemService.DB", "ItemService\ItemService.DB\ItemService.DB.csproj", "{716A030B-92D9-44BF-8680-D3578D52FB8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemService.DB", "ItemService\ItemService.DB\ItemService.DB.csproj", "{716A030B-92D9-44BF-8680-D3578D52FB8C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ItemService", "ItemService", "{5CD68A46-04BA-43DC-87AF-AC4CAC759F9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boro.AppBuilder", "Boro.AppBuilder\Boro.AppBuilder.csproj", "{BE64FA2A-B172-4274-972F-8312ACE53B88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{716A030B-92D9-44BF-8680-D3578D52FB8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{716A030B-92D9-44BF-8680-D3578D52FB8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{716A030B-92D9-44BF-8680-D3578D52FB8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE64FA2A-B172-4274-972F-8312ACE53B88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE64FA2A-B172-4274-972F-8312ACE53B88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE64FA2A-B172-4274-972F-8312ACE53B88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE64FA2A-B172-4274-972F-8312ACE53B88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
