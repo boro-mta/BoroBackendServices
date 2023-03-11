@@ -1,26 +1,25 @@
-﻿using ItemService.API.Models;
-using ItemService.DB.DbContexts.Tables;
+﻿using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
+using ItemService.API.Models;
 
-namespace ItemService.DB.Extensions
+namespace ItemService.DB.Extensions;
+
+internal static class ItemServiceModelExtensions
 {
-    internal static class ItemServiceModelExtensions
+    internal static ItemModel ToItemServiceModel(this ItemsTable entry)
     {
-        internal static ItemServiceModel ToItemServiceModel(this ItemServices templates)
+        return new ItemModel
         {
-            return new ItemServiceModel
-            {
-                Id = templates.Id,
-                Description = templates.Description,
-            };
-        }
+            Id = entry.Id,
+            Description = entry.Description,
+        };
+    }
 
-        internal static ItemServices ToTableEntry(this ItemServiceModel templateModel)
+    internal static ItemsTable ToTableEntry(this ItemInput input, Guid itemId)
+    {
+        return new ItemsTable
         {
-            return new ItemServices
-            {
-                Id = templateModel.Id,
-                Description = templateModel.Description,
-            };
-        }
+            Id = itemId,
+            Description = input.Description,
+        };
     }
 }

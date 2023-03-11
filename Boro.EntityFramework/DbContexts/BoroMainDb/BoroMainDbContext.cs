@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
+using Microsoft.EntityFrameworkCore;
 
 namespace Boro.EntityFramework.DbContexts.BoroMainDb;
 
@@ -9,4 +10,7 @@ public class BoroMainDbContext<T> : DbContext
     {
         
     }
+
+    public DbSet<ItemsTable> Items { get; set; }
+
 }

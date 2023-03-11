@@ -8,10 +8,11 @@ using Serilog.Events;
 namespace Boro.Logging.DependencyInjection;
 public static class DependencyInjection
 {
-    private const string EXPRESSION_FORMAT_OUTPUT_TEMPLATE = "{@t:yyyy-MM-dd HH:mm:ss.fff} {SourceContext} [{@l:u4}]{#if RequestId is not null} [{RequestId}]{#end} {@m:lj} {NewLine}{Exception}";
     private static readonly Dictionary<string, string> _logCategories = new(StringComparer.OrdinalIgnoreCase);
     public static WebApplicationBuilder AddBoroLogging(this WebApplicationBuilder builder, string logsDirectory)
     {
+        const string EXPRESSION_FORMAT_OUTPUT_TEMPLATE = "{@t:yyyy-MM-dd HH:mm:ss.fff} {SourceContext} [{@l:u4}]{#if RequestId is not null} [{RequestId}]{#end} {@m:lj} {NewLine}{Exception}";
+
         builder.Configuration.GetSection("Logging").GetSection("LogLevel").Bind(_logCategories);
 
         builder.Host.UseSerilog((context, configuration) =>
@@ -35,13 +36,13 @@ public static class DependencyInjection
                                                   writeTo =>
                                                   {
                                                       writeTo.File(formatter: new ExpressionTemplate(EXPRESSION_FORMAT_OUTPUT_TEMPLATE),
-                                                                   path: Path.Combine(logsDirectory, categoryName, $"log-{categoryName}-Information-.log"),
+                                                                   path: Path.Combine(logsDirectory, categoryName, $"{categoryName}-Information-.log"),
                                                                    rollingInterval: RollingInterval.Day,
                                                                    restrictedToMinimumLevel: LogEventLevel.Information);
                                                       writeTo.File(formatter: new ExpressionTemplate(EXPRESSION_FORMAT_OUTPUT_TEMPLATE),
-                                                                   path: Path.Combine(logsDirectory, categoryName, $"log-{categoryName}-Warning-.log"),
+                                                                   path: Path.Combine(logsDirectory, categoryName, $"{categoryName}-Error-.log"),
                                                                    rollingInterval: RollingInterval.Day,
-                                                                   restrictedToMinimumLevel: LogEventLevel.Warning);
+                                                                   restrictedToMinimumLevel: LogEventLevel.Error);
                                                   });
             }
 
@@ -56,6 +57,8 @@ public static class DependencyInjection
 
     public static WebApplication UseBoroLogging(this WebApplication app)
     {
+        //logging middlewares can be added here
+
         return app;
     }
 }
