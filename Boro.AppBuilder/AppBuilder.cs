@@ -3,8 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Boro.Logging.DependencyInjection;
 using ItemService.Controller.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Boro.EntityFramework.DependencyInjection;
-using ItemService.DB.DependencyInjection;
 
 namespace Boro.AppBuilder;
 

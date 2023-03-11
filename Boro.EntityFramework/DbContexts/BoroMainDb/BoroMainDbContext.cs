@@ -11,6 +11,6 @@ public class BoroMainDbContext<T> : DbContext
         
     }
 
-    public DbSet<ItemsTable> Items { get; set; }
-
+    public DbSet<Items> Items { get; set; }
+    public DbSet<ItemImages> ItemImages { get; set; }
 }
