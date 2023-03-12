@@ -8,4 +8,6 @@ public class ItemInput
     public string? Description { get; set; }
     public List<ItemImageInput>? Images { get; set; }
     public string OwnerId { get; set; } = string.Empty;
+    public Dictionary<string, bool>? IncludedExtras { get; set; }
+
 }

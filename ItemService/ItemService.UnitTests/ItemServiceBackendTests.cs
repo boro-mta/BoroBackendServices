@@ -26,6 +26,39 @@ public class ItemServiceBackendTests
     }
 
     [TestMethod]
+    public void InsertItemWithIncludedExtrasAndThenGetIt()
+    {
+        using var app = TestUtilities.GenerateApp();
+        var backend = app?.Services.GetService<IItemServiceBackend>();
+        Dictionary<string, bool> includedExtras = new()
+        {
+            ["Bit set"] = true,
+            ["Extra Battery"] = true,
+            ["Battery Charger"] = false
+        };
+        ItemInput inputItem = new()
+        {
+            Title = "Drill",
+            Description = "A battery powered drill by Makita",
+            IncludedExtras = includedExtras
+        };
+
+        var item1Guid = backend?.AddItem(inputItem);
+        Assert.IsNotNull(item1Guid);
+        Assert.IsFalse(item1Guid.Equals(Guid.Empty));
+
+        var item = backend?.GetItem(item1Guid.Value);
+        Assert.IsNotNull(item);
+        Assert.AreEqual(item1Guid, item.Id);
+        var extras = item.IncludedExtras;
+        Assert.IsNotNull(extras);
+        Assert.AreEqual(3, extras.Count);
+        Assert.AreEqual(includedExtras["Bit set"], extras["Bit set"]);
+        Assert.AreEqual(includedExtras["Extra Battery"], extras["Extra Battery"]);
+        Assert.AreEqual(includedExtras["Battery Charger"], extras["Battery Charger"]);
+    }
+
+    [TestMethod]
     public void InsertItemWithACoverImageAndThenGetIt()
     {
         using var app = TestUtilities.GenerateApp();

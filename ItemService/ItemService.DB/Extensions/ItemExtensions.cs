@@ -1,7 +1,8 @@
 ﻿using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
-using Boro.EntityFramework.Extensions;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace ItemService.DB.Extensions;
 
@@ -16,7 +17,8 @@ internal static class ItemExtensions
             Title = entry.Title,
             Description = entry.Description,
             Images = images,
-            OwnerId = entry.OwnerId
+            OwnerId = entry.OwnerId,
+            IncludedExtras = entry.IncludedExtras is null ? null : JsonSerializer.Deserialize<Dictionary<string, bool>?>(entry.IncludedExtras),
         };
     }
 
@@ -30,7 +32,8 @@ internal static class ItemExtensions
             Title = input.Title,
             Description = input.Description,
             OwnerId = input.OwnerId,
-            Images = images.ToList()
+            Images = images.ToList(),
+            IncludedExtras = JsonSerializer.Serialize(input.IncludedExtras)
         };
     }
 }
