@@ -1,7 +1,8 @@
 ﻿using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 using ItemService.API.Exceptions;
 using ItemService.API.Interfaces;
-using ItemService.API.Models;
+using ItemService.API.Models.Input;
+using ItemService.API.Models.Output;
 using ItemService.DB.DbContexts;
 using ItemService.DB.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +40,7 @@ public class ItemServiceBackend : IItemServiceBackend
         }
 
         var item = itemQ.Single();
-        _logger.LogInformation("GetItem - returning {@item} as a result", item);
+        _logger.LogInformation("GetItem - returning [{id}, {title}]", item.Id, item.Title);
 
         return item;
     }
@@ -64,26 +65,17 @@ public class ItemServiceBackend : IItemServiceBackend
 
     public Guid AddItem(ItemInput item)
     {
-        _logger.LogInformation("AddItem with [{@item}]", item);
+        _logger.LogInformation("AddItem with [{title}, {ownerID}]", item.Title, item.OwnerId);
 
         var id = Guid.NewGuid();
 
         var entry = item.ToTableEntry(id);
-        var coverImage = item.CoverImage?.ToTableEntry(id, true);
-        var images = item.Images?.Select(i => i.ToTableEntry(id));
-        _logger.LogInformation("AddItem - Inserting [{@entry}]", entry);
+        _logger.LogInformation("AddItem - Inserting [{id}]", entry.Id);
+
         _dbContext.Items.Add(entry);
-        if (coverImage is not null)
-        {
-            _dbContext.ItemImages.Add(coverImage);
-        }
-        if (images is not null && images.Any())
-        {
-            _dbContext.ItemImages.AddRange(images);
-        }
 
         _dbContext.SaveChanges();
-        _logger.LogInformation("AddItem - Successfully added item with [{@id}]", entry.Id);
+        _logger.LogInformation("AddItem - Successfully added item with [{id}]", entry.Id);
         return entry.Id;
     }
 

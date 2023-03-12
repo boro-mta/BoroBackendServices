@@ -44,4 +44,13 @@
     <ProjectReference Include="..\ItemService.DB\ItemService.DB.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\pngTomato.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\tomato.jpeg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

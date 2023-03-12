@@ -11,7 +11,7 @@ public static class DependencyInjection
     private static readonly Dictionary<string, string> _logCategories = new(StringComparer.OrdinalIgnoreCase);
     public static WebApplicationBuilder AddBoroLogging(this WebApplicationBuilder builder, string logsDirectory)
     {
-        const string EXPRESSION_FORMAT_OUTPUT_TEMPLATE = "{@t:yyyy-MM-dd HH:mm:ss.fff} {SourceContext} [{@l:u4}]{#if RequestId is not null} [{RequestId}]{#end} {@m:lj} {NewLine}{Exception}";
+        const string EXPRESSION_FORMAT_OUTPUT_TEMPLATE = "{@t:yyyy-MM-dd HH:mm:ss.fff} | {SourceContext} | [{@l:u}] |{#if RequestId is not null} [{RequestId}] |{#end} {@m:lj} {NewLine}{Exception}";
 
         builder.Configuration.GetSection("Logging").GetSection("LogLevel").Bind(_logCategories);
 
