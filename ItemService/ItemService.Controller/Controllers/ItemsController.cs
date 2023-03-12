@@ -1,6 +1,7 @@
 ﻿using ItemService.API.Exceptions;
 using ItemService.API.Interfaces;
-using ItemService.API.Models;
+using ItemService.API.Models.Input;
+using ItemService.API.Models.Output;
 using ItemService.Controller.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -30,7 +31,7 @@ public class ItemsController : ControllerBase
         {
             var item = _backend.GetItem(guid);
 
-            _logger.LogInformation("GetItem - Finished with: [{@item}]", item);
+            _logger.LogInformation("GetItem - Finished with: [{id}]", item?.Id);
 
             return item is null ? NotFound($"Item with id: {id} was not found") : item;
         }
@@ -48,7 +49,7 @@ public class ItemsController : ControllerBase
         if (ids.AreValidGuids(out var guids))
         {
             var items = _backend.GetItems(guids);
-            _logger.LogInformation("GetItems - Finished with: [{@items}]", items);
+            _logger.LogInformation("GetItems - Finished with: [{@ids}]", items.Select(i => i.Id));
 
             return items.Any() ? items : NotFound("No item was found with the requested ids");
         }
@@ -62,7 +63,7 @@ public class ItemsController : ControllerBase
     [HttpPost("Add")]
     public ActionResult<Guid> PostItem([FromBody] ItemInput item)
     {
-        _logger.LogInformation("PostItem was called with [{@item}]", item);
+        _logger.LogInformation("PostItem was called with [{title}, {description}, {ownerId}]", item.Title, item.Description, item.OwnerId);
 
         if (!item.IsValidInput(out var errors))
         {
@@ -86,7 +87,7 @@ public class ItemsController : ControllerBase
     {
         try
         {
-            _logger.LogInformation("UpdateItem was called with: [{@item}]", item);
+            _logger.LogInformation("UpdateItem was called with: [{title}, {description}, {ownerId}]", item.Title, item.Description, item.OwnerId);
 
             if (!Guid.TryParse(id, out var guid))
             {

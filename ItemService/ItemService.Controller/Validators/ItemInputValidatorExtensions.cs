@@ -1,4 +1,4 @@
-﻿using ItemService.API.Models;
+﻿using ItemService.API.Models.Input;
 
 namespace ItemService.Controller.Validators;
 
