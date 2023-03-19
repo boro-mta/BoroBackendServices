@@ -1,17 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 
-[PrimaryKey("ItemId", "IsCover")]
+[PrimaryKey("ParentId", "IsCover")]
 public class ItemImages
 {
+    [Key]
+    public Guid ImageId { get; set; }
     [ForeignKey(nameof(Items))]
-    [Column("Item_id")]
-    public Guid ItemId { get; set; }
-    [Column("Is_cover")]
+    public Guid ParentId { get; set; }
     public bool IsCover { get; set; }
+    public string ImageMetaData { get; set; } = string.Empty;
     public byte[] ImageData { get; set; } = Array.Empty<byte>();
-    public string FileName { get; set; } = string.Empty;
-    public string ImageFormat { get; set; } = string.Empty;
 }

@@ -5,8 +5,8 @@ using Serilog.Templates;
 using Microsoft.Extensions.Configuration;
 using Serilog.Events;
 
-namespace Boro.Logging.DependencyInjection;
-public static class DependencyInjection
+namespace Boro.Logging;
+public static class SerilogConfigurationExtensions
 {
     private static readonly Dictionary<string, string> _logCategories = new(StringComparer.OrdinalIgnoreCase);
     public static WebApplicationBuilder AddBoroLogging(this WebApplicationBuilder builder, string logsDirectory)
@@ -18,7 +18,7 @@ public static class DependencyInjection
         builder.Host.UseSerilog((context, configuration) =>
         {
             configuration.Enrich.WithProperty("NewLine", Environment.NewLine);
-            configuration.WriteTo.Console(formatter: new ExpressionTemplate(EXPRESSION_FORMAT_OUTPUT_TEMPLATE), 
+            configuration.WriteTo.Console(formatter: new ExpressionTemplate(EXPRESSION_FORMAT_OUTPUT_TEMPLATE),
                 restrictedToMinimumLevel: LogEventLevel.Debug);
 
             configuration.WriteTo.File(formatter: new ExpressionTemplate(EXPRESSION_FORMAT_OUTPUT_TEMPLATE),
