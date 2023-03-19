@@ -1,34 +1,32 @@
-﻿using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
-using Boro.EntityFramework.Extensions;
+﻿using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
 
-namespace ItemService.DB.Extensions
+namespace ItemService.DB.Extensions;
+
+internal static class ItemImageExtensions
 {
-    internal static class ItemImageExtensions
+    internal static ItemImage ToItemImageModel(this ItemImages entry)
     {
-
-        internal static ItemImage ToItemImageModel(this ItemImages entry)
+        return new ItemImage
         {
-            return new ItemImage
-            {
-                FileName = entry.FileName,
-                ImageFormat = entry.ImageFormat,
-                IsCover = entry.IsCover,
-                Base64ImageData = entry.ImageData.ToBase64String()
-            };
-        }
+            ImageId = entry.ImageId,
+            IsCover = entry.IsCover,
+            Base64ImageData = entry.ImageData.ToBase64String(),
+            Base64ImageMetaData = entry.ImageMetaData,
+        };
+    }
 
-        internal static ItemImages ToTableEntry(this ItemImageInput image, Guid itemId)
+    internal static ItemImages ToTableEntry(this ItemImageInput image, Guid parentId)
+    {
+        return new ItemImages
         {
-            return new ItemImages
-            {
-                FileName = image.FileName,
-                ImageFormat = image.ImageFormat,
-                ItemId = itemId,
-                IsCover = image.IsCover,
-                ImageData = image.Base64ImageData.FromBase64String()
-            };
-        }
+            ImageId = Guid.NewGuid(),
+            ParentId = parentId,
+            IsCover = image.IsCover,
+            ImageData = image.Base64ImageData.FromBase64String(),
+            ImageMetaData = image.Base64ImageMetaData,
+        };
     }
 }

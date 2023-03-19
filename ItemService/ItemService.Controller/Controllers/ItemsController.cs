@@ -82,43 +82,43 @@ public class ItemsController : ControllerBase
         return guid;
     }
 
-    [HttpPost("{id}/Update")]
-    public ActionResult UpdateItem(string id, [FromBody] ItemInput item)
-    {
-        try
-        {
-            _logger.LogInformation("UpdateItem was called with: [{title}, {description}, {ownerId}]", item.Title, item.Description, item.OwnerId);
+    //[HttpPost("{id}/Update")]
+    //public ActionResult UpdateItem(string id, [FromBody] ItemInput item)
+    //{
+    //    try
+    //    {
+    //        _logger.LogInformation("UpdateItem was called with: [{title}, {description}, {ownerId}]", item.Title, item.Description, item.OwnerId);
 
-            if (!Guid.TryParse(id, out var guid))
-            {
-                _logger.LogError("UpdateItem - [{id}] is not a valid Guid", id);
-                return BadRequest($"[{id}] is not a valid Guid");
-            }
-            if (!item.IsValidInput(out var errors))
-            {
-                _logger.LogError("UpdateItem - invalid input received with following issues: [{@errors}]", errors);
-                return BadRequest(
-                    $"""
-                    Bad Request. Invalid input due to following issues:
-                    {string.Join("\n", errors.Select(e => $"- {e}"))}
-                    """);
-            }
+    //        if (!Guid.TryParse(id, out var guid))
+    //        {
+    //            _logger.LogError("UpdateItem - [{id}] is not a valid Guid", id);
+    //            return BadRequest($"[{id}] is not a valid Guid");
+    //        }
+    //        if (!item.IsValidInput(out var errors))
+    //        {
+    //            _logger.LogError("UpdateItem - invalid input received with following issues: [{@errors}]", errors);
+    //            return BadRequest(
+    //                $"""
+    //                Bad Request. Invalid input due to following issues:
+    //                {string.Join("\n", errors.Select(e => $"- {e}"))}
+    //                """);
+    //        }
 
-            _backend.UpdateItem(guid, item);
+    //        _backend.UpdateItem(guid, item);
 
-            _logger.LogInformation("UpdateItem - Item with [{@id}] was updated", id);
+    //        _logger.LogInformation("UpdateItem - Item with [{@id}] was updated", id);
 
-            return Ok();
-        }
-        catch (DoesNotExistException e)
-        {
-            _logger.LogError(e, "UpdateItem - ERROR");
-            return NotFound($"Item with id: {id} was not found");
-        }
-        catch (Exception e)
-        {
-            _logger.LogCritical(e, "UpdateItem - Unknown error occurred.");
-            return Conflict("Request could not be made");
-        }
-    }
+    //        return Ok();
+    //    }
+    //    catch (DoesNotExistException e)
+    //    {
+    //        _logger.LogError(e, "UpdateItem - ERROR");
+    //        return NotFound($"Item with id: {id} was not found");
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        _logger.LogCritical(e, "UpdateItem - Unknown error occurred.");
+    //        return Conflict("Request could not be made");
+    //    }
+    //}
 }

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Boro.Logging.DependencyInjection;
 using ItemService.Controller.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Boro.Logging;
 
 namespace Boro.AppBuilder;
 
@@ -16,9 +16,17 @@ public static class AppBuilder
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            });
+        });
         var app = builder.Build();
-
+        app.UseCors("AllowAll");
         app.UseBoroLogging();
 
         // Configure the HTTP request pipeline.

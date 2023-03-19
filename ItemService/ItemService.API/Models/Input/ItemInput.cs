@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace ItemService.API.Models.Input;
+﻿namespace ItemService.API.Models.Input;
 
 public class ItemInput
 {
@@ -9,5 +7,4 @@ public class ItemInput
     public List<ItemImageInput>? Images { get; set; }
     public string OwnerId { get; set; } = string.Empty;
     public Dictionary<string, bool>? IncludedExtras { get; set; }
-
 }

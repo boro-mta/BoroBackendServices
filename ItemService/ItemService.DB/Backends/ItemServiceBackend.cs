@@ -1,14 +1,11 @@
-﻿using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
-using ItemService.API.Exceptions;
+﻿using ItemService.API.Exceptions;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
 using ItemService.DB.DbContexts;
 using ItemService.DB.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace ItemService.DB.Backends;
 
@@ -87,7 +84,7 @@ public class ItemServiceBackend : IItemServiceBackend
         }
         var entry = item.ToTableEntry(id);
 
-        _logger.LogInformation("Attempting to update item [{id}] with [{@entry}]", id, entry);
+        _logger.LogInformation("Attempting to update item [{id}]", id);
 
         _dbContext.Items.Update(entry);
         _dbContext.SaveChanges();

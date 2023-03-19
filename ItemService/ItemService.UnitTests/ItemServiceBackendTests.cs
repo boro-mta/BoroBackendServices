@@ -1,4 +1,4 @@
-using Boro.EntityFramework.Extensions;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
 using ItemService.API.Interfaces;
 using ItemService.API.Models;
 using ItemService.API.Models.Input;
@@ -73,15 +73,11 @@ public class ItemServiceBackendTests
 
         var pngCoverImageInput = new ItemImageInput
         {
-            FileName = "pngTomato",
-            ImageFormat = "png",
             IsCover = true,
             Base64ImageData = pngBase64,
         };
         var jpegImageInput = new ItemImageInput
         {
-            FileName = "tomato",
-            ImageFormat = "jpeg",
             IsCover = false,
             Base64ImageData = jpegBase64,
         };

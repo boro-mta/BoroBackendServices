@@ -1,5 +1,5 @@
 ﻿using Boro.AppBuilder;
-using Boro.Logging.DependencyInjection;
+using Boro.Logging;
 using Microsoft.AspNetCore.Builder;
 
 namespace ItemService.UnitTests;
