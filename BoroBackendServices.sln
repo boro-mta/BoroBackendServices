@@ -19,7 +19,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemService.DB", "ItemServi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ItemService", "ItemService", "{5CD68A46-04BA-43DC-87AF-AC4CAC759F9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boro.AppBuilder", "Boro.AppBuilder\Boro.AppBuilder.csproj", "{BE64FA2A-B172-4274-972F-8312ACE53B88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boro.AppBuilder", "Boro.AppBuilder\Boro.AppBuilder.csproj", "{BE64FA2A-B172-4274-972F-8312ACE53B88}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReservationsService", "ReservationsService", "{D99D365F-2C22-4390-AED3-D13FF426A6C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReservationsService.API", "ReservationsService\ReservationsService.API\ReservationsService.API.csproj", "{123BD5BD-CCE9-42FA-8E14-F7D99DAB767C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReservationsService.Controller", "ReservationsService\ReservationsService.Controller\ReservationsService.Controller.csproj", "{71DF9D45-92A2-4066-9674-09F31B4DF074}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReservationsService.UnitTests", "ReservationsService\ReservationsService.UnitTests\ReservationsService.UnitTests.csproj", "{2C343BC7-8A33-4336-9B01-10D7AFCC1AC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReservationsService.DB", "ReservationsService\ReservationsService.DB\ReservationsService.DB.csproj", "{2A7F6B5D-9128-4672-83EF-AA295674436A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +69,22 @@ Global
 		{BE64FA2A-B172-4274-972F-8312ACE53B88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE64FA2A-B172-4274-972F-8312ACE53B88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE64FA2A-B172-4274-972F-8312ACE53B88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{123BD5BD-CCE9-42FA-8E14-F7D99DAB767C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{123BD5BD-CCE9-42FA-8E14-F7D99DAB767C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{123BD5BD-CCE9-42FA-8E14-F7D99DAB767C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{123BD5BD-CCE9-42FA-8E14-F7D99DAB767C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71DF9D45-92A2-4066-9674-09F31B4DF074}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71DF9D45-92A2-4066-9674-09F31B4DF074}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71DF9D45-92A2-4066-9674-09F31B4DF074}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71DF9D45-92A2-4066-9674-09F31B4DF074}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C343BC7-8A33-4336-9B01-10D7AFCC1AC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C343BC7-8A33-4336-9B01-10D7AFCC1AC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C343BC7-8A33-4336-9B01-10D7AFCC1AC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C343BC7-8A33-4336-9B01-10D7AFCC1AC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A7F6B5D-9128-4672-83EF-AA295674436A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A7F6B5D-9128-4672-83EF-AA295674436A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A7F6B5D-9128-4672-83EF-AA295674436A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A7F6B5D-9128-4672-83EF-AA295674436A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +94,10 @@ Global
 		{FCB852B1-B477-4CC9-AD9F-00560BE5C237} = {5CD68A46-04BA-43DC-87AF-AC4CAC759F9C}
 		{D8F67342-6CA6-4F44-A81D-752C634835FB} = {5CD68A46-04BA-43DC-87AF-AC4CAC759F9C}
 		{716A030B-92D9-44BF-8680-D3578D52FB8C} = {5CD68A46-04BA-43DC-87AF-AC4CAC759F9C}
+		{123BD5BD-CCE9-42FA-8E14-F7D99DAB767C} = {D99D365F-2C22-4390-AED3-D13FF426A6C5}
+		{71DF9D45-92A2-4066-9674-09F31B4DF074} = {D99D365F-2C22-4390-AED3-D13FF426A6C5}
+		{2C343BC7-8A33-4336-9B01-10D7AFCC1AC0} = {D99D365F-2C22-4390-AED3-D13FF426A6C5}
+		{2A7F6B5D-9128-4672-83EF-AA295674436A} = {D99D365F-2C22-4390-AED3-D13FF426A6C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D83C9EE1-0747-4EFE-BF5C-7324A97D589D}

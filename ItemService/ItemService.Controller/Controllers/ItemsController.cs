@@ -1,5 +1,4 @@
-﻿using ItemService.API.Exceptions;
-using ItemService.API.Interfaces;
+﻿using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
 using ItemService.Controller.Validators;
