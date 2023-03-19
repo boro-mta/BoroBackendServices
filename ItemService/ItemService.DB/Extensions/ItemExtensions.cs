@@ -2,7 +2,6 @@
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace ItemService.DB.Extensions;
 

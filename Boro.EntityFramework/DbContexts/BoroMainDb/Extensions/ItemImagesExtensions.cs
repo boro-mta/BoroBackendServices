@@ -1,6 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
+﻿namespace Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
 
 public static class ItemImagesExtensions
 {

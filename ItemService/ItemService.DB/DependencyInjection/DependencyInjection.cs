@@ -10,7 +10,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddItemServiceBackend(this IServiceCollection services)
     {
-        services.AddBoroMainDbContext<ItemServiceDbContext>();
+        //services.AddBoroMainDbContext<ItemServiceDbContext>();
         services.AddTransient<IItemServiceBackend, ItemServiceBackend>();
 
         return services;

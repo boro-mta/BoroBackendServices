@@ -1,10 +1,7 @@
 using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
 using ItemService.API.Interfaces;
-using ItemService.API.Models;
 using ItemService.API.Models.Input;
-using ItemService.API.Models.Output;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace ItemService.UnitTests;
 

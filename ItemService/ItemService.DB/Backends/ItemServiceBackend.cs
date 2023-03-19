@@ -1,4 +1,5 @@
-﻿using ItemService.API.Exceptions;
+﻿using Boro.EntityFramework.DbContexts.BoroMainDb;
+using ItemService.API.Exceptions;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
@@ -12,10 +13,10 @@ namespace ItemService.DB.Backends;
 public class ItemServiceBackend : IItemServiceBackend
 {
     private readonly ILogger _logger;
-    private readonly ItemServiceDbContext _dbContext;
+    private readonly BoroMainDbContext _dbContext;
 
     public ItemServiceBackend(ILoggerFactory loggerFactory,
-        ItemServiceDbContext dbContext)
+        BoroMainDbContext dbContext)
     {
         _logger = loggerFactory.CreateLogger("ItemService");
         _dbContext = dbContext;

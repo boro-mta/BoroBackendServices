@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using ItemService.Controller.DependencyInjection;
+using ReservationsService.Controller.DependencyInjection;
+using Boro.EntityFramework.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Boro.Logging;
 
@@ -50,10 +52,11 @@ public static class AppBuilder
         var builder = WebApplication.CreateBuilder(args);
 
         builder.AddBoroLogging(Path.Combine(Environment.CurrentDirectory, "Logs"));
-
         // Add services to the container.
-        builder.Services.AddItemService();
+        builder.Services.AddBoroMainDbContext();
 
+        builder.Services.AddItemService();
+        builder.Services.AddReservationsService();
         return builder;
     }
 }

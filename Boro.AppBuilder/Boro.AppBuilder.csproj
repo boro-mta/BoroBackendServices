@@ -12,5 +12,6 @@
 	  <ProjectReference Include="..\Boro.EntityFramework\Boro.EntityFramework.csproj" />
 	  <ProjectReference Include="..\Boro.Logging\Boro.Logging.csproj" />
 	  <ProjectReference Include="..\ItemService\ItemService.Controller\ItemService.Controller.csproj" />
+	  <ProjectReference Include="..\ReservationsService\ReservationsService.Controller\ReservationsService.Controller.csproj" />
 	</ItemGroup>
 </Project>
