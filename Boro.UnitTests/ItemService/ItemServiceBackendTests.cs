@@ -8,16 +8,25 @@ namespace Boro.UnitTests.ItemService;
 [TestClass]
 public class ItemServiceBackendTests
 {
+    private IItemServiceBackend? _backend;
+
+    [TestInitialize]
+    public void Initialize()
+    {
+        var app = TestUtilities.GenerateApp();
+        _backend = app?.Services.GetService<IItemServiceBackend>();
+    }
+
     [TestMethod]
     public void InsertItemAndThenGetIt()
     {
-        using var app = TestUtilities.GenerateApp();
-        var backend = app?.Services.GetService<IItemServiceBackend>();
-        var item1Guid = backend?.AddItem(new());
+        Assert.IsNotNull(_backend);
+
+        var item1Guid = _backend.AddItem(new());
         Assert.IsNotNull(item1Guid);
         Assert.IsFalse(item1Guid.Equals(Guid.Empty));
 
-        var item = backend?.GetItem(item1Guid.Value);
+        var item = _backend.GetItem(item1Guid);
         Assert.IsNotNull(item);
         Assert.AreEqual(item1Guid, item.Id);
     }
@@ -25,8 +34,8 @@ public class ItemServiceBackendTests
     [TestMethod]
     public void InsertItemWithIncludedExtrasAndThenGetIt()
     {
-        using var app = TestUtilities.GenerateApp();
-        var backend = app?.Services.GetService<IItemServiceBackend>();
+        Assert.IsNotNull(_backend);
+
         Dictionary<string, bool> includedExtras = new()
         {
             ["Bit set"] = true,
@@ -40,11 +49,11 @@ public class ItemServiceBackendTests
             IncludedExtras = includedExtras
         };
 
-        var item1Guid = backend?.AddItem(inputItem);
+        var item1Guid = _backend.AddItem(inputItem);
         Assert.IsNotNull(item1Guid);
         Assert.IsFalse(item1Guid.Equals(Guid.Empty));
 
-        var item = backend?.GetItem(item1Guid.Value);
+        var item = _backend.GetItem(item1Guid);
         Assert.IsNotNull(item);
         Assert.AreEqual(item1Guid, item.Id);
         var extras = item.IncludedExtras;
@@ -58,8 +67,8 @@ public class ItemServiceBackendTests
     [TestMethod]
     public void InsertItemWithACoverImageAndThenGetIt()
     {
-        using var app = TestUtilities.GenerateApp();
-        var backend = app?.Services.GetService<IItemServiceBackend>();
+        Assert.IsNotNull(_backend);
+
         var imagesPath = @".\Resources";
         var jpeg = imagesPath + @"\tomato.jpeg";
         var png = imagesPath + @"\pngTomato.png";
@@ -86,11 +95,11 @@ public class ItemServiceBackendTests
             Images = new List<ItemImageInput> { pngCoverImageInput, jpegImageInput }
         };
 
-        var itemGuid = backend?.AddItem(itemInput);
+        var itemGuid = _backend.AddItem(itemInput);
         Assert.IsNotNull(itemGuid);
         Assert.IsFalse(itemGuid.Equals(Guid.Empty));
 
-        var item = backend?.GetItem(itemGuid.Value);
+        var item = _backend.GetItem(itemGuid);
         Assert.IsNotNull(item?.Images);
         Assert.AreEqual(itemGuid, item.Id);
         Assert.AreEqual(2, item.Images.Count);
@@ -101,33 +110,32 @@ public class ItemServiceBackendTests
     [TestMethod]
     public void InsertMultipleItemsAndGetThemInSteps()
     {
-        using var app = TestUtilities.GenerateApp();
-        var backend = app?.Services.GetService<IItemServiceBackend>();
+        Assert.IsNotNull(_backend);
 
-        var item1Guid = backend?.AddItem(new());
+        var item1Guid = _backend.AddItem(new());
         Assert.IsNotNull(item1Guid);
-        var item2Guid = backend?.AddItem(new());
+        var item2Guid = _backend.AddItem(new());
         Assert.IsNotNull(item2Guid);
 
-        Guid[] guids1 = { item1Guid.Value, item2Guid.Value };
-        var items1 = backend?.GetItems(guids1);
+        Guid[] guids1 = { item1Guid, item2Guid };
+        var items1 = _backend.GetItems(guids1);
         Assert.IsNotNull(items1);
         Assert.AreEqual(2, items1.Count);
 
-        var item3Guid = backend?.AddItem(new());
+        var item3Guid = _backend.AddItem(new());
         Assert.IsNotNull(item3Guid);
-        var item4Guid = backend?.AddItem(new());
+        var item4Guid = _backend.AddItem(new());
         Assert.IsNotNull(item4Guid);
-        var item5Guid = backend?.AddItem(new());
+        var item5Guid = _backend.AddItem(new());
         Assert.IsNotNull(item5Guid);
 
-        Guid[] guids2 = { item4Guid.Value, item2Guid.Value, Guid.NewGuid() };
-        var items2 = backend?.GetItems(guids2);
+        Guid[] guids2 = { item4Guid, item2Guid, Guid.NewGuid() };
+        var items2 = _backend.GetItems(guids2);
         Assert.IsNotNull(items2);
         Assert.AreEqual(2, items2.Count);
 
-        Guid[] guids3 = { item1Guid.Value, item2Guid.Value, item3Guid.Value, item4Guid.Value, item5Guid.Value };
-        var items3 = backend?.GetItems(guids3);
+        Guid[] guids3 = { item1Guid, item2Guid, item3Guid, item4Guid, item5Guid };
+        var items3 = _backend.GetItems(guids3);
         Assert.IsNotNull(items3);
         Assert.AreEqual(5, items3.Count);
     }
