@@ -3,7 +3,6 @@ using ItemService.API.Exceptions;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
-using ItemService.DB.DbContexts;
 using ItemService.DB.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

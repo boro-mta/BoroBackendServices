@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using ReservationsService.DB.DependencyInjection;
+using ReservationsService.API.Interfaces;
+using ReservationsService.DB.Backends;
 
 namespace ReservationsService.Controller.DependencyInjection;
 
@@ -8,7 +9,7 @@ public static class DependencyInjection
     public static IServiceCollection AddReservationsService(this IServiceCollection services)
     {
         services.AddControllers();
-        services.AddReservationsServiceBackend();
+        services.AddTransient<IReservationsServiceBackend, ReservationsServiceBackend>();
 
         return services;
     }
