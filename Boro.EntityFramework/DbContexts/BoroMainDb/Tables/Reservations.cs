@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 

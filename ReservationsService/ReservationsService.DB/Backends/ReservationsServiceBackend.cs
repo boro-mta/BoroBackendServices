@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using ReservationsService.API.Interfaces;
 using ReservationsService.API.Models.Output;
-using ReservationsService.DB.DbContexts;
 using ReservationsService.DB.Extensions;
 
 namespace ReservationsService.DB.Backends;

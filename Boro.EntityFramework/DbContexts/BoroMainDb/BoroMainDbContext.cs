@@ -10,20 +10,12 @@ public class BoroMainDbContext : DbContext
 
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+    }
+
     public DbSet<Items> Items { get; set; }
     public DbSet<ItemImages> ItemImages { get; set; }
     public DbSet<Reservations> Reservations { get; set; }
 }
-
-//public class BoroMainDbContext<T> : DbContext
-//    where T : BoroMainDbContext<T>
-//{
-//    public BoroMainDbContext(DbContextOptions<T> options) : base(options)
-//    {
-
-//    }
-
-//    public DbSet<Items> Items { get; set; }
-//    public DbSet<ItemImages> ItemImages { get; set; }
-//    public DbSet<Reservations> Reservations { get; set; }
-//}
