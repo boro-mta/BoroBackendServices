@@ -25,11 +25,16 @@ public class ReservationsController : ControllerBase
     {
         _logger.LogInformation("GetReservedDates was called with id: [{id}], from: [{from}], to: [{to}]", 
             itemId, from, to);
+
         if (from > to)
         {
-            return BadRequest("the 'from' date is later than the 'to' date")
+            return BadRequest("the 'from' date is later than the 'to' date");
         }
-        if (Guid.TryParse(itemId, out var id))
+        else if(!Guid.TryParse(itemId, out var id))
+        {
+            return BadRequest("itemId is invalid");
+        }
+        else
         {
             var dates = _backend.GetReservedDates(id, from, to);
 
@@ -37,7 +42,6 @@ public class ReservationsController : ControllerBase
 
             return dates.Any() ? Ok(dates) : NotFound($"No reservations were found for item: [{itemId}]");
         }
-        return BadRequest("itemId is invalid");
     }
 
     [HttpPost("Reserve/{itemId}")]
