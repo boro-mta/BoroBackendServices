@@ -11,5 +11,9 @@ public interface IItemServiceBackend
 
     Guid AddItem(ItemInput item);
 
-    void UpdateItem(Guid id, ItemInput item);
+    void UpdateItem(Guid id, UpdateItemInput item);
+
+    Guid AddImage(Guid itemId, ItemImageInput image);
+
+    void DeleteImage(Guid imageId);
 }

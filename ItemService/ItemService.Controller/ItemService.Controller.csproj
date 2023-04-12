@@ -8,10 +8,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Boro.Validations\Boro.Validations.csproj" />
 	  <ProjectReference Include="..\ItemService.API\ItemService.API.csproj" />
 	  <ProjectReference Include="..\ItemService.DB\ItemService.DB.csproj" />
 	</ItemGroup>

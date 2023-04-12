@@ -76,13 +76,11 @@ public class ItemServiceBackend : IItemServiceBackend
         return entry.Id;
     }
 
-    public void UpdateItem(Guid id, ItemInput item)
+    public void UpdateItem(Guid id, UpdateItemInput updateData)
     {
-        if (_dbContext.Items.Any(item => item.Id.Equals(id)))
-        {
-            throw new DoesNotExistException(id.ToString());
-        }
-        var entry = item.ToTableEntry(id);
+        var existingItem = _dbContext.Items.FirstOrDefault(item => item.Id == id) ?? throw new DoesNotExistException(id.ToString());
+
+        var entry = existingItem.UpdateItem(updateData);
 
         _logger.LogInformation("Attempting to update item [{id}]", id);
 
@@ -90,5 +88,15 @@ public class ItemServiceBackend : IItemServiceBackend
         _dbContext.SaveChanges();
 
         _logger.LogInformation("Item with [{id}] was updated", id);
+    }
+
+    public Guid AddImage(Guid itemId, ItemImageInput image)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void DeleteImage(Guid imageId)
+    {
+        throw new NotImplementedException();
     }
 }
