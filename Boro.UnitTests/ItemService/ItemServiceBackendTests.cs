@@ -65,7 +65,7 @@ public class ItemServiceBackendTests
     }
 
     [TestMethod]
-    public void InsertItemWithACoverImageAndThenGetIt()
+    public void InsertItemWithMultipleImages()
     {
         Assert.IsNotNull(_backend);
 
@@ -103,6 +103,54 @@ public class ItemServiceBackendTests
         Assert.IsNotNull(item?.Images);
         Assert.AreEqual(itemGuid, item.Id);
         Assert.AreEqual(2, item.Images.Count);
+        var actualCover = item.Images.Where(item => item.IsCover).First();
+        Assert.AreEqual(pngBase64, actualCover.Base64ImageData);
+    }
+
+    [TestMethod]
+    public void InsertItemWithACoverImageAndThenGetIt()
+    {
+        Assert.IsNotNull(_backend);
+
+        var imagesPath = @".\Resources";
+        var jpeg = imagesPath + @"\tomato.jpeg";
+        var png = imagesPath + @"\pngTomato.png";
+        var jpegBytes = File.ReadAllBytes(jpeg);
+        var pngBytes = File.ReadAllBytes(png);
+        var jpegBase64 = jpegBytes.ToBase64String();
+        var pngBase64 = pngBytes.ToBase64String();
+
+        var pngCoverImageInput = new ItemImageInput
+        {
+            IsCover = true,
+            Base64ImageData = pngBase64,
+        };
+        var jpegImageInput = new ItemImageInput
+        {
+            IsCover = false,
+            Base64ImageData = jpegBase64,
+        };
+        var jpeg2ImageInput = new ItemImageInput
+        {
+            IsCover = false,
+            Base64ImageData = jpegBase64,
+        };
+
+        var itemInput = new ItemInput
+        {
+            Description = "A tomato. Beautiful tomato",
+            Title = "My Tomato!",
+            Images = new List<ItemImageInput> { pngCoverImageInput, jpegImageInput, jpeg2ImageInput }
+        };
+
+        var itemGuid = _backend.AddItem(itemInput);
+        Assert.IsNotNull(itemGuid);
+        Assert.IsFalse(itemGuid.Equals(Guid.Empty));
+
+        var item = _backend.GetItem(itemGuid);
+        Assert.IsNotNull(item?.Images);
+        Assert.AreEqual(itemGuid, item.Id);
+        Assert.AreEqual(3, item.Images.Count);
         var actualCover = item.Images.Where(item => item.IsCover).First();
         Assert.AreEqual(pngBase64, actualCover.Base64ImageData);
     }

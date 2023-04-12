@@ -27,6 +27,9 @@ public static class AppBuilder
                        .AllowAnyHeader();
             });
         });
+
+        var configuration = builder.Configuration;
+
         var app = builder.Build();
         app.UseCors("AllowAll");
         app.UseBoroLogging();
@@ -53,7 +56,7 @@ public static class AppBuilder
 
         builder.AddBoroLogging(Path.Combine(Environment.CurrentDirectory, "Logs"));
         // Add services to the container.
-        builder.Services.AddBoroMainDbContext();
+        builder.Services.AddBoroMainDbContext(builder.Configuration);
 
         builder.Services.AddItemService();
         builder.Services.AddReservationsService();

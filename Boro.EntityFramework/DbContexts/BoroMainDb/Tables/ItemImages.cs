@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 
-[PrimaryKey("ParentId", "IsCover")]
 public class ItemImages
 {
     [Key]

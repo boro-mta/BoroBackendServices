@@ -35,4 +35,22 @@ internal static class ItemExtensions
             IncludedExtras = JsonSerializer.Serialize(input.IncludedExtras)
         };
     }
+
+    internal static Items UpdateItem(this Items entry, UpdateItemInput update) 
+    { 
+        if (update.Title != null)
+        {
+            entry.Title = update.Title;
+        }
+        if (update.Description != null)
+        {
+            entry.Description = update.Description;
+        }
+        if (update.OwnerId != null)
+        {
+            entry.OwnerId = update.OwnerId;
+        }
+
+        return entry;
+    }
 }
