@@ -1,22 +1,30 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Boro.Facebook;
 
 public static class FacebookExtensions
 {
-
     public static IServiceCollection AddFacebook(this IServiceCollection services, IConfiguration configuration)
     {
+        const string APP_ID_KEY = "Authentication:Facebook:AppId";
+        const string APP_SECRET_KEY = "Authentication:Facebook:AppSecret";
+
         if (configuration is null)
         {
             throw new ArgumentNullException(nameof(configuration));
         }
 
-        string facebookAppId = configuration["Authentication:Facebook:AppId"] ?? throw new NullReferenceException("configuration[\"Authentication:Facebook:AppId\"] is null");
-        string facebookAppSecret = configuration["Authentication:Facebook:AppSecret"] ?? throw new NullReferenceException("\"Authentication:Facebook:AppSecret\" is null");
+        string facebookAppId = configuration[APP_ID_KEY] ?? throw new NullReferenceException($"configuration[{APP_ID_KEY}] is null");
+        string facebookAppSecret = configuration[APP_SECRET_KEY] ?? throw new NullReferenceException($"configuration[{APP_SECRET_KEY}] is null");
 
-        services.AddAuthentication().AddFacebook(facebookOptions =>
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
+
+        }).AddFacebook(facebookOptions =>
         {
             facebookOptions.AppId = facebookAppId;
             facebookOptions.AppSecret = facebookAppSecret;

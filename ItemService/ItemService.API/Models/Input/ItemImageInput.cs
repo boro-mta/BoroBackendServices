@@ -4,5 +4,4 @@ public class ItemImageInput
 {
     public string Base64ImageMetaData { get; set; } = string.Empty;
     public string Base64ImageData { get; set; } = string.Empty;
-    public bool IsCover { get; set; } = false;
 }

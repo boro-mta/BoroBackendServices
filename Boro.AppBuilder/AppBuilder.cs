@@ -44,7 +44,7 @@ public static class AppBuilder
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-
+        //app.UseAuthentication();
         app.MapControllers();
 
         return app;

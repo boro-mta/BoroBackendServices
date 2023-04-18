@@ -17,7 +17,8 @@ internal static class ItemExtensions
             Description = entry.Description,
             Images = images,
             OwnerId = entry.OwnerId,
-            IncludedExtras = entry.IncludedExtras is null ? null : JsonSerializer.Deserialize<Dictionary<string, bool>?>(entry.IncludedExtras),
+            Categories = JsonSerializer.Deserialize<string[]>(entry.Categories) ?? Array.Empty<string>(),
+            Condition = entry.Condition,
         };
     }
 
@@ -32,7 +33,8 @@ internal static class ItemExtensions
             Description = input.Description,
             OwnerId = input.OwnerId,
             Images = images.ToList(),
-            IncludedExtras = JsonSerializer.Serialize(input.IncludedExtras)
+            Condition = input.Condition,
+            Categories = JsonSerializer.Serialize(input.Categories)
         };
     }
 

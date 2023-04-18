@@ -6,7 +6,8 @@ public class ItemModel
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     public List<ItemImage> Images { get; set; } = Enumerable.Empty<ItemImage>().ToList();
-    public string OwnerId { get; set; } = string.Empty;
-    public Dictionary<string, bool>? IncludedExtras { get; set; }
+    public string? OwnerId { get; set; }
+    public string[] Categories { get; set; }
+    public string Condition { get; set; }
 
 }

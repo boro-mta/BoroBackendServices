@@ -1,31 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
+using MS = Microsoft.Extensions.Logging;
 using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Boro.Validations;
 
 [System.AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
 public abstract class ValidatesAttribute : ActionFilterAttribute
 {
-    protected static readonly Microsoft.Extensions.Logging.ILogger _logger = LoggerFactory.Create(c => { c.AddSerilog(); }).CreateLogger("Validations");
+    protected static readonly MS.ILogger _LOGGER = MS.LoggerFactory.Create(c => { c.AddSerilog(); }).CreateLogger("Validations");
 
     public string ParameterName { get; protected set; }
+    protected string TypeName { get; init; }
     protected ValidatesAttribute(string parameterName)
     {
         ParameterName = parameterName;
+        TypeName = GetType().Name;
     }
 
     public abstract (bool valid, IEnumerable<string> errors) Validate(object? parameter);
 
     public override void OnActionExecuting(ActionExecutingContext context)
     {
-        string typeName = GetType().Name;
         string actionName = context.ActionDescriptor.DisplayName;
 
         const string entryMessage = "[{type}] - [{context}] - Will attempt to validate argument: [{parameterName}]";
-        _logger.LogInformation(entryMessage,
-                               typeName,
+        _LOGGER.LogInformation(entryMessage,
+                               TypeName,
                                actionName,
                                ParameterName);
 
@@ -40,8 +42,8 @@ public abstract class ValidatesAttribute : ActionFilterAttribute
                     Content of '{parameterName}': {@content}
                     Errors: {@errors}
                     """;
-            _logger.LogError(errorMessage,
-                             typeName,
+            _LOGGER.LogError(errorMessage,
+                             TypeName,
                              actionName,
                              ParameterName,
                              ParameterName,
@@ -49,17 +51,17 @@ public abstract class ValidatesAttribute : ActionFilterAttribute
                              errors);
 
             context.Result = new BadRequestObjectResult($"""
-                            Invalid input received.
+                                Invalid input received.
                                 parameter: "{ParameterName}"
                                 errors: [
-                                {string.Join(Environment.NewLine, errors.Select(e => $"- {e}"))}
+                                {string.Join(Environment.NewLine, errors?.Select(e => $"- {e}") ?? Enumerable.Empty<string>())}
                                 ]
                                 """);
         }
 
         const string successMessage = "[{type}] - [{context}] - argument: [{parameterName}] is valid.";
-        _logger.LogInformation(successMessage,
-                               typeName,
+        _LOGGER.LogInformation(successMessage,
+                               TypeName,
                                actionName,
                                ParameterName);
 
