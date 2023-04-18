@@ -10,6 +10,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ItemService.Controller.Controllers;
 
+//http://localhost:port/items
 [Route("[controller]")]
 [ApiController]
 public partial class ItemsController : ControllerBase
@@ -37,7 +38,7 @@ public partial class ItemsController : ControllerBase
         return item is null ? NotFound($"Item with id: {id} was not found") : item;
     }
 
-    [HttpGet()]
+    [HttpPost()]
     [ValidatesGuid("ids")]
     public ActionResult<List<ItemModel>> GetItems([FromBody][MinLength(1)] List<string> ids)
     {
@@ -116,8 +117,8 @@ public partial class ItemsController : ControllerBase
         try
         {
             var guid = Guid.Parse(itemId);
-            _logger.LogInformation("AddImage was called with: [{@metadata}, {@imageLength}, {@isCover}]", 
-                image.Base64ImageMetaData, image.Base64ImageData.Length, image.IsCover);
+            _logger.LogInformation("AddImage was called with: [{@metadata}, {@imageLength}", 
+                image.Base64ImageMetaData, image.Base64ImageData.Length);
             
             if (!image.IsValidInput(out var errors))
             {

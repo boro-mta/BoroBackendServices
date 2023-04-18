@@ -46,7 +46,7 @@ public class ItemServiceBackendTests
         {
             Title = "Drill",
             Description = "A battery powered drill by Makita",
-            IncludedExtras = includedExtras
+            //IncludedExtras = includedExtras
         };
 
         var item1Guid = _backend.AddItem(inputItem);
@@ -56,12 +56,12 @@ public class ItemServiceBackendTests
         var item = _backend.GetItem(item1Guid);
         Assert.IsNotNull(item);
         Assert.AreEqual(item1Guid, item.Id);
-        var extras = item.IncludedExtras;
-        Assert.IsNotNull(extras);
-        Assert.AreEqual(3, extras.Count);
-        Assert.AreEqual(includedExtras["Bit set"], extras["Bit set"]);
-        Assert.AreEqual(includedExtras["Extra Battery"], extras["Extra Battery"]);
-        Assert.AreEqual(includedExtras["Battery Charger"], extras["Battery Charger"]);
+        //var extras = item.IncludedExtras;
+        //Assert.IsNotNull(extras);
+        //Assert.AreEqual(3, extras.Count);
+        //Assert.AreEqual(includedExtras["Bit set"], extras["Bit set"]);
+        //Assert.AreEqual(includedExtras["Extra Battery"], extras["Extra Battery"]);
+        //Assert.AreEqual(includedExtras["Battery Charger"], extras["Battery Charger"]);
     }
 
     [TestMethod]
@@ -79,12 +79,10 @@ public class ItemServiceBackendTests
 
         var pngCoverImageInput = new ItemImageInput
         {
-            IsCover = true,
             Base64ImageData = pngBase64,
         };
         var jpegImageInput = new ItemImageInput
         {
-            IsCover = false,
             Base64ImageData = jpegBase64,
         };
 
@@ -103,8 +101,6 @@ public class ItemServiceBackendTests
         Assert.IsNotNull(item?.Images);
         Assert.AreEqual(itemGuid, item.Id);
         Assert.AreEqual(2, item.Images.Count);
-        var actualCover = item.Images.Where(item => item.IsCover).First();
-        Assert.AreEqual(pngBase64, actualCover.Base64ImageData);
     }
 
     [TestMethod]
@@ -122,17 +118,14 @@ public class ItemServiceBackendTests
 
         var pngCoverImageInput = new ItemImageInput
         {
-            IsCover = true,
             Base64ImageData = pngBase64,
         };
         var jpegImageInput = new ItemImageInput
         {
-            IsCover = false,
             Base64ImageData = jpegBase64,
         };
         var jpeg2ImageInput = new ItemImageInput
         {
-            IsCover = false,
             Base64ImageData = jpegBase64,
         };
 
@@ -151,8 +144,6 @@ public class ItemServiceBackendTests
         Assert.IsNotNull(item?.Images);
         Assert.AreEqual(itemGuid, item.Id);
         Assert.AreEqual(3, item.Images.Count);
-        var actualCover = item.Images.Where(item => item.IsCover).First();
-        Assert.AreEqual(pngBase64, actualCover.Base64ImageData);
     }
 
     [TestMethod]

@@ -13,29 +13,18 @@ public class ValidatesGuidAttribute : ValidatesAttribute
         return (true, Enumerable.Empty<string>());
     }
 
-    private static (bool valid, IEnumerable<string> errors) ValidateList(IEnumerable<string> l)
+    private static (bool valid, IEnumerable<string> errors) ValidateList(IEnumerable<string> list)
     {
-        bool allValid = true;
-        IEnumerable<string> allErrors = Enumerable.Empty<string>();
-        foreach (var s in l)
-        {
-            var (valid, errors) = ValidateString(s);
-            allValid &= valid;
-            allErrors = allErrors.Union(errors);
-        }
-
-        return (true, Enumerable.Empty<string>());
+        var validations = list.Select(ValidateString).ToArray();
+        return (validations.All(v => v.valid), validations.SelectMany(v => v.errors));
     }
 
-    public override (bool valid, IEnumerable<string> errors) Validate(object? parameter)
+    public override (bool valid, IEnumerable<string> errors) Validate(object? parameter) => parameter switch
     {
-        return parameter switch
-        {
-            null => (false, new string[] { $"parameter is null" }),
-            string s => ValidateString(s),
-            IEnumerable<string> l => ValidateList(l),
-            Guid or IEnumerable<Guid> => (true, Enumerable.Empty<string>()),
-            _ => (false, new string[] { $"parameter {parameter} could not be validated as a Guid or a collection of Guids" })
-        };
-    }
+        null => (false, new string[] { $"parameter is null" }),
+        string s => ValidateString(s),
+        IEnumerable<string> l => ValidateList(l),
+        Guid or IEnumerable<Guid> => (true, Enumerable.Empty<string>()),
+        _ => (false, new string[] { $"parameter {parameter} could not be validated as a Guid or a collection of Guids" })
+    };
 }
