@@ -14,5 +14,6 @@
 	  <ProjectReference Include="..\Boro.Validations\Boro.Validations.csproj" />
 	  <ProjectReference Include="..\ItemService\ItemService.Controller\ItemService.Controller.csproj" />
 	  <ProjectReference Include="..\ReservationsService\ReservationsService.Controller\ReservationsService.Controller.csproj" />
+	  <ProjectReference Include="..\UserService\UserService.Controller\UserService.Controller.csproj" />
 	</ItemGroup>
 </Project>

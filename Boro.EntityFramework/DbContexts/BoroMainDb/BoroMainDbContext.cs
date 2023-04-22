@@ -18,4 +18,7 @@ public class BoroMainDbContext : DbContext
     public DbSet<Items> Items { get; set; }
     public DbSet<ItemImages> ItemImages { get; set; }
     public DbSet<Reservations> Reservations { get; set; }
+    public DbSet<Users> Users { get; set; }
+
+
 }
