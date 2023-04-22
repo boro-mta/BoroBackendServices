@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using ItemService.Controller.DependencyInjection;
 using ReservationsService.Controller.DependencyInjection;
+using UserService.Controller.DependencyInjection;
 using Boro.EntityFramework.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Boro.Logging;
@@ -60,6 +61,8 @@ public static class AppBuilder
 
         builder.Services.AddItemService();
         builder.Services.AddReservationsService();
+        builder.Services.AddUserService();
+
         return builder;
     }
 }
