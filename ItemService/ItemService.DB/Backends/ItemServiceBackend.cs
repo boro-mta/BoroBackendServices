@@ -1,5 +1,4 @@
 ﻿using Boro.EntityFramework.DbContexts.BoroMainDb;
-using ItemService.API.Exceptions;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
@@ -76,27 +75,12 @@ public class ItemServiceBackend : IItemServiceBackend
         return entry.Id;
     }
 
-    public void UpdateItem(Guid id, UpdateItemInput updateData)
+    public List<MinimalItemInfo> GetAllUserItems(Guid userId)
     {
-        var existingItem = _dbContext.Items.FirstOrDefault(item => item.Id == id) ?? throw new DoesNotExistException(id.ToString());
+        var userItems = _dbContext.Items
+            .Where(item => item.OwnerId.Equals(userId))
+            .Select(item => item.ToMinimalItemInfo());
 
-        var entry = existingItem.UpdateItem(updateData);
-
-        _logger.LogInformation("Attempting to update item [{id}]", id);
-
-        _dbContext.Items.Update(entry);
-        _dbContext.SaveChanges();
-
-        _logger.LogInformation("Item with [{id}] was updated", id);
-    }
-
-    public Guid AddImage(Guid itemId, ItemImageInput image)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void DeleteImage(Guid imageId)
-    {
-        throw new NotImplementedException();
+        return userItems.ToList();
     }
 }

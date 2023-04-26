@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace UserService.API.Models
+namespace UserService.API.Models;
+
+public class UserInput
 {
-    public class UserInput
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string About { get; set; } = string.Empty;
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string About { get; set; } = string.Empty;
 
-        [EmailAddress]
-        public string Email { get; set; }
+    [EmailAddress]
+    public string Email { get; set; }
 
-    }
 }
