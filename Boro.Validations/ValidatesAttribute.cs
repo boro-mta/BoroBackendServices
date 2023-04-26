@@ -31,7 +31,21 @@ public abstract class ValidatesAttribute : ActionFilterAttribute
                                actionName,
                                ParameterName);
 
+        var propertyPath = ParameterName.Split(".");
+        var parameterName = propertyPath.First();
         var parameter = context.ActionArguments[ParameterName];
+
+        if (propertyPath.Length > 1)
+        {
+            Stack<string> stack = new(propertyPath.Reverse());
+            while (stack.TryPop(out string? component))
+            {
+                var propertyInfo = parameter?.GetType()?.GetProperty(component)
+                    ?? throw new ArgumentException($"Property '{component}' not found on object of type '{parameter?.GetType().FullName}'");
+
+                parameter = propertyInfo.GetValue(parameter);
+            }
+        }
 
         var (valid, errors) = Validate(parameter);
 

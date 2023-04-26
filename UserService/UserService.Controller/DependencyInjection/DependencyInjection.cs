@@ -2,19 +2,18 @@
 using UserService.API.Interfaces;
 using UserService.DB.Backends;
 
-namespace UserService.Controller.DependencyInjection
+namespace UserService.Controller.DependencyInjection;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddUserService(this IServiceCollection services)
     {
-        public static IServiceCollection AddUserService(this IServiceCollection services)
-        {
-            services.AddControllers();
-            services.AddTransient<IUserServiceBackend, UserServiceBackend>();
+        services.AddControllers();
+        services.AddTransient<IUserServiceBackend, UserServiceBackend>();
 
-            services.AddControllers();
+        services.AddControllers();
 
-            return services;
-        }
-
+        return services;
     }
+
 }

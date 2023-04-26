@@ -22,6 +22,15 @@ internal static class ItemExtensions
         };
     }
 
+    internal static MinimalItemInfo ToMinimalItemInfo(this Items entry)
+    {
+        return new MinimalItemInfo
+        {
+            Id = entry.Id,
+            Title = entry.Title,
+        };
+    }
+
     internal static Items ToTableEntry(this ItemInput input, Guid itemId)
     {
         var images = input.Images?.Select(i => i.ToTableEntry(itemId)) ?? Enumerable.Empty<ItemImages>();
@@ -36,23 +45,5 @@ internal static class ItemExtensions
             Condition = input.Condition,
             Categories = JsonSerializer.Serialize(input.Categories)
         };
-    }
-
-    internal static Items UpdateItem(this Items entry, UpdateItemInput update) 
-    { 
-        if (update.Title != null)
-        {
-            entry.Title = update.Title;
-        }
-        if (update.Description != null)
-        {
-            entry.Description = update.Description;
-        }
-        if (update.OwnerId != null)
-        {
-            entry.OwnerId = update.OwnerId;
-        }
-
-        return entry;
     }
 }

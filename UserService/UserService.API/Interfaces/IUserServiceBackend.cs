@@ -1,13 +1,12 @@
 ﻿using UserService.API.Models;
 
-namespace UserService.API.Interfaces
+namespace UserService.API.Interfaces;
+
+public interface IUserServiceBackend
 {
-    public interface IUserServiceBackend
-    {
-        UserModel GetUser(Guid userId);
+    UserModel GetUser(Guid userId);
 
-        UserProfileModel GetUserProfile(Guid userId);
+    UserProfileModel GetUserProfile(Guid userId);
 
-        Guid CreateUser(UserInput userInput);
-    }
+    Guid CreateUser(UserInput userInput);
 }
