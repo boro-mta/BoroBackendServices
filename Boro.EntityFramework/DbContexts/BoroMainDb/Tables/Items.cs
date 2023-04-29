@@ -14,4 +14,6 @@ public class Items
     public IEnumerable<ItemImages>? Images { get; set; }
     public string Condition { get; set; } = "";
     public string Categories { get; set; } = "";
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 }

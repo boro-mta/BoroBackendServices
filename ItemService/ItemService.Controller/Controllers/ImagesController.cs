@@ -1,5 +1,5 @@
-﻿using Boro.Validations;
-using ItemService.API.Exceptions;
+﻿using Boro.Common.Exceptions;
+using Boro.Validations;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Output;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +30,7 @@ public partial class ImagesController : ControllerBase
             var guid = Guid.Parse(imageId);
             _logger.LogInformation("GetImage was called with: [{imageId}]", imageId);
 
-            var image = _backend.GetImage(guid);
+            var image = _backend.GetImageAsync(guid).Result;
 
             _logger.LogInformation("GetImage - received image with: [{@length}], [{@metaData}]",
                 image.Base64ImageData.Length,
@@ -54,7 +54,7 @@ public partial class ImagesController : ControllerBase
             _logger.LogInformation("DeleteImage was called with item id: [{itemId}]", imageId);
             var guid = Guid.Parse(imageId);
 
-            _backend.DeleteImage(guid);
+            _backend.DeleteImageAsync(guid).Wait();
 
             return Ok();
         }

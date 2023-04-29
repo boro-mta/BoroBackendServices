@@ -5,13 +5,13 @@ namespace ItemService.API.Interfaces;
 
 public interface IImagesBackend
 {
-    Guid AddImage(Guid itemId, ItemImageInput image);
+    Task<Guid> AddImageAsync(Guid itemId, ItemImageInput image);
 
-    void DeleteImage(Guid imageId);
+    Task DeleteImageAsync(Guid imageId);
 
-    ItemImage GetImage(Guid imageId);
+    Task<ItemImage> GetImageAsync(Guid imageId);
 
-    List<ItemImage> GetImages(IEnumerable<Guid> imageIds);
+    Task<List<ItemImage>> GetImagesAsync(IEnumerable<Guid> imageIds);
 
-    List<ItemImage> GetAllItemImages(Guid itemId);
+    Task<List<ItemImage>> GetAllItemImagesAsync(Guid itemId);
 }

@@ -4,8 +4,9 @@ using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
 using Microsoft.Extensions.Logging;
 using ItemService.DB.Extensions;
-using ItemService.API.Exceptions;
 using Microsoft.IdentityModel.Tokens;
+using Boro.Common.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ItemService.DB.Backends;
 
@@ -21,24 +22,24 @@ public class ImagesBackend : IImagesBackend
         _dbContext = dbContext;
     }
 
-    public Guid AddImage(Guid itemId, ItemImageInput image)
+    public async Task<Guid> AddImageAsync(Guid itemId, ItemImageInput image)
     {
         var entry = image.ToTableEntry(itemId);
 
-        _dbContext.ItemImages.Add(entry);
-        _dbContext.SaveChanges();
+        await _dbContext.ItemImages.AddAsync(entry);
+        await _dbContext.SaveChangesAsync();
 
         return entry.ImageId;
     }
 
-    public void DeleteImage(Guid imageId)
+    public async Task DeleteImageAsync(Guid imageId)
     {
-        var image = _dbContext.ItemImages.FirstOrDefault(image => image.ImageId.Equals(imageId));
+        var image = await _dbContext.ItemImages.FirstOrDefaultAsync(image => image.ImageId.Equals(imageId));
 
         if (image is not null)
         {
             _dbContext.ItemImages.Remove(image);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
         else
         {
@@ -46,7 +47,7 @@ public class ImagesBackend : IImagesBackend
         }
     }
 
-    public List<ItemImage> GetAllItemImages(Guid itemId)
+    public async Task<List<ItemImage>> GetAllItemImagesAsync(Guid itemId)
     {
         var images = _dbContext.ItemImages
             .Where(image => image.ParentId.Equals(itemId))
@@ -57,23 +58,23 @@ public class ImagesBackend : IImagesBackend
             throw new DoesNotExistException(itemId.ToString());
         }
 
-        return images.ToList();
+        return await Task.FromResult(images.ToList());
     }
 
-    public ItemImage GetImage(Guid imageId)
+    public async Task<ItemImage> GetImageAsync(Guid imageId)
     {
-        var image = _dbContext.ItemImages
-            .SingleOrDefault(image =>  image.ImageId.Equals(imageId));
+        var image = await _dbContext.ItemImages
+            .SingleOrDefaultAsync(image =>  image.ImageId.Equals(imageId));
 
         return image is null ? throw new DoesNotExistException(imageId.ToString()) : image.ToItemImageModel();
     }
 
-    public List<ItemImage> GetImages(IEnumerable<Guid> imageIds)
+    public async Task<List<ItemImage>> GetImagesAsync(IEnumerable<Guid> imageIds)
     {
-        var images = imageIds.Select(GetImage).ToList();
+        var images = imageIds.Select(id => GetImageAsync(id).Result).ToList();
 
         _logger.LogInformation("GetImages - [{count}] images returned from db", images.Count);
 
-        return images;
+        return await Task.FromResult(images);
     }
 }

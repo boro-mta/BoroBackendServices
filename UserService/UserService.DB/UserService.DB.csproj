@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Boro.Common\Boro.Common.csproj" />
     <ProjectReference Include="..\..\Boro.EntityFramework\Boro.EntityFramework.csproj" />
+    <ProjectReference Include="..\..\Boro.Facebook\Boro.Facebook.csproj" />
     <ProjectReference Include="..\UserService.API\UserService.API.csproj" />
   </ItemGroup>
 

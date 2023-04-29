@@ -1,12 +1,17 @@
-﻿using UserService.API.Models;
+﻿using UserService.API.Models.Input;
+using UserService.API.Models.Output;
 
 namespace UserService.API.Interfaces;
 
 public interface IUserServiceBackend
 {
-    UserModel GetUser(Guid userId);
+    Task<UserModel> GetUserAsync(Guid userId);
 
-    UserProfileModel GetUserProfile(Guid userId);
+    Task<UserProfileModel> GetUserProfileAsync(Guid userId);
 
-    Guid CreateUser(UserInput userInput);
+    Task<Guid> CreateUserAsync(UserInput userInput);
+
+    Task<UserLoginInfo> LoginWithFacebookAsync(string accessToken, string facebookId);
+
+    Task UpdateUserInfoAsync(Guid userId, UpdateUserInput input);
 }

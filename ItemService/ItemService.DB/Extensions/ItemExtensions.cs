@@ -19,6 +19,8 @@ internal static class ItemExtensions
             OwnerId = entry.OwnerId,
             Categories = JsonSerializer.Deserialize<string[]>(entry.Categories) ?? Array.Empty<string>(),
             Condition = entry.Condition,
+            Latitude = entry.Latitude,
+            Longitude = entry.Longitude,
         };
     }
 
@@ -28,6 +30,17 @@ internal static class ItemExtensions
         {
             Id = entry.Id,
             Title = entry.Title,
+        };
+    }
+
+    internal static ItemLocationDetails ToItemLocationDetails(this Items entry)
+    {
+        return new ItemLocationDetails
+        {
+            Id = entry.Id,
+            Title = entry.Title,
+            Latitude = entry.Latitude,
+            Longitude = entry.Longitude,
         };
     }
 

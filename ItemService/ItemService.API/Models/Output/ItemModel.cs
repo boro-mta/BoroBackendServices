@@ -9,5 +9,7 @@ public class ItemModel
     public Guid? OwnerId { get; set; }
     public string[] Categories { get; set; }
     public string Condition { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 
 }

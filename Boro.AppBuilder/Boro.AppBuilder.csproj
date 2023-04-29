@@ -10,6 +10,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Boro.EntityFramework\Boro.EntityFramework.csproj" />
+	  <ProjectReference Include="..\Boro.Facebook\Boro.Facebook.csproj" />
 	  <ProjectReference Include="..\Boro.Logging\Boro.Logging.csproj" />
 	  <ProjectReference Include="..\Boro.Validations\Boro.Validations.csproj" />
 	  <ProjectReference Include="..\ItemService\ItemService.Controller\ItemService.Controller.csproj" />

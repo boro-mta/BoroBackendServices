@@ -1,14 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 
+[PrimaryKey("UserId", "FacebookId")]
 public class Users
 {
-    [Key]
     public Guid UserId { get; set; }
-    //[Key]
-    //public string FacebookId { get; set; } = string.Empty;
-    //public string FacebookAccessToken { get; set; } = string.Empty;
+    public string FacebookId { get; set; }
     [EmailAddress]
     public string Email { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;

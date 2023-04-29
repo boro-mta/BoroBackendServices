@@ -6,6 +6,7 @@ using UserService.Controller.DependencyInjection;
 using Boro.EntityFramework.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Boro.Logging;
+using Boro.Facebook;
 
 namespace Boro.AppBuilder;
 
@@ -14,6 +15,7 @@ public static class AppBuilder
     public static WebApplication BuildApp(string[] args)
     {
         var builder = GetMinimalAppBuilder(args);
+        builder.Services.AddFacebook(builder.Configuration);
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -54,7 +56,6 @@ public static class AppBuilder
     public static WebApplicationBuilder GetMinimalAppBuilder(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
         builder.AddBoroLogging(Path.Combine(Environment.CurrentDirectory, "Logs"));
         // Add services to the container.
         builder.Services.AddBoroMainDbContext(builder.Configuration);

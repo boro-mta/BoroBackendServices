@@ -5,11 +5,13 @@ namespace ItemService.API.Interfaces;
 
 public interface IItemServiceBackend
 {
-    ItemModel? GetItem(Guid id);
+    Task<ItemModel?> GetItemAsync(Guid id);
 
-    List<ItemModel> GetItems(IEnumerable<Guid> ids);
+    Task<List<ItemModel>> GetItemsAsync(IEnumerable<Guid> ids);
 
-    Guid AddItem(ItemInput item);
+    Task<Guid> AddItemAsync(ItemInput item);
 
-    List<MinimalItemInfo> GetAllUserItems(Guid userId);
+    Task<List<MinimalItemInfo>> GetAllUserItemsAsync(Guid userId);
+
+    Task<List<ItemLocationDetails>> GetAllItemsInRadiusAsync(double latitude, double longitude, double radiusInMeters);
 }
