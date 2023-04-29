@@ -1,5 +1,5 @@
-﻿using Boro.Validations;
-using ItemService.API.Exceptions;
+﻿using Boro.Common.Exceptions;
+using Boro.Validations;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
@@ -32,7 +32,7 @@ public partial class ItemImagesController : ControllerBase
             _logger.LogInformation("AddImage was called with: [{@metadata}, {@imageLength}]",
                 image.Base64ImageMetaData, image.Base64ImageData.Length);
 
-            var imageId = _backend.AddImage(guid, image);
+            var imageId = _backend.AddImageAsync(guid, image).Result;
 
             _logger.LogInformation("AddImage - Item with [{@id}] was updated with image [{imageId}]", itemId, imageId);
 
@@ -59,7 +59,7 @@ public partial class ItemImagesController : ControllerBase
             _logger.LogInformation("GetItemImages was called with item id: [{itemId}]", itemId);
             var guid = Guid.Parse(itemId);
 
-            var images = _backend.GetAllItemImages(guid);
+            var images = _backend.GetAllItemImagesAsync(guid).Result;
 
             _logger.LogInformation("GetItemImages - Item id: [{@id}]. Retrieved [{count}] images.", 
                 itemId, images.Count);

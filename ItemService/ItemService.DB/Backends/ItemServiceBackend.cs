@@ -3,6 +3,7 @@ using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
 using ItemService.DB.Extensions;
+using ItemService.DB.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -12,36 +13,37 @@ public class ItemServiceBackend : IItemServiceBackend
 {
     private readonly ILogger _logger;
     private readonly BoroMainDbContext _dbContext;
+    private readonly GeoCalculator _geoCalculator;
 
     public ItemServiceBackend(ILoggerFactory loggerFactory,
-        BoroMainDbContext dbContext)
+        BoroMainDbContext dbContext,
+        GeoCalculator geoCalculator)
     {
         _logger = loggerFactory.CreateLogger("ItemService");
         _dbContext = dbContext;
+        _geoCalculator = geoCalculator;
     }
 
-    public ItemModel? GetItem(Guid id)
+    public async Task<ItemModel?> GetItemAsync(Guid id)
     {
         _logger.LogInformation("GetItem - Getting item with {id} from Items table", id);
 
-        var itemQ = _dbContext.Items
+        var item = await _dbContext.Items
                         .Include(item => item.Images)
-                        .Where(item => item.Id.Equals(id))
-                        .Select(item => item.ToItemServiceModel());
+                        .SingleOrDefaultAsync(item => item.Id.Equals(id));
 
-        if (!itemQ.Any()) 
+        if (item is null) 
         {
             _logger.LogError("GetItem - no item with id: [{id}] was found", id);
             return null;
         }
 
-        var item = itemQ.Single();
         _logger.LogInformation("GetItem - returning [{id}, {title}]", item.Id, item.Title);
 
-        return item;
+        return item.ToItemServiceModel();
     }
 
-    public List<ItemModel> GetItems(IEnumerable<Guid> ids)
+    public async Task<List<ItemModel>> GetItemsAsync(IEnumerable<Guid> ids)
     {
         _logger.LogInformation("GetItems - Getting items with ids from {@ids} from Items table", ids);
 
@@ -56,10 +58,10 @@ public class ItemServiceBackend : IItemServiceBackend
             return Enumerable.Empty<ItemModel>().ToList();
         }
 
-        return itemsQ.ToList();
+        return await Task.FromResult(itemsQ.ToList());
     }
 
-    public Guid AddItem(ItemInput item)
+    public async Task<Guid> AddItemAsync(ItemInput item)
     {
         _logger.LogInformation("AddItem with [{title}, {ownerID}]", item.Title, item.OwnerId);
 
@@ -68,19 +70,36 @@ public class ItemServiceBackend : IItemServiceBackend
         var entry = item.ToTableEntry(id);
         _logger.LogInformation("AddItem - Inserting [{id}]", entry.Id);
 
-        _dbContext.Items.Add(entry);
+        await _dbContext.Items.AddAsync(entry);
 
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
         _logger.LogInformation("AddItem - Successfully added item with [{id}]", entry.Id);
         return entry.Id;
     }
 
-    public List<MinimalItemInfo> GetAllUserItems(Guid userId)
+    public async Task<List<MinimalItemInfo>> GetAllUserItemsAsync(Guid userId)
     {
         var userItems = _dbContext.Items
             .Where(item => item.OwnerId.Equals(userId))
-            .Select(item => item.ToMinimalItemInfo());
+            .Select(item => item.ToMinimalItemInfo())
+            .ToList();
 
-        return userItems.ToList();
+        _logger.LogInformation("GetAllUserItems - [{count}] item were found for user [{userId}]",
+            userItems.Count, userId);
+
+        return await Task.FromResult(userItems.ToList());
+    }
+
+    public async Task<List<ItemLocationDetails>> GetAllItemsInRadiusAsync(double latitude, double longitude, double radiusInMeters)
+    {
+        var itemsInRadius = _dbContext.Items
+            .Where(item => radiusInMeters >= _geoCalculator.Distance(latitude, longitude, item.Latitude, item.Longitude))
+            .Select(item => item.ToItemLocationDetails())
+            .ToList();
+
+        _logger.LogInformation("GetAllItemsInRadius - [{count}] item were found in radius of [{radius}] meters from [{lat} - {long}]",
+            itemsInRadius.Count, radiusInMeters, latitude, longitude);
+
+        return await Task.FromResult(itemsInRadius);
     }
 }

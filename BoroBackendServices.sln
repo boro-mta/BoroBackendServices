@@ -35,11 +35,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boro.Facebook", "Boro.Faceb
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserService", "UserService", "{F64C86E0-8D24-4AB3-86B7-48F103FBDE04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.API", "UserService\UserService.API\UserService.API.csproj", "{30D2E537-3F55-41F3-B028-C4B70BF372C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService.API", "UserService\UserService.API\UserService.API.csproj", "{30D2E537-3F55-41F3-B028-C4B70BF372C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.Controller", "UserService\UserService.Controller\UserService.Controller.csproj", "{5AE17E4C-5684-4D8C-8D78-1CBB7DA537B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService.Controller", "UserService\UserService.Controller\UserService.Controller.csproj", "{5AE17E4C-5684-4D8C-8D78-1CBB7DA537B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.DB", "UserService\UserService.DB\UserService.DB.csproj", "{EB304131-8D7B-4B1A-A182-6EE49AF94A38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService.DB", "UserService\UserService.DB\UserService.DB.csproj", "{EB304131-8D7B-4B1A-A182-6EE49AF94A38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boro.Common", "Boro.Common\Boro.Common.csproj", "{D0FD119A-49B7-4E51-88C2-6D400359E539}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +113,10 @@ Global
 		{EB304131-8D7B-4B1A-A182-6EE49AF94A38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB304131-8D7B-4B1A-A182-6EE49AF94A38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB304131-8D7B-4B1A-A182-6EE49AF94A38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0FD119A-49B7-4E51-88C2-6D400359E539}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0FD119A-49B7-4E51-88C2-6D400359E539}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0FD119A-49B7-4E51-88C2-6D400359E539}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0FD119A-49B7-4E51-88C2-6D400359E539}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

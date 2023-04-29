@@ -1,5 +1,6 @@
 ﻿using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
-using UserService.API.Models;
+using UserService.API.Models.Input;
+using UserService.API.Models.Output;
 
 namespace UserService.DB.Extensions;
 
@@ -22,6 +23,7 @@ internal static class UserServiceModelExtensions
             About = entry.About,
             DateJoined = entry.DateJoined,
             UserId = entry.UserId,
+            FacebookId = entry.FacebookId,
         };
     }
 
@@ -35,13 +37,7 @@ internal static class UserServiceModelExtensions
             About = input.About,
             DateJoined = joined,
             UserId = userId,
-        };
-    }
-
-    internal static Users ToUserServicesTableEntry(this UserModel templateModel)
-    {
-        return new Users
-        {
+            FacebookId = input.FacebookId,
         };
     }
 }

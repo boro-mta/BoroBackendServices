@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UserService.API.Models;
+namespace UserService.API.Models.Input;
 
 public class UserInput
 {
+    public string FacebookId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string About { get; set; } = string.Empty;

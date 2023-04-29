@@ -1,4 +1,4 @@
-﻿namespace ItemService.API.Exceptions;
+﻿namespace Boro.Common.Exceptions;
 
 public class AlreadyExistsException : Exception
 {
