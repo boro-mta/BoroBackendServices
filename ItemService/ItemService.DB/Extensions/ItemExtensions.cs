@@ -1,6 +1,7 @@
 ﻿using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
+using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
 
 namespace ItemService.DB.Extensions;
@@ -41,6 +42,7 @@ internal static class ItemExtensions
             Title = entry.Title,
             Latitude = entry.Latitude,
             Longitude = entry.Longitude,
+            ImageIds = entry.Images?.Select(i => i.ImageId).ToList() ?? Enumerable.Empty<Guid>().ToList()
         };
     }
 
