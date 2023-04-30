@@ -14,4 +14,5 @@ public interface IItemServiceBackend
     Task<List<MinimalItemInfo>> GetAllUserItemsAsync(Guid userId);
 
     Task<List<ItemLocationDetails>> GetAllItemsInRadiusAsync(double latitude, double longitude, double radiusInMeters);
+    Task UpdateItemInfo(Guid itemId, UpdateItemInfoInput updateInput);
 }
