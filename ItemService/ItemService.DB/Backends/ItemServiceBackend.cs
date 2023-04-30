@@ -114,4 +114,14 @@ public class ItemServiceBackend : IItemServiceBackend
         _dbContext.Items.Update(updatedEntry);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task UpdateItemLocation(Guid itemId, double latitude, double longitude)
+    {
+        var entry = await _dbContext.Items.FirstOrDefaultAsync()
+            ?? throw new DoesNotExistException(itemId.ToString());
+
+        var updatedEntry = entry.UpdateLocation(latitude, longitude);
+        _dbContext.Items.Update(updatedEntry);
+        await _dbContext.SaveChangesAsync();
+    }
 }

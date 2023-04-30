@@ -14,4 +14,6 @@ public class Users
     public string LastName { get; set; } = string.Empty;
     public string About { get; set; } = string.Empty;
     public DateTime DateJoined { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 }
