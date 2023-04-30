@@ -95,6 +95,7 @@ public class ItemServiceBackend : IItemServiceBackend
     public async Task<List<ItemLocationDetails>> GetAllItemsInRadiusAsync(double latitude, double longitude, double radiusInMeters)
     {
         var itemsInRadius = await _dbContext.Items
+            .Include(item => item.Images)
             .Where(item => radiusInMeters >= _geoCalculator.Distance(latitude, longitude, item.Latitude, item.Longitude))
             .Select(item => item.ToItemLocationDetails())
             .ToListAsync();
