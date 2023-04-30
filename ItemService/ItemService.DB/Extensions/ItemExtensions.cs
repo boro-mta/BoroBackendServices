@@ -59,4 +59,13 @@ internal static class ItemExtensions
             Categories = JsonSerializer.Serialize(input.Categories)
         };
     }
+
+    internal static Items UpdateEntry(this Items entry, UpdateItemInfoInput updateInput)
+    {
+        entry.Description = updateInput.Description;
+        entry.Title = updateInput.Title;
+        entry.Condition = updateInput.Condition;
+        entry.Categories = JsonSerializer.Serialize(updateInput.Categories);
+        return entry;
+    }
 }

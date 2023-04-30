@@ -1,4 +1,5 @@
-﻿using Boro.EntityFramework.DbContexts.BoroMainDb;
+﻿using Boro.Common.Exceptions;
+using Boro.EntityFramework.DbContexts.BoroMainDb;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
@@ -47,18 +48,19 @@ public class ItemServiceBackend : IItemServiceBackend
     {
         _logger.LogInformation("GetItems - Getting items with ids from {@ids} from Items table", ids);
 
-        var itemsQ = _dbContext.Items
+        var items = await _dbContext.Items
                         .Include(item => item.Images)
                         .Where(item => ids.Contains(item.Id))
-                        .Select(item => item.ToItemServiceModel());
+                        .Select(item => item.ToItemServiceModel())
+                        .ToListAsync();
 
-        if (!itemsQ.Any())
+        if (!items.Any())
         {
             _logger.LogError("GetItems - no items with id from: [{@ids}] were found", ids);
             return Enumerable.Empty<ItemModel>().ToList();
         }
 
-        return await Task.FromResult(itemsQ.ToList());
+        return items;
     }
 
     public async Task<Guid> AddItemAsync(ItemInput item)
@@ -79,27 +81,37 @@ public class ItemServiceBackend : IItemServiceBackend
 
     public async Task<List<MinimalItemInfo>> GetAllUserItemsAsync(Guid userId)
     {
-        var userItems = _dbContext.Items
+        var userItems = await _dbContext.Items
             .Where(item => item.OwnerId.Equals(userId))
             .Select(item => item.ToMinimalItemInfo())
-            .ToList();
+            .ToListAsync();
 
         _logger.LogInformation("GetAllUserItems - [{count}] item were found for user [{userId}]",
             userItems.Count, userId);
 
-        return await Task.FromResult(userItems.ToList());
+        return userItems;
     }
 
     public async Task<List<ItemLocationDetails>> GetAllItemsInRadiusAsync(double latitude, double longitude, double radiusInMeters)
     {
-        var itemsInRadius = _dbContext.Items
+        var itemsInRadius = await _dbContext.Items
             .Where(item => radiusInMeters >= _geoCalculator.Distance(latitude, longitude, item.Latitude, item.Longitude))
             .Select(item => item.ToItemLocationDetails())
-            .ToList();
+            .ToListAsync();
 
         _logger.LogInformation("GetAllItemsInRadius - [{count}] item were found in radius of [{radius}] meters from [{lat} - {long}]",
             itemsInRadius.Count, radiusInMeters, latitude, longitude);
 
-        return await Task.FromResult(itemsInRadius);
+        return itemsInRadius;
+    }
+
+    public async Task UpdateItemInfo(Guid itemId, UpdateItemInfoInput updateInput)
+    {
+        var entry = await _dbContext.Items.FirstOrDefaultAsync() 
+            ?? throw new DoesNotExistException(itemId.ToString());
+
+        var updatedEntry = entry.UpdateEntry(updateInput);
+        _dbContext.Items.Update(updatedEntry);
+        await _dbContext.SaveChangesAsync();
     }
 }

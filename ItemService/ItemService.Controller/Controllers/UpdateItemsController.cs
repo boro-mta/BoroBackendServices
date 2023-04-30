@@ -1,5 +1,7 @@
-﻿using Boro.Validations;
+﻿using Boro.Common.Exceptions;
+using Boro.Validations;
 using ItemService.API.Interfaces;
+using ItemService.API.Models.Input;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -31,4 +33,28 @@ public partial class UpdateItemsController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPost()]
+    [ValidatesGuid("itemId")]
+    public ActionResult UpdateItemInfo(string itemId, [FromBody] UpdateItemInfoInput updateInput)
+    {
+        try
+        {
+            _logger.LogInformation("UpdateItemInfo was called with id: [{itemId}] and new information: {@info}",
+                itemId, updateInput);
+
+            var guid = Guid.Parse(itemId);
+            _backend.UpdateItemInfo(guid, updateInput).Wait();
+
+            _logger.LogInformation("UpdateItemInfo - Finished with: [{guid}]", guid);
+
+            return Ok();
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"item with id: {itemId} was not found");
+        }
+    }
+
+
 }
