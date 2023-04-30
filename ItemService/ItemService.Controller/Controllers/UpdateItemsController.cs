@@ -34,6 +34,26 @@ public partial class UpdateItemsController : ControllerBase
         return Ok();
     }
 
+    [HttpPost("Location")]
+    [ValidatesGuid("itemId")]
+    public ActionResult UpdateItemLocation(string itemId, double latitude, double longitude)
+    {
+        try
+        {
+            _logger.LogInformation("UpdateItemLocation was called with id: [{itemId}] and new location: {@latitude} {@longitude}",
+                itemId, latitude, longitude);
+
+            var guid = Guid.Parse(itemId);
+            _backend.UpdateItemLocation(guid, latitude, longitude).Wait();
+
+            return Ok();
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"item with id: {itemId} was not found");
+        }
+    }
+
     [HttpPost()]
     [ValidatesGuid("itemId")]
     public ActionResult UpdateItemInfo(string itemId, [FromBody] UpdateItemInfoInput updateInput)
@@ -45,8 +65,6 @@ public partial class UpdateItemsController : ControllerBase
 
             var guid = Guid.Parse(itemId);
             _backend.UpdateItemInfo(guid, updateInput).Wait();
-
-            _logger.LogInformation("UpdateItemInfo - Finished with: [{guid}]", guid);
 
             return Ok();
         }

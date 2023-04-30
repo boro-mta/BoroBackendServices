@@ -24,6 +24,8 @@ internal static class UserServiceModelExtensions
             DateJoined = entry.DateJoined,
             UserId = entry.UserId,
             FacebookId = entry.FacebookId,
+            Latitude = entry.Latitude,
+            Longitude = entry.Longitude,
         };
     }
 
@@ -38,6 +40,17 @@ internal static class UserServiceModelExtensions
             DateJoined = joined,
             UserId = userId,
             FacebookId = input.FacebookId,
+            Latitude = input.Latitude,
+            Longitude = input.Longitude,
         };
+    }
+
+    internal static Users UpdateUser(this Users entry, UpdateUserInput input)
+    {
+        entry.About = input.About;
+        entry.Email = input.Email;
+        entry.Latitude = input.Latitude;
+        entry.Longitude = input.Longitude;
+        return entry;
     }
 }

@@ -9,4 +9,6 @@ public class UserProfileModel
     public string About { get; set; } = string.Empty;
     public DateTime DateJoined { get; set; }
     public string Email { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
 }

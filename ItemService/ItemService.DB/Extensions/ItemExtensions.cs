@@ -56,7 +56,9 @@ internal static class ItemExtensions
             OwnerId = input.OwnerId,
             Images = images.ToList(),
             Condition = input.Condition,
-            Categories = JsonSerializer.Serialize(input.Categories)
+            Categories = JsonSerializer.Serialize(input.Categories),
+            Latitude = input.Latitude,
+            Longitude = input.Longitude,
         };
     }
 
@@ -66,6 +68,13 @@ internal static class ItemExtensions
         entry.Title = updateInput.Title;
         entry.Condition = updateInput.Condition;
         entry.Categories = JsonSerializer.Serialize(updateInput.Categories);
+        return entry;
+    }
+
+    internal static Items UpdateLocation(this Items entry, double latitude, double longitude)
+    {
+        entry.Latitude = latitude;
+        entry.Longitude = longitude;
         return entry;
     }
 }
