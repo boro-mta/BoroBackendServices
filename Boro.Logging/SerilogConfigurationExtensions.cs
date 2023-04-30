@@ -29,7 +29,8 @@ public static class SerilogConfigurationExtensions
                 restrictedToMinimumLevel: LogEventLevel.Information);
 
             var configs = _logCategories.Where(kvp => !kvp.Key.Equals("Default", StringComparison.OrdinalIgnoreCase))
-                                        .Select(logCategory => configuration.WriteTo.Conditional(logEvent => logEvent.FileWritingCondition(logCategory), config => config.FileWritingAction(logCategory, logsDirectory)));
+                                        .Select(logCategory => configuration.WriteTo.Conditional(logEvent => logEvent.FileWritingCondition(logCategory), config => config.FileWritingAction(logCategory, logsDirectory)))
+                                        .ToList();
         });
 
         builder.Logging
