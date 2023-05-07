@@ -1,8 +1,10 @@
-﻿using Boro.Common.Exceptions;
+﻿using Boro.Common.Authentication;
+using Boro.Common.Exceptions;
 using Boro.Validations;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -10,6 +12,8 @@ namespace ItemService.Controller.Controllers;
 
 [Route("Items/{itemId}/Images")]
 [ApiController]
+[Authorize]
+[ValidatesGuid("itemId")]
 public partial class ItemImagesController : ControllerBase
 {
     private readonly ILogger _logger;
@@ -23,7 +27,7 @@ public partial class ItemImagesController : ControllerBase
     }
 
     [HttpPost("Add")]
-    [ValidatesGuid("itemId")]
+    [Authorize(Policy = AuthPolicies.ItemOwner)]
     public ActionResult<Guid> AddImage(string itemId, [FromBody] ItemImageInput image)
     {
         try
@@ -51,7 +55,6 @@ public partial class ItemImagesController : ControllerBase
     }
 
     [HttpGet()]
-    [ValidatesGuid("itemId")]
     public ActionResult<List<ItemImage>> GetItemImages(string itemId)
     {
         try

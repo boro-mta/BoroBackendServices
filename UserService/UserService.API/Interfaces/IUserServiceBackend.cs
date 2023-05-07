@@ -11,7 +11,5 @@ public interface IUserServiceBackend
 
     Task<Guid> CreateUserAsync(UserInput userInput);
 
-    Task<UserLoginInfo> LoginWithFacebookAsync(string accessToken, string facebookId);
-
     Task UpdateUserInfoAsync(Guid userId, UpdateUserInput input);
 }

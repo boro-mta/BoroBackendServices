@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Boro.Facebook.Models;
+namespace Boro.Authentication.Facebook.Models;
 
 internal class FacebookTokenValidationResultData
 {

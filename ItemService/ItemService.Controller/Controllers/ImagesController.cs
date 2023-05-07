@@ -1,7 +1,9 @@
-﻿using Boro.Common.Exceptions;
+﻿using Boro.Common.Authentication;
+using Boro.Common.Exceptions;
 using Boro.Validations;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Output;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -9,6 +11,7 @@ namespace ItemService.Controller.Controllers;
 
 [Route("Items/Images")]
 [ApiController]
+[Authorize]
 public partial class ImagesController : ControllerBase
 {
     private readonly ILogger _logger;
@@ -47,6 +50,7 @@ public partial class ImagesController : ControllerBase
 
     [HttpDelete("{imageId}")]
     [ValidatesGuid("imageId")]
+    [Authorize(Policy = AuthPolicies.ImageOwner)]
     public ActionResult DeleteImage(string imageId)
     {
         try

@@ -1,7 +1,9 @@
-﻿using Boro.Common.Exceptions;
+﻿using Boro.Common.Authentication;
+using Boro.Common.Exceptions;
 using Boro.Validations;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -9,6 +11,8 @@ namespace ItemService.Controller.Controllers;
 
 [Route("Items/{itemId}/Update")]
 [ApiController]
+[Authorize(Policy = AuthPolicies.ItemOwner)]
+[ValidatesGuid("itemId")]
 public partial class UpdateItemsController : ControllerBase
 {
     private readonly ILogger _logger;
@@ -21,21 +25,7 @@ public partial class UpdateItemsController : ControllerBase
         _backend = backend;
     }
 
-    [HttpPost("Description")]
-    [ValidatesGuid("itemId")]
-    public ActionResult UpdateDescription(string itemId, [FromBody] string description)
-    {
-        _logger.LogInformation("UpdateDescription was called with id: [{itemId}]", itemId);
-        var guid = Guid.Parse(itemId);
-        //var item = _backend.GetItem(guid);
-
-        _logger.LogInformation("UpdateDescription - Finished with: [{guid}]", guid);
-
-        return Ok();
-    }
-
     [HttpPost("Location")]
-    [ValidatesGuid("itemId")]
     public ActionResult UpdateItemLocation(string itemId, double latitude, double longitude)
     {
         try
@@ -44,6 +34,7 @@ public partial class UpdateItemsController : ControllerBase
                 itemId, latitude, longitude);
 
             var guid = Guid.Parse(itemId);
+
             _backend.UpdateItemLocation(guid, latitude, longitude).Wait();
 
             return Ok();
@@ -55,7 +46,6 @@ public partial class UpdateItemsController : ControllerBase
     }
 
     [HttpPost()]
-    [ValidatesGuid("itemId")]
     public ActionResult UpdateItemInfo(string itemId, [FromBody] UpdateItemInfoInput updateInput)
     {
         try
@@ -73,6 +63,5 @@ public partial class UpdateItemsController : ControllerBase
             return NotFound($"item with id: {itemId} was not found");
         }
     }
-
 
 }

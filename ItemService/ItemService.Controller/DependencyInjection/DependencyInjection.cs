@@ -12,7 +12,6 @@ public static class DependencyInjection
         services.AddTransient<IItemServiceBackend, ItemServiceBackend>();
         services.AddTransient<IImagesBackend, ImagesBackend>();
         services.AddSingleton<GeoCalculator>();
-        services.AddControllers();
 
         return services;
     }

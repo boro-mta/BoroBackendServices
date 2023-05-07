@@ -1,7 +1,6 @@
 ﻿using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
-using Microsoft.IdentityModel.Tokens;
 using System.Text.Json;
 
 namespace ItemService.DB.Extensions;
