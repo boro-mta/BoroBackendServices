@@ -1,6 +1,6 @@
-﻿using Boro.Facebook.Models;
+﻿using Boro.Authentication.Facebook.Models;
 
-namespace Boro.Facebook.Interfaces;
+namespace Boro.Authentication.Facebook.Interfaces;
 
 public interface IFacebookAuthService
 {

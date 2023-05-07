@@ -8,10 +8,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddUserService(this IServiceCollection services)
     {
-        services.AddControllers();
         services.AddTransient<IUserServiceBackend, UserServiceBackend>();
-
-        services.AddControllers();
+        services.AddTransient<IIdentityServiceBackend, IdentityServiceBackend>();
 
         return services;
     }
