@@ -22,7 +22,7 @@ public class ItemServiceBackendTests
     {
         Assert.IsNotNull(_backend);
 
-        var item1Guid = await _backend.AddItemAsync(new());
+        var item1Guid = await _backend.AddItemAsync(new(), Guid.NewGuid());
         Assert.IsNotNull(item1Guid);
         Assert.IsFalse(item1Guid.Equals(Guid.Empty));
 
@@ -49,7 +49,7 @@ public class ItemServiceBackendTests
             //IncludedExtras = includedExtras
         };
 
-        var item1Guid = await _backend.AddItemAsync(inputItem);
+        var item1Guid = await _backend.AddItemAsync(inputItem, Guid.NewGuid());
         Assert.IsNotNull(item1Guid);
         Assert.IsFalse(item1Guid.Equals(Guid.Empty));
 
@@ -93,7 +93,7 @@ public class ItemServiceBackendTests
             Images = new List<ItemImageInput> { pngCoverImageInput, jpegImageInput }
         };
 
-        var itemGuid = await _backend.AddItemAsync(itemInput);
+        var itemGuid = await _backend.AddItemAsync(itemInput, Guid.NewGuid());
         Assert.IsNotNull(itemGuid);
         Assert.IsFalse(itemGuid.Equals(Guid.Empty));
 
@@ -136,7 +136,7 @@ public class ItemServiceBackendTests
             Images = new List<ItemImageInput> { pngCoverImageInput, jpegImageInput, jpeg2ImageInput }
         };
 
-        var itemGuid = await _backend.AddItemAsync(itemInput);
+        var itemGuid = await _backend.AddItemAsync(itemInput, Guid.NewGuid());
         Assert.IsNotNull(itemGuid);
         Assert.IsFalse(itemGuid.Equals(Guid.Empty));
 
@@ -151,9 +151,9 @@ public class ItemServiceBackendTests
     {
         Assert.IsNotNull(_backend);
 
-        var item1Guid = await _backend.AddItemAsync(new());
+        var item1Guid = await _backend.AddItemAsync(new(), Guid.NewGuid());
         Assert.IsNotNull(item1Guid);
-        var item2Guid = await _backend.AddItemAsync(new());
+        var item2Guid = await _backend.AddItemAsync(new(), Guid.NewGuid());
         Assert.IsNotNull(item2Guid);
 
         Guid[] guids1 = { item1Guid, item2Guid };
@@ -161,11 +161,11 @@ public class ItemServiceBackendTests
         Assert.IsNotNull(items1);
         Assert.AreEqual(2, items1.Count);
 
-        var item3Guid = await _backend.AddItemAsync(new());
+        var item3Guid = await _backend.AddItemAsync(new(), Guid.NewGuid());
         Assert.IsNotNull(item3Guid);
-        var item4Guid = await _backend.AddItemAsync(new());
+        var item4Guid = await _backend.AddItemAsync(new(), Guid.NewGuid());
         Assert.IsNotNull(item4Guid);
-        var item5Guid = await _backend.AddItemAsync(new());
+        var item5Guid = await _backend.AddItemAsync(new(), Guid.NewGuid());
         Assert.IsNotNull(item5Guid);
 
         Guid[] guids2 = { item4Guid, item2Guid, Guid.NewGuid() };

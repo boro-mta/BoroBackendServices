@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Boro.Authentication\Boro.Authentication.csproj" />
+    <ProjectReference Include="..\..\Boro.EntityFramework\Boro.EntityFramework.csproj" />
+  </ItemGroup>
+
 </Project>

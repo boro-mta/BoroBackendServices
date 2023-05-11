@@ -1,9 +1,9 @@
-﻿using Boro.Facebook.Interfaces;
-using Boro.Facebook.Models;
+﻿using Boro.Authentication.Facebook.Interfaces;
+using Boro.Authentication.Facebook.Models;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace Boro.Facebook.Services;
+namespace Boro.Authentication.Facebook.Services;
 
 internal class FacebookAuthService : IFacebookAuthService
 {
@@ -12,7 +12,7 @@ internal class FacebookAuthService : IFacebookAuthService
     private readonly IHttpClientFactory _httpClientFactory;
     private const string TOKEN_VALIDATION_URL = @"https://graph.facebook.com/debug_token?input_token={0}&access_token={1}|{2}";
     private const string GET_USER_INFO_URL = @"https://graph.facebook.com/me?fields=first_name,last_name,email&access_token={0}";
-    public FacebookAuthService(FacebookAuthSettings facebookAuthSettings, 
+    public FacebookAuthService(FacebookAuthSettings facebookAuthSettings,
         IHttpClientFactory httpClientFactory,
         ILoggerFactory loggerFactory)
     {

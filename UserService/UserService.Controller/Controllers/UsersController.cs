@@ -1,5 +1,7 @@
-﻿using Boro.Common.Exceptions;
+﻿using Boro.Common.Authentication;
+using Boro.Common.Exceptions;
 using Boro.Validations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using UserService.API.Interfaces;
@@ -10,6 +12,7 @@ namespace UserService.Controller.Controllers;
 
 [Route("[controller]")]
 [ApiController]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly ILogger _logger;
@@ -22,40 +25,18 @@ public class UsersController : ControllerBase
         _backend = backend;
     }
 
-    [HttpGet("{userId}")]
-    [ValidatesGuid("userId")]
-    public ActionResult<UserModel> GetUser(string userId)
-    {
-        //_logger.LogInformation("GetUserService was called with id: [{id}]", id);
-        //var guid = Guid.Parse(userId);
-        //var template = _backend.GetUser(guid);
-
-        //_logger.LogInformation("GetUserService - Finished with: [{@template}]", template);
-
-        return Ok();
-    }
-
-    [HttpPost("Create")]
-    public ActionResult<Guid> CreateUser(UserInput userInput)
-    {
-        var guid = _backend.CreateUserAsync(userInput).Result;
-
-        return Ok(guid);
-    }
-
-    [HttpPost("{userId}/Update")]
-    [ValidatesGuid("userId")]
-    public ActionResult UpdateUser(string userId, UpdateUserInput updateInput)
+    [HttpPost("Update")]
+    public ActionResult UpdateUser(UpdateUserInput updateInput)
     {
         try
         {
-            var guid = Guid.Parse(userId);
-            _backend.UpdateUserInfoAsync(guid, updateInput).Wait();
+            var userId = User.UserId();
+            _backend.UpdateUserInfoAsync(userId, updateInput).Wait();
             return Ok();
         }
-        catch (DoesNotExistException)
+        catch (DoesNotExistException e)
         {
-            return NotFound($"user [{userId}] was not found");
+            return NotFound($"user [{e.Id}] was not found");
         }
 
     }
@@ -73,26 +54,5 @@ public class UsersController : ControllerBase
 
         return Ok(userProfile);
     }
-
-    [HttpPost("LoginWithFacebook")]
-    public ActionResult<UserLoginInfo> LoginWithFacebook(string accessToken, string facebookId)
-    {
-        try
-        {
-            _logger.LogInformation("LoginWithFacebook was called with accessToken: [{accessToken}]",
-                accessToken);
-
-            var loginInfo = _backend.LoginWithFacebookAsync(accessToken, facebookId).Result;
-
-            _logger.LogInformation("LoginWithFacebook - Finished with: [{@loginInfo}]",
-                loginInfo);
-
-            return Ok(loginInfo);
-        }
-        catch (Exception e)
-        {
-            _logger.LogCritical(e, "LoginWithFacebook - could not authenticate {@accessToken}", accessToken);
-            return Unauthorized();
-        }
-    }
+    
 }

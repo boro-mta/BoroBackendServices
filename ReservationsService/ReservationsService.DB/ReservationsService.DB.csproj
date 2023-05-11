@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Boro.Common\Boro.Common.csproj" />
     <ProjectReference Include="..\..\Boro.EntityFramework\Boro.EntityFramework.csproj" />
     <ProjectReference Include="..\ReservationsService.API\ReservationsService.API.csproj" />
   </ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Boro.Facebook.Models;
+namespace Boro.Authentication.Facebook.Models;
 
 public class FacebookUserInfo
 {
@@ -12,4 +12,7 @@ public class FacebookUserInfo
 
     [JsonPropertyName("id")]
     public string Id { get; set; }
+
+    [JsonPropertyName("email")]
+    public string? Email { get; set; }
 }

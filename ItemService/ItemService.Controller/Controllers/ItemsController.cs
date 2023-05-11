@@ -1,7 +1,9 @@
-﻿using Boro.Validations;
+﻿using Boro.Common.Authentication;
+using Boro.Validations;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -10,6 +12,7 @@ namespace ItemService.Controller.Controllers;
 
 [Route("[controller]")]
 [ApiController]
+[Authorize]
 public partial class ItemsController : ControllerBase
 {
     private readonly ILogger _logger;
@@ -22,17 +25,17 @@ public partial class ItemsController : ControllerBase
         _backend = backend;
     }
 
-    [HttpGet("{id}")]
-    [ValidatesGuid("id")]
-    public ActionResult<ItemModel> GetItem(string id)
+    [HttpGet("{itemId}")]
+    [ValidatesGuid("itemId")]
+    public ActionResult<ItemModel> GetItem(string itemId)
     {
-        _logger.LogInformation("GetItem was called with id: [{id}]", id);
-        var guid = Guid.Parse(id);
+        _logger.LogInformation("GetItem was called with id: [{id}]", itemId);
+        var guid = Guid.Parse(itemId);
         var item = _backend.GetItemAsync(guid).Result;
 
         _logger.LogInformation("GetItem - Finished with: [{id}]", item?.Id);
         
-        return item is null ? NotFound($"Item with id: {id} was not found") : item;
+        return item is null ? NotFound($"Item with id: {itemId} was not found") : item;
     }
 
     [HttpGet("OfUser/{userId}")]
@@ -65,9 +68,10 @@ public partial class ItemsController : ControllerBase
     [HttpPost("Add")]
     public ActionResult<Guid> AddItem([FromBody] ItemInput item)
     {
-        _logger.LogInformation("AddItem was called with [{title}, {description}, {ownerId}]", item.Title, item.Description, item.OwnerId);
+        var userId = User.UserId();
+        _logger.LogInformation("AddItem was called with [{title}, {description}, {ownerId}]", item.Title, item.Description, userId);
 
-        var guid = _backend.AddItemAsync(item).Result;
+        var guid = _backend.AddItemAsync(item, userId).Result;
 
         _logger.LogInformation("AddItem Finished. New item was created with id: [{guid}]", guid);
 

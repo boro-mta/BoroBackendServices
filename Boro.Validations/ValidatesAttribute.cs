@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using MS = Microsoft.Extensions.Logging;
+﻿using MS = Microsoft.Extensions.Logging;
 using Serilog;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Boro.Validations;
 
-[System.AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
+[System.AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
 public abstract class ValidatesAttribute : ActionFilterAttribute
 {
     protected static readonly MS.ILogger _LOGGER = MS.LoggerFactory.Create(c => { c.AddSerilog(); }).CreateLogger("Validations");
@@ -23,7 +23,7 @@ public abstract class ValidatesAttribute : ActionFilterAttribute
 
     public override void OnActionExecuting(ActionExecutingContext context)
     {
-        string actionName = context.ActionDescriptor.DisplayName;
+        var actionName = context.ActionDescriptor.DisplayName;
 
         const string entryMessage = "[{type}] - [{context}] - Will attempt to validate argument: [{parameterName}]";
         _LOGGER.LogInformation(entryMessage,
@@ -41,7 +41,7 @@ public abstract class ValidatesAttribute : ActionFilterAttribute
             while (stack.TryPop(out string? component))
             {
                 var propertyInfo = parameter?.GetType()?.GetProperty(component)
-                    ?? throw new ArgumentException($"Property '{component}' not found on object of type '{parameter?.GetType().FullName}'");
+                    ?? throw new ArgumentException($"Property '{component}' not found on object of type '{parameter?.GetType()?.FullName}'");
 
                 parameter = propertyInfo.GetValue(parameter);
             }
@@ -72,12 +72,13 @@ public abstract class ValidatesAttribute : ActionFilterAttribute
                                 ]
                                 """);
         }
-
-        const string successMessage = "[{type}] - [{context}] - argument: [{parameterName}] is valid.";
-        _LOGGER.LogInformation(successMessage,
-                               TypeName,
-                               actionName,
-                               ParameterName);
-
+        else
+        {
+            const string successMessage = "[{type}] - [{context}] - argument: [{parameterName}] is valid.";
+            _LOGGER.LogInformation(successMessage,
+                                   TypeName,
+                                   actionName,
+                                   ParameterName);
+        }
     }
 }
