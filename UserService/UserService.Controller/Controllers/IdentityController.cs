@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using UserService.API.Interfaces;
 using UserService.API.Models.Output;
 using Boro.Common.Authentication;
+using Boro.Authentication.Models;
 
 namespace UserService.Controller.Controllers;
 
@@ -23,13 +24,13 @@ public class IdentityController : ControllerBase
 
     [HttpPost("RefreshToken")]
     [Authorize]
-    public ActionResult<string> RefreshToken()
+    public ActionResult<TokenDetails> RefreshToken()
     {
         var userId = User.UserId();
 
-        var token = _backend.RefreshTokenAsync(userId).Result;
+        var tokenDetails = _backend.RefreshTokenAsync(userId).Result;
 
-        return Ok(token);
+        return Ok(tokenDetails);
     }
 
     [HttpPost("LoginWithFacebook")]

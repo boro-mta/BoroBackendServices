@@ -10,10 +10,10 @@ public class Users
     public string FacebookId { get; set; }
     [EmailAddress]
     public string Email { get; set; } = string.Empty;
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
     public string About { get; set; } = string.Empty;
-    public DateTime DateJoined { get; set; }
-    public double Latitude { get; set; }
-    public double Longitude { get; set; }
+    public DateTime DateJoined { get; set; } = DateTime.UtcNow;
+    public double Latitude { get; set; } = 0;
+    public double Longitude { get; set; } = 0;
 }

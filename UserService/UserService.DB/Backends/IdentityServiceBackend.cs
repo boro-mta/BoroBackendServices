@@ -1,12 +1,15 @@
 ﻿using Boro.Authentication.Facebook.Interfaces;
 using Boro.Authentication.Facebook.Models;
 using Boro.Authentication.Interfaces;
+using Boro.Authentication.Models;
 using Boro.Common.Exceptions;
 using Boro.EntityFramework.DbContexts.BoroMainDb;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using UserService.API.Interfaces;
 using UserService.API.Models.Output;
+using UserService.DB.Extensions;
 
 namespace UserService.DB.Backends;
 
@@ -30,9 +33,9 @@ public class IdentityServiceBackend : IIdentityServiceBackend
 
     public async Task<UserLoginResults> LoginWithFacebookAsync(string accessToken, string facebookId)
     {
-        var facebookUser = await ValidateAccessToken(accessToken, facebookId);
+        var facebookUser = await ValidateFacebookAccessToken(accessToken, facebookId);
 
-        var additionalClaims = new List<(AdditionalClaims claim, string value)>
+        var additionalClaims = new List<(AdditionalClaims claim, string? value)>
         {
             (AdditionalClaims.FacebookId, facebookId),
             (AdditionalClaims.FullName, $"{facebookUser.FirstName}_{facebookUser.LastName}")
@@ -43,51 +46,31 @@ public class IdentityServiceBackend : IIdentityServiceBackend
         if (userInfo is not null)
         {
             additionalClaims.Add((AdditionalClaims.Email, userInfo.Email));
-
-            return new UserLoginResults
-            {
-                UserId = userInfo.UserId,
-                FirstLogin = false,
-                JwtToken = _boroAuthService.GenerateJwtToken(userInfo.UserId, additionalClaims.ToArray())
-            };
+            return new UserLoginResults(userInfo.UserId, false, _boroAuthService.GenerateJwtToken(userInfo.UserId, additionalClaims.ToArray()));
         }
 
         _logger.LogInformation("LoginWithFacebook - user with facebookId: [{facebookId}] does not exist in db. Creating a new user.",
              facebookId);
 
-        if (facebookUser.Email is not null and not "")
+        if (!facebookUser.Email.IsNullOrEmpty())
         {
             additionalClaims.Add((AdditionalClaims.Email, facebookUser.Email));
         }
 
         var userId = Guid.NewGuid();
         var dateJoined = DateTime.UtcNow;
-        await _dbContext.Users.AddAsync(new()
-        {
-            UserId = userId,
-            FacebookId = facebookId,
-            FirstName = facebookUser.FirstName,
-            LastName = facebookUser.LastName,
-            DateJoined = dateJoined,
-            Email = facebookUser.Email ?? ""
-        });
+        var entry = facebookUser.ToTableEntry(userId, dateJoined);
+        await _dbContext.Users.AddAsync(entry);
 
         await _dbContext.SaveChangesAsync();
 
         _logger.LogInformation("LoginWithFacebook - new user created with user id: [{userId}]",
              userId);
 
-        var jwtToken = _boroAuthService.GenerateJwtToken(userId, additionalClaims.ToArray());
-
-        return new UserLoginResults
-        {
-            UserId = userId,
-            FirstLogin = true,
-            JwtToken = jwtToken
-        };
+        return new UserLoginResults(userId, true, _boroAuthService.GenerateJwtToken(userId, additionalClaims.ToArray()));
     }
 
-    private async Task<FacebookUserInfo> ValidateAccessToken(string accessToken, string facebookId)
+    private async Task<FacebookUserInfo> ValidateFacebookAccessToken(string accessToken, string facebookId)
     {
         var (valid, facebookUser) = await _facebookAuthService.ValidateAccessTokenAsync(accessToken);
         if (!valid || facebookUser is null)
@@ -105,12 +88,14 @@ public class IdentityServiceBackend : IIdentityServiceBackend
         return facebookUser;
     }
 
-    public Task<string> RefreshTokenAsync(Guid userId)
+    public Task<TokenDetails> RefreshTokenAsync(Guid userId)
     {
         var user = _dbContext.Users.FirstOrDefault(x => x.UserId == userId)
             ?? throw new DoesNotExistException(userId.ToString());
+        
+        var tokenDetails = _boroAuthService.GenerateJwtToken(userId, (AdditionalClaims.FacebookId, user.FacebookId),
+            (AdditionalClaims.FullName, $"{user.FirstName}_{user.LastName}"), (AdditionalClaims.Email, user.Email));
 
-        return Task.FromResult(_boroAuthService.GenerateJwtToken(userId, (AdditionalClaims.FacebookId ,user.FacebookId),
-            (AdditionalClaims.FullName, $"{user.FirstName}_{user.LastName}"), (AdditionalClaims.Email, user.Email)));
+        return Task.FromResult(tokenDetails);
     }
 }
