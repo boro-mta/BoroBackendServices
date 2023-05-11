@@ -8,8 +8,9 @@ using ReservationsService.API.Models.Output;
 
 namespace ReservationsService.Controller.Controllers;
 
-[Route("[controller]")]
+[Route("[controller]/{itemId}")]
 [ApiController]
+[ValidatesGuid("itemId")]
 public class ReservationsController : ControllerBase
 {
     private readonly ILogger _logger;
@@ -22,8 +23,7 @@ public class ReservationsController : ControllerBase
         _backend = backend;
     }
 
-    [HttpGet("{itemId}/Dates")]
-    [ValidatesGuid("itemId")]
+    [HttpGet("Dates")]
     public ActionResult<List<ReservedDates>> GetReservedDates(string itemId, DateTime from, DateTime to)
     {
         _logger.LogInformation("GetReservedDates was called with id: [{id}], from: [{from}], to: [{to}]", 
@@ -41,8 +41,7 @@ public class ReservationsController : ControllerBase
         return dates.Any() ? Ok(dates) : NotFound($"No reservations were found for item: [{itemId}]");
     }
 
-    [HttpGet("{itemId}/Pending")]
-    [ValidatesGuid("itemId")]
+    [HttpGet("Pending")]
     public ActionResult<List<ReservedDates>> GetPendingReservations(string itemId)
     {
         _logger.LogInformation("GetPendingReservations was called with item id: [{id}]",
@@ -57,8 +56,7 @@ public class ReservationsController : ControllerBase
         return reservations.Any() ? Ok(reservations) : NotFound($"No pending reservations were found for item: [{itemId}]");
     }
 
-    [HttpPost("{itemId}/Request")]
-    [ValidatesGuid("itemId")]
+    [HttpPost("Request")]
     [ValidatesGuid("reservationRequestInput.BorrowerId")]
     public ActionResult<ReservationRequestResult> RequestReservation(string itemId, [FromBody] ReservationRequestInput reservationRequestInput)
     {
@@ -85,8 +83,7 @@ public class ReservationsController : ControllerBase
         }
     }
 
-    [HttpPost("{itemId}/Block")]
-    [ValidatesGuid("itemId")]
+    [HttpPost("BlockDates")]
     public ActionResult<ReservationRequestResult> BlockDates(string itemId, DateTime startDate, DateTime endDate)
     {
         try

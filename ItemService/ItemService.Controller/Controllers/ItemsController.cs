@@ -1,4 +1,5 @@
-﻿using Boro.Validations;
+﻿using Boro.Common.Authentication;
+using Boro.Validations;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
@@ -67,9 +68,10 @@ public partial class ItemsController : ControllerBase
     [HttpPost("Add")]
     public ActionResult<Guid> AddItem([FromBody] ItemInput item)
     {
-        _logger.LogInformation("AddItem was called with [{title}, {description}, {ownerId}]", item.Title, item.Description, item.OwnerId);
+        var userId = User.UserId();
+        _logger.LogInformation("AddItem was called with [{title}, {description}, {ownerId}]", item.Title, item.Description, userId);
 
-        var guid = _backend.AddItemAsync(item).Result;
+        var guid = _backend.AddItemAsync(item, userId).Result;
 
         _logger.LogInformation("AddItem Finished. New item was created with id: [{guid}]", guid);
 

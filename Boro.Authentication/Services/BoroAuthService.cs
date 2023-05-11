@@ -1,4 +1,5 @@
 ﻿using Boro.Authentication.Interfaces;
+using Boro.Authentication.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -18,36 +19,42 @@ internal class BoroAuthService : IBoroAuthService
         _signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
     }
 
-
-    public string GenerateJwtToken(Guid userId, params (AdditionalClaims claim, string value)[] additionalClaims)
+    public TokenDetails GenerateJwtToken(Guid userId, params (AdditionalClaims claim, string? value)[] additionalClaims)
     {
-        IEnumerable<Claim> claims = new[]
+        IEnumerable<Claim> defaultClaims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        var q = additionalClaims.Select(pair => pair.claim switch
-        {
-            AdditionalClaims.FullName => new Claim(JwtRegisteredClaimNames.Name, pair.value),
-            AdditionalClaims.Email => new Claim(JwtRegisteredClaimNames.Email, pair.value),
-            AdditionalClaims.FacebookId => new Claim("fbid", pair.value),
-            _ => throw new NotImplementedException($"No implemented claim for {pair.claim}"),
-        });
+        var additionalClaimsQ = additionalClaims
+            .Where(pair => !pair.value.IsNullOrEmpty())
+            .Select(CreateClaim);
 
-        claims = claims.Concat(q);
+        var claims = defaultClaims.Concat(additionalClaimsQ).ToArray();
+
+        var expirationTime = DateTime.UtcNow.AddMinutes(TokenHandler.DefaultTokenLifetimeInMinutes);
 
         var token = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
             claims: claims.ToList(),
             notBefore: DateTime.UtcNow,
-            expires: DateTime.UtcNow.AddMinutes(TokenHandler.DefaultTokenLifetimeInMinutes),
+            expires: expirationTime,
             signingCredentials: _signingCredentials
         );
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        return tokenHandler.WriteToken(token);
+
+        return new TokenDetails(tokenHandler.WriteToken(token), expirationTime);
     }
+
+    private static Claim CreateClaim((AdditionalClaims claim, string? value) pair) => pair.claim switch
+    {
+        AdditionalClaims.FullName => new Claim(JwtRegisteredClaimNames.Name, pair.value!),
+        AdditionalClaims.Email => new Claim(JwtRegisteredClaimNames.Email, pair.value!),
+        AdditionalClaims.FacebookId => new Claim("fbid", pair.value!),
+        _ => throw new NotImplementedException($"No implemented claim for {pair.claim}"),
+    };
 }
 

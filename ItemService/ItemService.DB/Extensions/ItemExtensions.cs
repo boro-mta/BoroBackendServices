@@ -45,7 +45,7 @@ internal static class ItemExtensions
         };
     }
 
-    internal static Items ToTableEntry(this ItemInput input, Guid itemId)
+    internal static Items ToTableEntry(this ItemInput input, Guid itemId, Guid userId)
     {
         var images = input.Images?.Select(i => i.ToTableEntry(itemId)) ?? Enumerable.Empty<ItemImages>();
 
@@ -54,7 +54,7 @@ internal static class ItemExtensions
             Id = itemId,
             Title = input.Title,
             Description = input.Description,
-            OwnerId = input.OwnerId,
+            OwnerId = userId,
             Images = images.ToList(),
             Condition = input.Condition,
             Categories = JsonSerializer.Serialize(input.Categories),

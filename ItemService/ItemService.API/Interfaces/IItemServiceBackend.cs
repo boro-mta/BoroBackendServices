@@ -9,7 +9,7 @@ public interface IItemServiceBackend
 
     Task<List<ItemModel>> GetItemsAsync(IEnumerable<Guid> ids);
 
-    Task<Guid> AddItemAsync(ItemInput item);
+    Task<Guid> AddItemAsync(ItemInput item, Guid userId);
 
     Task<List<MinimalItemInfo>> GetAllUserItemsAsync(Guid userId);
 

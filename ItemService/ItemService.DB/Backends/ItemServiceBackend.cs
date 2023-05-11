@@ -63,13 +63,13 @@ public class ItemServiceBackend : IItemServiceBackend
         return items;
     }
 
-    public async Task<Guid> AddItemAsync(ItemInput item)
+    public async Task<Guid> AddItemAsync(ItemInput item, Guid userId)
     {
-        _logger.LogInformation("AddItem with [{title}, {ownerID}]", item.Title, item.OwnerId);
+        _logger.LogInformation("AddItem with [{title}, {ownerID}]", item.Title, userId);
 
-        var id = Guid.NewGuid();
+        var itemId = Guid.NewGuid();
 
-        var entry = item.ToTableEntry(id);
+        var entry = item.ToTableEntry(itemId, userId);
         _logger.LogInformation("AddItem - Inserting [{id}]", entry.Id);
 
         await _dbContext.Items.AddAsync(entry);
