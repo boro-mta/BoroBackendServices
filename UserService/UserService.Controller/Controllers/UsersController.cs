@@ -25,7 +25,7 @@ public class UsersController : ControllerBase
         _backend = backend;
     }
 
-    [HttpPost("Update")]
+    [HttpPost("Me/Update")]
     public ActionResult UpdateUser(UpdateUserInput updateInput)
     {
         try
@@ -54,5 +54,18 @@ public class UsersController : ControllerBase
 
         return Ok(userProfile);
     }
-    
+
+    [HttpGet("Me/Profile")]
+    public ActionResult<UserProfileModel> GetUserProfile()
+    {
+        var userId = User.UserId();
+        _logger.LogInformation("GetUserProfile was called with id from context: [{userId}]", userId);
+
+        var userProfile = _backend.GetUserProfileAsync(userId).Result;
+
+        _logger.LogInformation("GetUserProfile - Finished with: [{@userProfile}]", userProfile);
+
+        return Ok(userProfile);
+    }
+
 }

@@ -2,4 +2,4 @@
 
 namespace UserService.API.Models.Output;
 
-public record UserLoginResults(Guid UserId, bool FirstLogin, TokenDetails TokenDetails);
+public record class UserLoginResults(Guid UserId, bool FirstLogin, TokenDetails TokenDetails);
