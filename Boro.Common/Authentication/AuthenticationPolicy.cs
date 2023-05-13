@@ -15,6 +15,6 @@ public static class AuthPolicies
     /// <summary>
     /// Requires endpoint methods to have a parameter named <code>imageId</code> as part of their <b>route</b>
     /// </summary>
-    public const string ImageOwner = "itemOwner";
+    public const string ImageOwner = "imageOwner";
 
 }
