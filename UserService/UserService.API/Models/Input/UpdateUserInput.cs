@@ -4,7 +4,7 @@ namespace UserService.API.Models.Input;
 
 public class UpdateUserInput
 {
-    public string About { get; set; } = string.Empty;
+    public string About { get; set; }
 
     [EmailAddress]
     public string Email { get; set; }

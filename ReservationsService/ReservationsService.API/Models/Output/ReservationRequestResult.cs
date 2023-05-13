@@ -1,7 +1,7 @@
 ﻿namespace ReservationsService.API.Models.Output;
 
-public enum ReservationRequestResult
+public class ReservationRequestResult
 {
-    DateConflict,
-    RequestCreated,
+    public Guid ReservationId { get; set; }
+
 }

@@ -1,5 +1,7 @@
-﻿using Boro.Common.Exceptions;
+﻿using Boro.Common.Authentication;
+using Boro.Common.Exceptions;
 using Boro.Validations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ReservationsService.API.Interfaces;
@@ -7,6 +9,34 @@ using ReservationsService.API.Models.Input;
 using ReservationsService.API.Models.Output;
 
 namespace ReservationsService.Controller.Controllers;
+
+[Route("[controller]")]
+[ApiController]
+[ValidatesGuid("itemId")]
+public class UserReservationsController : ControllerBase
+{
+    private readonly ILogger _logger;
+    private readonly IReservationsServiceBackend _backend;
+
+    public UserReservationsController(ILoggerFactory loggerFactory,
+        IReservationsServiceBackend backend)
+    {
+        _logger = loggerFactory.CreateLogger("ReservationsService");
+        _backend = backend;
+    }
+
+    [HttpGet("Outgoing")]
+    public ActionResult<List<ReservationDetails>> GetAllOutgoingReservations()
+    {
+        return null;
+    }
+
+    [HttpGet("Incoming")]
+    public ActionResult<List<ReservationDetails>> GetAllIncomingReservations()
+    {
+        return null;
+    }
+}
 
 [Route("[controller]/{itemId}")]
 [ApiController]
@@ -23,8 +53,16 @@ public class ReservationsController : ControllerBase
         _backend = backend;
     }
 
+    [HttpGet()]
+    [Authorize(Policy = AuthPolicies.ItemOwner)]
+    public ActionResult<List<ReservationDetails>> GetAllItemReservations()
+    {
+        return null;
+
+    }
+
     [HttpGet("Dates")]
-    public ActionResult<List<ReservedDates>> GetReservedDates(string itemId, DateTime from, DateTime to)
+    public ActionResult<List<DateTime>> GetReservedDates(string itemId, DateTime from, DateTime to)
     {
         _logger.LogInformation("GetReservedDates was called with id: [{id}], from: [{from}], to: [{to}]", 
             itemId, from, to);
@@ -57,33 +95,36 @@ public class ReservationsController : ControllerBase
     }
 
     [HttpPost("Request")]
-    [ValidatesGuid("reservationRequestInput.BorrowerId")]
+    [Authorize(Policy = AuthPolicies.NotItemOwner)]
     public ActionResult<ReservationRequestResult> RequestReservation(string itemId, [FromBody] ReservationRequestInput reservationRequestInput)
     {
         try
         {
+            var borrowerId = User.UserId();
             var guid = Guid.Parse(itemId);
             _logger.LogInformation("RequestReservation was called with id: [{id}], [{@dates}]",
                                 itemId, reservationRequestInput);
 
-            var result = _backend.AddReservationRequest(guid, reservationRequestInput).Result;
+            var result = _backend.AddReservationRequest(guid,
+                                                        borrowerId,
+                                                        reservationRequestInput).Result;
 
             _logger.LogInformation("RequestReservation - Finished with {@result}", result);
 
-            return result switch
-            {
-                ReservationRequestResult.DateConflict => Conflict(result),
-                ReservationRequestResult.RequestCreated => Ok(result),
-                _ => Conflict(result)
-            };
+            return Ok(result);
         }
-        catch (Exception)
+        catch (DoesNotExistException)
         {
             return NotFound($"item with id {itemId} was not found");
+        }
+        catch (DateConflictException)
+        {
+            return Conflict($"item with id {itemId} has conflicting reservations between {reservationRequestInput.StartDate} and {reservationRequestInput.EndDate}");
         }
     }
 
     [HttpPost("BlockDates")]
+    [Authorize(Policy = AuthPolicies.ItemOwner)]
     public ActionResult<ReservationRequestResult> BlockDates(string itemId, DateTime startDate, DateTime endDate)
     {
         try
@@ -109,7 +150,7 @@ public class ReservationsController : ControllerBase
         }
         catch (DateConflictException)
         {
-            return Conflict("dates are conflicted with existing reservations");
+            return Conflict("can't block dates where an existing reservation or block exists");
         }
     }
 }

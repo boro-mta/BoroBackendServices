@@ -6,7 +6,7 @@ public class UserProfileModel
     public string FacebookId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string About { get; set; } = string.Empty;
+    public string About { get; set; }
     public DateTime DateJoined { get; set; }
     public string Email { get; set; }
     public double Latitude { get; set; }
