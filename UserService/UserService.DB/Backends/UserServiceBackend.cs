@@ -40,7 +40,7 @@ public class UserServiceBackend : IUserServiceBackend
 
         var updatedEntry = entry.UpdateUser(input);
 
-        _dbContext.Users.Update(entry);
+        _dbContext.Users.Update(updatedEntry);
         await _dbContext.SaveChangesAsync();
     }
 }
