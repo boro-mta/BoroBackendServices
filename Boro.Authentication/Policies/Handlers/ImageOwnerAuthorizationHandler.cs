@@ -21,7 +21,7 @@ public class ImageOwnerAuthorizationHandler : AuthorizationHandler<ImageOwnerReq
 
         if (imageId is not null
             && Guid.TryParse(imageId, out var imageIdGuid)
-            && await _dbContext.IsImageOwner(userId, imageIdGuid))
+            && requirement.Owner == await _dbContext.IsImageOwner(userId, imageIdGuid))
         {
             context.Succeed(requirement);
         }
