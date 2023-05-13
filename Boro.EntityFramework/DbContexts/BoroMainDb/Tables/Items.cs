@@ -6,7 +6,7 @@ namespace Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 public class Items
 {
     [Key]
-    public Guid Id { get; set; }
+    public Guid ItemId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     [ForeignKey(nameof(Users))]

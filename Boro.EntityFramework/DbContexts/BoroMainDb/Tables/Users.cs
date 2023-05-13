@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 
-[PrimaryKey("UserId", "FacebookId")]
 public class Users
 {
+    [Key]
     public Guid UserId { get; set; }
     public string FacebookId { get; set; }
     [EmailAddress]

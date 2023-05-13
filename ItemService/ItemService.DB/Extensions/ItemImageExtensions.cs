@@ -22,7 +22,7 @@ internal static class ItemImageExtensions
         return new ItemImages
         {
             ImageId = Guid.NewGuid(),
-            ParentId = parentId,
+            ItemId = parentId,
             ImageData = image.Base64ImageData.FromBase64String(),
             ImageMetaData = image.Base64ImageMetaData,
         };

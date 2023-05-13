@@ -9,7 +9,9 @@ public static class DependencyInjection
     public static IServiceCollection AddReservationsService(this IServiceCollection services)
     {
         services.AddTransient<IReservationsServiceBackend, ReservationsServiceBackend>();
-
+        services.AddTransient<IReservationsDashboardBackend, ReservationsDashboardBackend>();
+        services.AddTransient<IReservationsOperationsBackend, ReservationsOperationsBackend>();
+        
         return services;
     }
 

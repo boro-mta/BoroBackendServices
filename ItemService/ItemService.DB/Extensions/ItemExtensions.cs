@@ -12,7 +12,7 @@ internal static class ItemExtensions
         List<ItemImage> images = entry.Images?.Select(i => i.ToItemImageModel()).ToList() ?? Enumerable.Empty<ItemImage>().ToList();
         return new ItemModel
         {
-            Id = entry.Id,
+            Id = entry.ItemId,
             Title = entry.Title,
             Description = entry.Description,
             Images = images,
@@ -28,7 +28,7 @@ internal static class ItemExtensions
     {
         return new MinimalItemInfo
         {
-            Id = entry.Id,
+            Id = entry.ItemId,
             Title = entry.Title,
         };
     }
@@ -37,7 +37,7 @@ internal static class ItemExtensions
     {
         return new ItemLocationDetails
         {
-            Id = entry.Id,
+            Id = entry.ItemId,
             Title = entry.Title,
             Latitude = entry.Latitude,
             Longitude = entry.Longitude,
@@ -51,7 +51,7 @@ internal static class ItemExtensions
 
         return new Items
         {
-            Id = itemId,
+            ItemId = itemId,
             Title = input.Title,
             Description = input.Description,
             OwnerId = userId,

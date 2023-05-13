@@ -17,4 +17,19 @@ public static class AuthPolicies
     /// </summary>
     public const string ImageOwner = "imageOwner";
 
+    /// <summary>
+    /// Requires endpoint methods to have a parameter named <code>reservationId</code> as part of their <b>route</b>
+    /// </summary>
+    public const string ReservationLender = "reservationLender";
+
+    /// <summary>
+    /// Requires endpoint methods to have a parameter named <code>reservationId</code> as part of their <b>route</b>
+    /// </summary>
+    public const string ReservationBorrower = "reservationBorrower";
+
+    /// <summary>
+    /// Requires endpoint methods to have a parameter named <code>reservationId</code> as part of their <b>route</b>
+    /// </summary>
+    public const string ReservationLenderOrBorrower = "reservationLenderOrBorrower";
+
 }

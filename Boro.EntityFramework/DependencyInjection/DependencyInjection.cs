@@ -12,7 +12,13 @@ public static class DependencyInjection
         services.AddDbContext<BoroMainDbContext>(options =>
         {
 #if DEBUG
-            options.UseInMemoryDatabase("BoroMainDB");
+            const string CONNECTION_STRING_NAME = "BoroMainDB";
+
+            var connectionString = configuration?.GetConnectionString(CONNECTION_STRING_NAME)
+                ?? throw new Exception($"AddBoroMainDbContext - Failed to obtain {CONNECTION_STRING_NAME} from configuration");
+
+            options.UseSqlServer(connectionString);
+            //options.UseInMemoryDatabase("BoroMainDB");
 #else
             const string CONNECTION_STRING_NAME = "BoroMainDB";
 

@@ -31,7 +31,7 @@ public class ItemServiceBackend : IItemServiceBackend
 
         var item = await _dbContext.Items
                         .Include(item => item.Images)
-                        .SingleOrDefaultAsync(item => item.Id.Equals(id));
+                        .SingleOrDefaultAsync(item => item.ItemId.Equals(id));
 
         if (item is null) 
         {
@@ -39,7 +39,7 @@ public class ItemServiceBackend : IItemServiceBackend
             return null;
         }
 
-        _logger.LogInformation("GetItem - returning [{id}, {title}]", item.Id, item.Title);
+        _logger.LogInformation("GetItem - returning [{id}, {title}]", item.ItemId, item.Title);
 
         return item.ToItemServiceModel();
     }
@@ -50,7 +50,7 @@ public class ItemServiceBackend : IItemServiceBackend
 
         var items = await _dbContext.Items
                         .Include(item => item.Images)
-                        .Where(item => ids.Contains(item.Id))
+                        .Where(item => ids.Contains(item.ItemId))
                         .Select(item => item.ToItemServiceModel())
                         .ToListAsync();
 
@@ -70,13 +70,13 @@ public class ItemServiceBackend : IItemServiceBackend
         var itemId = Guid.NewGuid();
 
         var entry = item.ToTableEntry(itemId, userId);
-        _logger.LogInformation("AddItem - Inserting [{id}]", entry.Id);
+        _logger.LogInformation("AddItem - Inserting [{id}]", entry.ItemId);
 
         await _dbContext.Items.AddAsync(entry);
 
         await _dbContext.SaveChangesAsync();
-        _logger.LogInformation("AddItem - Successfully added item with [{id}]", entry.Id);
-        return entry.Id;
+        _logger.LogInformation("AddItem - Successfully added item with [{id}]", entry.ItemId);
+        return entry.ItemId;
     }
 
     public async Task<List<MinimalItemInfo>> GetAllUserItemsAsync(Guid userId)

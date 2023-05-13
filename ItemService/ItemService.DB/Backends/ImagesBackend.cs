@@ -50,7 +50,7 @@ public class ImagesBackend : IImagesBackend
     public async Task<List<ItemImage>> GetAllItemImagesAsync(Guid itemId)
     {
         var images = _dbContext.ItemImages
-            .Where(image => image.ParentId.Equals(itemId))
+            .Where(image => image.ItemId.Equals(itemId))
             .Select(image => image.ToItemImageModel());
 
         if (images.IsNullOrEmpty())

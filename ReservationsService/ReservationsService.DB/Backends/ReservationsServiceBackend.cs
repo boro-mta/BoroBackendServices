@@ -1,10 +1,10 @@
 ﻿using Boro.Common.Exceptions;
 using Boro.EntityFramework.DbContexts.BoroMainDb;
 using Boro.EntityFramework.DbContexts.BoroMainDb.Enum;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ReservationsService.API.Interfaces;
-using ReservationsService.API.Models;
 using ReservationsService.API.Models.Input;
 using ReservationsService.API.Models.Output;
 using ReservationsService.DB.Extensions;
@@ -58,7 +58,7 @@ public class ReservationsServiceBackend : IReservationsServiceBackend
 
     public async Task<ReservationRequestResult> AddReservationRequest(Guid itemId, Guid borrowerId, ReservationRequestInput reservationRequestInput)
     {
-        var item = await _dbContext.Items.FirstOrDefaultAsync(i => i.Id.Equals(itemId))
+        var item = await _dbContext.Items.FirstOrDefaultAsync(i => i.ItemId.Equals(itemId))
             ?? throw new DoesNotExistException(itemId.ToString());
 
         var startDate = reservationRequestInput.StartDate;
@@ -84,44 +84,35 @@ public class ReservationsServiceBackend : IReservationsServiceBackend
         };
     }
 
-    public async Task<List<ReservationDetails>> GetPendingReservations(Guid itemId)
+    public async Task<List<ReservationDetails>> GetPendingReservations(Guid itemId, DateTime from, DateTime to)
     {
-        var reservationDatesQ = from r in _dbContext.Reservations
-                                where r.ItemId.Equals(itemId)
-                                      && r.Status == ReservationStatus.Pending
-                                select r.ToReservationDetails();
+        var reservationDatesQ = _dbContext.Reservations
+            .GetPendingResevations(itemId, from, to)
+            .Select(r => r.ToReservationDetails());
 
         return await reservationDatesQ.ToListAsync();
     }
 
-    public async Task BlockDates(Guid itemId, DateTime startDate, DateTime endDate)
+    public async Task BlockDates(Guid itemId, IEnumerable<DateTime> dates)
     {
-        var item = await _dbContext.Items.FirstOrDefaultAsync(i => i.Id.Equals(itemId))
+        var item = await _dbContext.Items.FirstOrDefaultAsync(i => i.ItemId.Equals(itemId))
             ?? throw new DoesNotExistException(itemId.ToString());
 
-        var existingReservationsQ = from r in _dbContext.Reservations
-                                    where r.ItemId.Equals(itemId)
-                                          && r.StartDate <= endDate
-                                          && r.EndDate >= startDate
-                                          && r.Status >= ReservationStatus.Pending
-                                    select r;
+        dates = dates.Order();
+        var startDate = dates.First();
+        var endDate = dates.Last();
+
+        var existingReservationsQ = _dbContext.Reservations.GetActiveResevations(itemId, startDate, endDate);
 
         if (existingReservationsQ.Any())
         {
             throw new DateConflictException(startDate, endDate);
         }
 
-        var blockedDatesQ = from bd in _dbContext.BlockedDates
-                            where bd.ItemId.Equals(itemId)
-                                  && startDate <= bd.Date
-                                  && bd.Date <= endDate
-                            select bd.Date;
+        var alreadyBlocked = _dbContext.BlockedDates.GetBlockedDates(itemId, startDate, endDate);
+        var unblocked = dates.Except(alreadyBlocked).Select(d => d.ToTableEntry(itemId));
 
-        var blockedDates = await blockedDatesQ.ToListAsync();
-        var unblockedDates = new List<DateTime>();
-        for (var date = startDate; date <= endDate; date = date.AddDays(1))
-        {
-
-        }
+        await _dbContext.BlockedDates.AddRangeAsync(unblocked);
+        await _dbContext.SaveChangesAsync();
     }
 }

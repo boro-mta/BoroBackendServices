@@ -1,6 +1,7 @@
 ﻿using Boro.Authentication.Policies.Requirements;
 using Boro.Common.Authentication;
 using Boro.EntityFramework.DbContexts.BoroMainDb;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Boro.Authentication.Policies.Handlers;

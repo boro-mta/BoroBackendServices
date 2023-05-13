@@ -39,6 +39,12 @@ public static class ReservationDatesExtensions
         return results;
     }
 
+    internal static BlockedDates ToTableEntry(this DateTime date, Guid itemId) => new BlockedDates
+    {
+        ItemId = itemId,
+        Date = date,
+    };
+
     internal static Reservations ToTableEntry(this ReservationRequestInput reservationRequestInput, Guid reservationID, Guid itemId, Guid lenderId, Guid borrowerId)
     {
         return new Reservations
