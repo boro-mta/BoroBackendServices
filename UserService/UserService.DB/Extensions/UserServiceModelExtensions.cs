@@ -27,19 +27,15 @@ internal static class UserServiceModelExtensions
         FirstName = facebookUserInfo.FirstName,
         LastName = facebookUserInfo.LastName,
         DateJoined = dateJoined,
-        Email = facebookUserInfo.Email ?? ""
+        Email = facebookUserInfo.Email ?? "",
+        About = ""
     };
 
-    internal static Users UpdateUser(this Users entry, UpdateUserInput input) => new()
+    internal static void UpdateUser(this Users entry, UpdateUserInput input)
     {
-        UserId = entry.UserId,
-        FirstName = entry.FirstName,
-        LastName = entry.LastName,
-        FacebookId = entry.FacebookId,
-        DateJoined = entry.DateJoined,
-        About = input.About,
-        Email = input.Email,
-        Latitude = input.Latitude,
-        Longitude = input.Longitude,
-    };
+        entry.About = input.About;
+        entry.Email = input.Email;
+        entry.Latitude = input.Latitude;
+        entry.Longitude = input.Longitude;
+    }
 }

@@ -38,9 +38,8 @@ public class UserServiceBackend : IUserServiceBackend
         var entry = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId))
             ?? throw new DoesNotExistException(userId.ToString());
 
-        var updatedEntry = entry.UpdateUser(input);
+        entry.UpdateUser(input);
 
-        _dbContext.Users.Update(updatedEntry);
         await _dbContext.SaveChangesAsync();
     }
 }
