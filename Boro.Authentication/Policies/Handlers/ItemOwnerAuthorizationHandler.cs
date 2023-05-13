@@ -21,7 +21,7 @@ public class ItemOwnerAuthorizationHandler : AuthorizationHandler<ItemOwnerRequi
 
         if (itemId is not null
             && Guid.TryParse(itemId, out var itemIdGuid)
-            && await _dbContext.IsItemOwner(userId, itemIdGuid))
+            && requirement.Owner == await _dbContext.IsItemOwner(userId, itemIdGuid))
         {
             context.Succeed(requirement);
         }
