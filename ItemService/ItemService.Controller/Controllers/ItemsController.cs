@@ -12,7 +12,6 @@ namespace ItemService.Controller.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-[Authorize]
 public partial class ItemsController : ControllerBase
 {
     private readonly ILogger _logger;
@@ -66,6 +65,7 @@ public partial class ItemsController : ControllerBase
     }
 
     [HttpPost("Add")]
+    [Authorize]
     public ActionResult<Guid> AddItem([FromBody] ItemInput item)
     {
         var userId = User.UserId();
