@@ -1,10 +1,10 @@
 ﻿using Boro.Common.Exceptions;
 using Boro.EntityFramework.DbContexts.BoroMainDb;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
 using ItemService.DB.Extensions;
-using ItemService.DB.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -14,15 +14,12 @@ public class ItemServiceBackend : IItemServiceBackend
 {
     private readonly ILogger _logger;
     private readonly BoroMainDbContext _dbContext;
-    private readonly GeoCalculator _geoCalculator;
 
     public ItemServiceBackend(ILoggerFactory loggerFactory,
-        BoroMainDbContext dbContext,
-        GeoCalculator geoCalculator)
+        BoroMainDbContext dbContext)
     {
         _logger = loggerFactory.CreateLogger("ItemService");
         _dbContext = dbContext;
-        _geoCalculator = geoCalculator;
     }
 
     public async Task<ItemModel?> GetItemAsync(Guid id)
@@ -94,17 +91,19 @@ public class ItemServiceBackend : IItemServiceBackend
 
     public async Task<List<ItemLocationDetails>> GetAllItemsInRadiusAsync(double latitude, double longitude, double radiusInMeters)
     {
-        var itemsInRadius = _dbContext.Items
-            .Include(item => item.Images)
-            .AsEnumerable()
-            .Where(item => radiusInMeters >= _geoCalculator.Distance(latitude, longitude, item.Latitude, item.Longitude))
-            .Select(item => item.ToItemLocationDetails())
+        var items = _dbContext.Items
+            .FilterByRadius(latitude, longitude, radiusInMeters)
             .ToList();
 
-        _logger.LogInformation("GetAllItemsInRadius - [{count}] item were found in radius of [{radius}] meters from [{lat} - {long}]",
-            itemsInRadius.Count, radiusInMeters, latitude, longitude);
+        var itemsWithImages = (from item in items
+                            join imageGroup in _dbContext.ItemImages.GroupBy(image => image.ItemId)
+                            on item.ItemId equals imageGroup.Key
+                            select item.ToItemLocationDetails(imageGroup.AsEnumerable())).ToList();
 
-        return await Task.FromResult(itemsInRadius);
+        _logger.LogInformation("GetAllItemsInRadius - [{count}] item were found in radius of [{radius}] meters from [{lat} - {long}]",
+            itemsWithImages.Count, radiusInMeters, latitude, longitude);
+
+        return await Task.FromResult(itemsWithImages);
     }
 
     public async Task UpdateItemInfo(Guid itemId, UpdateItemInfoInput updateInput)
