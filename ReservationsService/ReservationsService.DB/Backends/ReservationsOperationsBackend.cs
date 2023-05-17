@@ -1,10 +1,14 @@
-﻿using Boro.EntityFramework.DbContexts.BoroMainDb;
+﻿using Boro.Common.Exceptions;
+using Boro.EntityFramework.DbContexts.BoroMainDb;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Enum;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 using Microsoft.Extensions.Logging;
+using ReservationsService.API.Exceptions;
 using ReservationsService.API.Interfaces;
 
 namespace ReservationsService.DB.Backends;
 
-public class ReservationsOperationsBackend :IReservationsOperationsBackend
+public class ReservationsOperationsBackend : IReservationsOperationsBackend
 {
     private readonly ILogger _logger;
     private readonly BoroMainDbContext _dbContext;
@@ -16,28 +20,64 @@ public class ReservationsOperationsBackend :IReservationsOperationsBackend
         _dbContext = dbContext;
     }
 
-    public Task Approve(string reservationId)
+    private async Task<Reservations> FindReservationAsync(Guid reservationId)
     {
-        throw new NotImplementedException();
+        var entry = await _dbContext.Reservations.FindAsync(reservationId) ?? throw new DoesNotExistException(reservationId.ToString());
+        return entry;
     }
 
-    public Task Cancel(string reservationId)
+    public async Task Approve(Guid reservationId)
     {
-        throw new NotImplementedException();
+        var entry = await FindReservationAsync(reservationId);
+        if (entry.Status != ReservationStatus.Pending)
+        {
+            throw new IllegalReservationOperationException(reservationId, entry.Status, ReservationStatus.Approved);
+        }
+        entry.Status = ReservationStatus.Approved; 
+        await _dbContext.SaveChangesAsync();
     }
 
-    public Task Decline(string reservationId)
+    public async Task Cancel(Guid reservationId)
     {
-        throw new NotImplementedException();
+        var entry = await FindReservationAsync(reservationId);
+        if (!entry.Status.IsActiveStatus())
+        {
+            throw new IllegalReservationOperationException(reservationId, entry.Status, ReservationStatus.Canceled);
+        }
+        entry.Status = ReservationStatus.Canceled;
+        await _dbContext.SaveChangesAsync();
     }
 
-    public Task HandOverToBorrower(string reservationId)
+    public async Task Decline(Guid reservationId)
     {
-        throw new NotImplementedException();
+        var entry = await FindReservationAsync(reservationId);
+        if (entry.Status != ReservationStatus.Pending)
+        {
+            throw new IllegalReservationOperationException(reservationId, entry.Status, ReservationStatus.Declined);
+        }
+        entry.Status = ReservationStatus.Declined;
+        await _dbContext.SaveChangesAsync();
     }
 
-    public Task ReturnToLender(string reservationId)
+    public async Task HandOverToBorrower(Guid reservationId)
     {
-        throw new NotImplementedException();
+        var entry = await FindReservationAsync(reservationId);
+        if (entry.Status != ReservationStatus.Approved)
+        {
+            throw new IllegalReservationOperationException(reservationId, entry.Status, ReservationStatus.Borrowed);
+        }
+        entry.Status = ReservationStatus.Borrowed;
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task ReturnToLender(Guid reservationId)
+    {
+        var entry = await FindReservationAsync(reservationId);
+        if (entry.Status != ReservationStatus.Borrowed)
+        {
+            throw new IllegalReservationOperationException(reservationId, entry.Status, ReservationStatus.Returned);
+        }
+        entry.Status = ReservationStatus.Returned;
+        await _dbContext.SaveChangesAsync();
     }
 }

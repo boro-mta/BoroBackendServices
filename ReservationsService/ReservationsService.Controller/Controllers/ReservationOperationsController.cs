@@ -1,8 +1,10 @@
 ﻿using Boro.Common.Authentication;
+using Boro.Common.Exceptions;
 using Boro.Validations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ReservationsService.API.Exceptions;
 using ReservationsService.API.Interfaces;
 
 namespace ReservationsService.Controller.Controllers;
@@ -10,7 +12,6 @@ namespace ReservationsService.Controller.Controllers;
 [Route("Reservations/{reservationId}")]
 [ApiController]
 [ValidatesGuid("reservationId")]
-[Authorize]
 public class ReservationOperationsController : ControllerBase
 {
     private readonly ILogger _logger;
@@ -25,36 +26,101 @@ public class ReservationOperationsController : ControllerBase
 
     [HttpPost("Approve")]
     [Authorize(Policy = AuthPolicies.ReservationLender)]
-    public Task Approve(string reservationId)
+    public ActionResult Approve(string reservationId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var guid = Guid.Parse(reservationId);
+            _backend.Approve(guid).Wait();
+            return Ok();
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"reservation [{reservationId}] could not be found");
+        }
+        catch (IllegalReservationOperationException e)
+        {
+            return Conflict(e.Message);
+        }
     }
 
     [HttpPost("Cancel")]
     [Authorize(Policy = AuthPolicies.ReservationLenderOrBorrower)]
-    public Task Cancel(string reservationId)
+    public ActionResult Cancel(string reservationId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var guid = Guid.Parse(reservationId);
+            _backend.Cancel(guid).Wait();
+            return Ok();
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"reservation [{reservationId}] could not be found");
+        }
+        catch (IllegalReservationOperationException e)
+        {
+            return Conflict(e.Message);
+        }
     }
 
     [HttpPost("Decline")]
     [Authorize(Policy = AuthPolicies.ReservationLender)]
     public ActionResult Decline(string reservationId)
     {
-        return null;
+        try
+        {
+            var guid = Guid.Parse(reservationId);
+            _backend.Decline(guid).Wait();
+            return Ok();
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"reservation [{reservationId}] could not be found");
+        }
+        catch (IllegalReservationOperationException e)
+        {
+            return Conflict(e.Message);
+        }
     }
 
     [HttpPost("HandOverToBorrower")]
     [Authorize(Policy = AuthPolicies.ReservationLender)]
-    public Task HandOverToBorrower(string reservationId)
+    public ActionResult HandOverToBorrower(string reservationId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var guid = Guid.Parse(reservationId);
+            _backend.HandOverToBorrower(guid).Wait();
+            return Ok();
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"reservation [{reservationId}] could not be found");
+        }
+        catch (IllegalReservationOperationException e) 
+        { 
+            return Conflict(e.Message);
+        }
     }
 
     [HttpPost("ReturnToLender")]
     [Authorize(Policy = AuthPolicies.ReservationBorrower)]
-    public Task ReturnToLender(string reservationId)
+    public ActionResult ReturnToLender(string reservationId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var guid = Guid.Parse(reservationId);
+            _backend.ReturnToLender(guid).Wait();
+            return Ok();
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"reservation [{reservationId}] could not be found");
+        }
+        catch (IllegalReservationOperationException e)
+        {
+            return Conflict(e.Message);
+        }
     }
 }

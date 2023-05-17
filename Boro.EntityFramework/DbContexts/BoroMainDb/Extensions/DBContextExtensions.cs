@@ -23,4 +23,14 @@ public static class DBContextExtensions
                      && bd.Date <= endDate
                select bd.Date;
     }
+
+    public static async Task<bool> IsLender(this BoroMainDbContext context, Guid reservationId, Guid userId)
+    {
+        return await context.Reservations.AnyAsync(r => r.ReservationId == reservationId && r.LenderId == userId);
+    }
+
+    public static async Task<bool> IsBorrower(this BoroMainDbContext context, Guid reservationId, Guid userId)
+    {
+        return await context.Reservations.AnyAsync(r => r.ReservationId == reservationId && r.BorrowerId == userId);
+    }
 }

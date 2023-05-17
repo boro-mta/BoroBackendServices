@@ -5,10 +5,7 @@ namespace Boro.EntityFramework.DbContexts.BoroMainDb;
 
 public class BoroMainDbContext : DbContext
 {
-    public BoroMainDbContext(DbContextOptions options) : base(options)
-    {
-
-    }
+    public BoroMainDbContext(DbContextOptions options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -2,9 +2,9 @@
 
 public interface IReservationsOperationsBackend
 {
-    Task Approve(string reservationId);
-    Task Decline(string reservationId);
-    Task Cancel(string reservationId);
-    Task HandOverToBorrower(string reservationId);
-    Task ReturnToLender(string reservationId);
+    Task Approve(Guid reservationId);
+    Task Decline(Guid reservationId);
+    Task Cancel(Guid reservationId);
+    Task HandOverToBorrower(Guid reservationId);
+    Task ReturnToLender(Guid reservationId);
 }

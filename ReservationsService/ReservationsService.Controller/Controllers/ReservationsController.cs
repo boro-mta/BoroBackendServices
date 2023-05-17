@@ -46,6 +46,7 @@ public class ReservationsController : ControllerBase
     }
 
     [HttpGet("Pending")]
+    [Authorize(Policy = AuthPolicies.ItemOwner)]
     public ActionResult<List<ReservedDates>> GetPendingReservations(string itemId, DateTime from, DateTime to)
     {
         _logger.LogInformation("GetPendingReservations was called with item id: [{id}], from: [{from}], to: [{to}]",

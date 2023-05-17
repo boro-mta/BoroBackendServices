@@ -43,9 +43,17 @@ public static class BoroAuthentication
         });
 
         services.AddFacebook();
+        services.AddPolicies();
+
+        return services;
+    }
+
+    private static IServiceCollection AddPolicies(this IServiceCollection services)
+    {
         services.AddTransient<IAuthorizationHandler, ItemOwnerAuthorizationHandler>();
         services.AddTransient<IAuthorizationHandler, ImageOwnerAuthorizationHandler>();
-        
+        services.AddTransient<IAuthorizationHandler, ReservationParticipantAuthorizationHandler>();
+
         services.AddAuthorization(options =>
         {
             options.AddPolicy(AuthPolicies.ItemOwner, policy =>
@@ -61,6 +69,21 @@ public static class BoroAuthentication
             options.AddPolicy(AuthPolicies.ImageOwner, policy =>
             {
                 policy.Requirements.Add(new ImageOwnerRequirement());
+                policy.Build();
+            });
+            options.AddPolicy(AuthPolicies.ReservationLender, policy =>
+            {
+                policy.Requirements.Add(new ReservationParticipantRequirement(Lender: true));
+                policy.Build();
+            });
+            options.AddPolicy(AuthPolicies.ReservationBorrower, policy =>
+            {
+                policy.Requirements.Add(new ReservationParticipantRequirement(Borrower: true));
+                policy.Build();
+            });
+            options.AddPolicy(AuthPolicies.ReservationLenderOrBorrower, policy =>
+            {
+                policy.Requirements.Add(new ReservationParticipantRequirement(Lender: true, Borrower: true));
                 policy.Build();
             });
         });

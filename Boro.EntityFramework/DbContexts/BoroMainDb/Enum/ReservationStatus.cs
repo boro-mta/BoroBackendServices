@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace Boro.EntityFramework.DbContexts.BoroMainDb.Enum;
+﻿namespace Boro.EntityFramework.DbContexts.BoroMainDb.Enum;
 
 public enum ReservationStatus
 {

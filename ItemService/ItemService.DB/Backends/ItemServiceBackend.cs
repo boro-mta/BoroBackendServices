@@ -94,16 +94,17 @@ public class ItemServiceBackend : IItemServiceBackend
 
     public async Task<List<ItemLocationDetails>> GetAllItemsInRadiusAsync(double latitude, double longitude, double radiusInMeters)
     {
-        var itemsInRadius = await _dbContext.Items
+        var itemsInRadius = _dbContext.Items
             .Include(item => item.Images)
+            .AsEnumerable()
             .Where(item => radiusInMeters >= _geoCalculator.Distance(latitude, longitude, item.Latitude, item.Longitude))
             .Select(item => item.ToItemLocationDetails())
-            .ToListAsync();
+            .ToList();
 
         _logger.LogInformation("GetAllItemsInRadius - [{count}] item were found in radius of [{radius}] meters from [{lat} - {long}]",
             itemsInRadius.Count, radiusInMeters, latitude, longitude);
 
-        return itemsInRadius;
+        return await Task.FromResult(itemsInRadius);
     }
 
     public async Task UpdateItemInfo(Guid itemId, UpdateItemInfoInput updateInput)

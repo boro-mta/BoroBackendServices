@@ -1,6 +1,5 @@
 ﻿using Boro.Common.Exceptions;
 using Boro.EntityFramework.DbContexts.BoroMainDb;
-using Boro.EntityFramework.DbContexts.BoroMainDb.Enum;
 using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

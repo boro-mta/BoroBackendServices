@@ -31,7 +31,7 @@ public class ReservationsDashboardController : ControllerBase
     }
 
     [HttpGet("Borrower/Upcoming")]
-    public ActionResult<List<ReservationDetails>> GetBorrowersUpcoming(DateTime from, DateTime to)
+    public ActionResult<List<ReservationDetails>> GetBorrowersUpcoming()
     {
         var borrower = User.UserId();
         var reservations = _backend.GetBorrowersUpcoming(borrower).Result;
@@ -47,7 +47,7 @@ public class ReservationsDashboardController : ControllerBase
     }
 
     [HttpGet("Lender/Upcoming")]
-    public ActionResult<List<ReservationDetails>> GetLendersUpcoming(DateTime from, DateTime to)
+    public ActionResult<List<ReservationDetails>> GetLendersUpcoming()
     {
         var lender = User.UserId();
         var reservations = _backend.GetLendersUpcoming(lender).Result;
