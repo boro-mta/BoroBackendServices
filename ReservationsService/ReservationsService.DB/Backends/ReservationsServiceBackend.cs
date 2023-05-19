@@ -1,6 +1,7 @@
 ﻿using Boro.Common.Exceptions;
 using Boro.EntityFramework.DbContexts.BoroMainDb;
 using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ReservationsService.API.Interfaces;
@@ -22,27 +23,30 @@ public class ReservationsServiceBackend : IReservationsServiceBackend
         _dbContext = dbContext;
     }
 
-    public async Task<List<DateTime>> GetReservedDates(Guid itemId, DateTime startDate, DateTime endDate)
+    public async Task<List<DateTime>> GetBlockedDates(Guid itemId, DateTime startDate, DateTime endDate)
     {
         _logger.LogInformation("GetReservedDates - fetching all blocked or reserved dates for item {itemId} between {from} and {to}",
             itemId, startDate, endDate);
 
-        var reservedPeriodsQ = _dbContext.Reservations
+        var reservedPeriods = await _dbContext.Reservations
             .GetBlockingResevations(itemId, startDate, endDate)
-            .Select(r => r.ReservationPeriod());
+            .Select(r => r.ReservationPeriod())
+            .ToListAsync();
 
-        var blockedDatesQ = _dbContext.BlockedDates
+        var blockedDates = _dbContext.BlockedDates
             .GetBlockedDates(itemId, startDate, endDate)
+            .ToList()
             .GetContiguousPeriods();
 
-        reservedPeriodsQ = reservedPeriodsQ.Union(blockedDatesQ);
+        var allPeriods = reservedPeriods.Union(blockedDates);
 
-        var datesQ = reservedPeriodsQ
+        var dates = allPeriods
             .SelectMany(p => p.Dates())
             .DistinctBy(d => d.Date)
-            .OrderBy(d => d.Date);
+            .OrderBy(d => d.Date)
+            .ToList();
 
-        return await datesQ.ToListAsync();
+        return dates;
     }
 
     public async Task<List<DateTime>> GetUserBlockedDates(Guid itemId, DateTime startDate, DateTime endDate)
@@ -63,7 +67,7 @@ public class ReservationsServiceBackend : IReservationsServiceBackend
         var startDate = reservationRequestInput.StartDate;
         var endDate = reservationRequestInput.EndDate;
 
-        var reserved = await GetReservedDates(itemId, startDate, endDate);
+        var reserved = await GetBlockedDates(itemId, startDate, endDate);
         if (reserved.Any())
         {
             throw new DateConflictException(startDate, endDate);
@@ -101,17 +105,42 @@ public class ReservationsServiceBackend : IReservationsServiceBackend
         var startDate = dates.First();
         var endDate = dates.Last();
 
-        var existingReservationsQ = _dbContext.Reservations.GetActiveResevations(itemId, startDate, endDate);
+        var existingReservationsQ = _dbContext.Reservations.GetActiveResevations(itemId,
+                                                                                 startDate,
+                                                                                 endDate);
 
-        if (existingReservationsQ.Any())
+        if (await existingReservationsQ.AnyAsync())
         {
             throw new DateConflictException(startDate, endDate);
         }
 
-        var alreadyBlocked = _dbContext.BlockedDates.GetBlockedDates(itemId, startDate, endDate);
-        var unblocked = dates.Except(alreadyBlocked).Select(d => d.ToTableEntry(itemId));
+        var alreadyBlocked = _dbContext.BlockedDates.GetBlockedDates(itemId,
+                                                                     startDate,
+                                                                     endDate);
+        var unblocked = dates.Except(alreadyBlocked)
+                             .Select(d => d.ToTableEntry(itemId));
 
         await _dbContext.BlockedDates.AddRangeAsync(unblocked);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task UnblockDates(Guid itemId, IEnumerable<DateTime> dates)
+    {
+        var item = await _dbContext.Items.FirstOrDefaultAsync(i => i.ItemId.Equals(itemId))
+            ?? throw new DoesNotExistException(itemId.ToString());
+
+        var datesArray = dates.Select(d => d.Date).ToArray();
+
+        var blockedDatesQ = _dbContext.BlockedDates
+                    .Where(entry => entry.ItemId == itemId 
+                    && dates.Contains(entry.Date.Date))
+                    .Select(entry => entry);
+
+        if (await blockedDatesQ.AnyAsync())
+        {
+            _dbContext.BlockedDates.RemoveRange(blockedDatesQ);
+        }
+
         await _dbContext.SaveChangesAsync();
     }
 }

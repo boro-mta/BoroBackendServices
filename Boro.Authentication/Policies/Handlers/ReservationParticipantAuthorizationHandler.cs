@@ -25,8 +25,8 @@ public class ReservationParticipantAuthorizationHandler : AuthorizationHandler<R
         if (reservationId is not null
             && Guid.TryParse(reservationId, out var reservationIdGuid))
         {
-            var isLender = await _dbContext.IsLender(userId, reservationIdGuid);
-            var isBorrower = await _dbContext.IsBorrower(userId, reservationIdGuid);
+            var isLender = await _dbContext.IsLender(reservationIdGuid, userId);
+            var isBorrower = await _dbContext.IsBorrower(reservationIdGuid, userId);
             var lenderOrBorrowerRequiredAndFulfilled = requireLender && requireBorrower && (isLender || isBorrower);
             var lenderRequiredAndFulfilled = requireLender && isLender;
             var borrowerRequiredAndFulfilled = requireBorrower && isBorrower;

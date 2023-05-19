@@ -27,10 +27,10 @@ public class ReservationsController : ControllerBase
         _backend = backend;
     }
 
-    [HttpGet("Dates")]
-    public ActionResult<List<DateTime>> GetReservedDates(string itemId, DateTime from, DateTime to)
+    [HttpGet("BlockedDates")]
+    public ActionResult<List<DateTime>> GetBlockedDates(string itemId, DateTime from, DateTime to)
     {
-        _logger.LogInformation("GetReservedDates was called with id: [{id}], from: [{from}], to: [{to}]", 
+        _logger.LogInformation("GetBlockedDates was called with id: [{id}], from: [{from}], to: [{to}]", 
             itemId, from, to);
 
         if (from > to)
@@ -38,11 +38,11 @@ public class ReservationsController : ControllerBase
             return BadRequest("the 'from' date is later than the 'to' date");
         }
         var guid = Guid.Parse(itemId);
-        var dates = _backend.GetReservedDates(guid, from, to).Result;
+        var dates = _backend.GetBlockedDates(guid, from, to).Result;
 
-        _logger.LogInformation("GetReservedDates - Finished with: [{@dates}]", dates);
+        _logger.LogInformation("GetBlockedDates - Finished with: [{@dates}]", dates);
 
-        return dates.Any() ? Ok(dates) : NotFound($"No reservations were found for item: [{itemId}]");
+        return Ok(dates);
     }
 
     [HttpGet("Pending")]
@@ -96,7 +96,7 @@ public class ReservationsController : ControllerBase
 
     [HttpPost("BlockDates")]
     [Authorize(Policy = AuthPolicies.ItemOwner)]
-    public ActionResult<ReservationRequestResult> BlockDates(string itemId, [MinLength(1)] List<DateTime> dates)
+    public ActionResult<ReservationRequestResult> BlockDates(string itemId, [FromBody][MinLength(1)] List<DateTime> dates)
     {
         try
         {
@@ -105,6 +105,32 @@ public class ReservationsController : ControllerBase
             var guid = Guid.Parse(itemId);
 
             _backend.BlockDates(guid, dates).Wait();
+
+            _logger.LogInformation("BlockDates - Finished");
+
+            return Ok();
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"item with id {itemId} was not found");
+        }
+        catch (DateConflictException)
+        {
+            return Conflict("can't block dates where an existing reservation exists");
+        }
+    }
+
+    [HttpPost("UnblockDates")]
+    [Authorize(Policy = AuthPolicies.ItemOwner)]
+    public ActionResult<ReservationRequestResult> UnblockDates(string itemId, [FromBody][MinLength(1)] List<DateTime> dates)
+    {
+        try
+        {
+            _logger.LogInformation("BlockDates was called with id: [{id}], [{@dates}]",
+                                itemId, dates);
+            var guid = Guid.Parse(itemId);
+
+            _backend.UnblockDates(guid, dates).Wait();
 
             _logger.LogInformation("BlockDates - Finished");
 

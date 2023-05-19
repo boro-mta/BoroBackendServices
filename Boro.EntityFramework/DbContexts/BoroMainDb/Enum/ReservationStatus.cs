@@ -1,4 +1,6 @@
-﻿namespace Boro.EntityFramework.DbContexts.BoroMainDb.Enum;
+﻿using System.Collections.Immutable;
+
+namespace Boro.EntityFramework.DbContexts.BoroMainDb.Enum;
 
 public enum ReservationStatus
 {
@@ -10,29 +12,29 @@ public enum ReservationStatus
     Borrowed,
 }
 
-public static class ReservationStatusExtensions
+public static class Statuses
 {
-    public static IReadOnlyCollection<ReservationStatus> BlockingStatuses { get; } = new List<ReservationStatus>
+    public static ReservationStatus[] BlockingStatuses { get; } = new ReservationStatus[]
     {
         ReservationStatus.Approved,
         ReservationStatus.Borrowed
     };
 
-    public static IReadOnlyCollection<ReservationStatus> ConcludedStatuses { get; } = new List<ReservationStatus>
+    public static ReservationStatus[] ConcludedStatuses { get; } = new ReservationStatus[]
     {
         ReservationStatus.Canceled,
         ReservationStatus.Returned,
         ReservationStatus.Declined
     };
 
-    public static IReadOnlyCollection<ReservationStatus> ActiveStatuses { get; } = new List<ReservationStatus>
+    public static ReservationStatus[] ActiveStatuses { get; } = new ReservationStatus[]
     {
         ReservationStatus.Pending,
         ReservationStatus.Approved,
         ReservationStatus.Borrowed
     };
 
-    public static bool IsBlockingStatus(this ReservationStatus status) 
+    public static bool IsBlockingStatus(this ReservationStatus status)
         => BlockingStatuses.Contains(status);
 
     public static bool IsActiveStatus(this ReservationStatus status)

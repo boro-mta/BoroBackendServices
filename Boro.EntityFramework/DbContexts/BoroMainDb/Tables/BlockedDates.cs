@@ -1,12 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 
+[PrimaryKey("ItemId", "Date")]
 public class BlockedDates
 {
-    [Key]
-    [ForeignKey(nameof(Items))]
     public Guid ItemId { get; set; }
     public DateTime Date { get; set; }
+
+    [ForeignKey("ItemId")]
+    public Items Item { get; set; }
 }

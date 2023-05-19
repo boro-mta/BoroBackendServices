@@ -22,7 +22,8 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
 
     private async Task<Reservations> FindReservationAsync(Guid reservationId)
     {
-        var entry = await _dbContext.Reservations.FindAsync(reservationId) ?? throw new DoesNotExistException(reservationId.ToString());
+        var entry = await _dbContext.Reservations.FindAsync(reservationId) 
+            ?? throw new DoesNotExistException(reservationId.ToString());
         return entry;
     }
 
