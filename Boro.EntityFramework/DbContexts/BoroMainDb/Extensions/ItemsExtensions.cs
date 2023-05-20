@@ -22,10 +22,8 @@ SET @radius = @p2;
 SELECT * FROM dbo.Items item
 WHERE dbo.IsLocationInRadius(@longitude, @latitude, item.Longitude, item.Latitude, @radius) = 1
 ";
-            
-            return items
-                .FromSqlRaw(query, latitude, longitude, radius)
-                .AsEnumerable();
+
+            return items.FromSqlRaw(query, latitude, longitude, radius).AsEnumerable();
         }
     }
 }

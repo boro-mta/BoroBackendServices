@@ -1,12 +1,14 @@
 ﻿using Boro.Common.Exceptions;
 using Boro.EntityFramework.DbContexts.BoroMainDb;
 using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
 using ItemService.DB.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
 namespace ItemService.DB.Backends;
 
@@ -83,6 +85,18 @@ public class ItemServiceBackend : IItemServiceBackend
             .Select(item => item.ToMinimalItemInfo())
             .ToListAsync();
 
+        var itemIds = userItems.Select(i => i.Id).ToArray();
+
+        var imageIdsMapping = _dbContext.ItemImages.Where(image => itemIds.Contains(image.ItemId))
+                                                   .Select(image => new { image.ItemId, image.ImageId })
+                                                   .GroupBy(image => image.ItemId)
+                                                   .ToDictionary(group => group.Key, group => group.Select(image => image.ImageId).AsEnumerable());
+
+        foreach (var item in userItems)
+        {
+            item.ImageIds = imageIdsMapping.GetValueOrDefault(item.Id, Enumerable.Empty<Guid>()).ToList();
+        }
+
         _logger.LogInformation("GetAllUserItems - [{count}] item were found for user [{userId}]",
             userItems.Count, userId);
 
@@ -91,14 +105,19 @@ public class ItemServiceBackend : IItemServiceBackend
 
     public async Task<List<ItemLocationDetails>> GetAllItemsInRadiusAsync(double latitude, double longitude, double radiusInMeters)
     {
-        var items = _dbContext.Items
-            .FilterByRadius(latitude, longitude, radiusInMeters)
-            .ToList();
+        var items = _dbContext.Items.FilterByRadius(latitude, longitude, radiusInMeters);
 
-        var itemsWithImages = (from item in items
-                            join imageGroup in _dbContext.ItemImages.GroupBy(image => image.ItemId)
-                            on item.ItemId equals imageGroup.Key
-                            select item.ToItemLocationDetails(imageGroup.AsEnumerable())).ToList();
+        var itemIds = items.Select(i => i.ItemId)
+                           .ToArray();
+
+        var imageIdsMapping = _dbContext.ItemImages.Where(i => itemIds.Contains(i.ItemId))
+                                                   .Select(i => new { i.ItemId, i.ImageId})
+                                                   .GroupBy(i => i.ItemId)
+                                                   .ToDictionary(g => g.Key, g => g.Select(i => i.ImageId).AsEnumerable());
+
+        var itemsWithImagesQ = items.Select(item => item.ToItemLocationDetails(imageIdsMapping.GetValueOrDefault(item.ItemId, Enumerable.Empty<Guid>())));
+
+        var itemsWithImages = itemsWithImagesQ.ToList();
 
         _logger.LogInformation("GetAllItemsInRadius - [{count}] item were found in radius of [{radius}] meters from [{lat} - {long}]",
             itemsWithImages.Count, radiusInMeters, latitude, longitude);

@@ -45,7 +45,7 @@ internal static class ItemExtensions
         };
     }
 
-    internal static ItemLocationDetails ToItemLocationDetails(this Items entry, IEnumerable<ItemImages> images)
+    internal static ItemLocationDetails ToItemLocationDetails(this Items entry, IEnumerable<Guid> imageIds)
     {
         return new ItemLocationDetails
         {
@@ -53,7 +53,7 @@ internal static class ItemExtensions
             Title = entry.Title,
             Latitude = entry.Latitude,
             Longitude = entry.Longitude,
-            ImageIds = images?.Select(i => i.ImageId).ToList() ?? Enumerable.Empty<Guid>().ToList()
+            ImageIds = imageIds.ToList() ?? Enumerable.Empty<Guid>().ToList()
         };
     }
 

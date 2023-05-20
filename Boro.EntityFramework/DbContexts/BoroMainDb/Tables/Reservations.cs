@@ -8,7 +8,6 @@ public class Reservations
 {
     [Key]
     public Guid ReservationId { get; set; }
-    [ForeignKey(nameof(Items))]
     public Guid ItemId { get; set; }
     [ForeignKey(nameof(Users))]
     public Guid BorrowerId { get; set; }
@@ -17,4 +16,13 @@ public class Reservations
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public ReservationStatus Status { get; set; }
+
+    [ForeignKey("ItemId")]
+    public Items Item { get; set; }
+
+    [ForeignKey("LenderId")]
+    public Users Lender { get; set; }
+
+    [ForeignKey("BorrowerId")]
+    public Users Borrower { get; set; }
 }
