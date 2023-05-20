@@ -5,11 +5,11 @@ namespace Boro.EntityFramework.DbContexts.BoroMainDb.Enum;
 public enum ReservationStatus
 {
     Canceled = 0,
-    Returned,
-    Declined,
-    Pending,
-    Approved,
-    Borrowed,
+    Returned = 10,
+    Declined = 20,
+    Pending = 30,
+    Approved = 40,
+    Borrowed = 50,
 }
 
 public static class Statuses
