@@ -33,7 +33,7 @@ internal class BoroAuthService : IBoroAuthService
 
         var claims = defaultClaims.Concat(additionalClaimsQ).ToArray();
 
-        var expirationTime = DateTime.UtcNow.AddMinutes(TokenHandler.DefaultTokenLifetimeInMinutes);
+        var expirationTime = DateTime.UtcNow.AddDays(1);
 
         var token = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,

@@ -5,6 +5,8 @@ using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 using Microsoft.Extensions.Logging;
 using ReservationsService.API.Exceptions;
 using ReservationsService.API.Interfaces;
+using ReservationsService.API.Models.Output;
+using ReservationsService.DB.Extensions;
 
 namespace ReservationsService.DB.Backends;
 
@@ -27,7 +29,7 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
         return entry;
     }
 
-    public async Task Approve(Guid reservationId)
+    public async Task ApproveAsync(Guid reservationId)
     {
         var entry = await FindReservationAsync(reservationId);
         if (entry.Status != ReservationStatus.Pending)
@@ -38,7 +40,7 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task Cancel(Guid reservationId)
+    public async Task CancelAsync(Guid reservationId)
     {
         var entry = await FindReservationAsync(reservationId);
         if (!entry.Status.IsActiveStatus())
@@ -49,7 +51,7 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task Decline(Guid reservationId)
+    public async Task DeclineAsync(Guid reservationId)
     {
         var entry = await FindReservationAsync(reservationId);
         if (entry.Status != ReservationStatus.Pending)
@@ -60,7 +62,7 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task HandOverToBorrower(Guid reservationId)
+    public async Task HandOverToBorrowerAsync(Guid reservationId)
     {
         var entry = await FindReservationAsync(reservationId);
         if (entry.Status != ReservationStatus.Approved)
@@ -71,7 +73,7 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task ReturnToLender(Guid reservationId)
+    public async Task ReturnToLenderAsync(Guid reservationId)
     {
         var entry = await FindReservationAsync(reservationId);
         if (entry.Status != ReservationStatus.Borrowed)
@@ -80,5 +82,11 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
         }
         entry.Status = ReservationStatus.Returned;
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<ReservationDetails> GetReservationDetailsAsync(Guid reservationId)
+    {
+        var entry = await FindReservationAsync(reservationId);
+        return entry.ToReservationDetails();
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ReservationsService.API.Exceptions;
 using ReservationsService.API.Interfaces;
+using ReservationsService.API.Models.Output;
 
 namespace ReservationsService.Controller.Controllers;
 
@@ -31,7 +32,7 @@ public class ReservationOperationsController : ControllerBase
         try
         {
             var guid = Guid.Parse(reservationId);
-            _backend.Approve(guid).Wait();
+            _backend.ApproveAsync(guid).Wait();
             return Ok();
         }
         catch (DoesNotExistException)
@@ -51,7 +52,7 @@ public class ReservationOperationsController : ControllerBase
         try
         {
             var guid = Guid.Parse(reservationId);
-            _backend.Cancel(guid).Wait();
+            _backend.CancelAsync(guid).Wait();
             return Ok();
         }
         catch (DoesNotExistException)
@@ -71,7 +72,7 @@ public class ReservationOperationsController : ControllerBase
         try
         {
             var guid = Guid.Parse(reservationId);
-            _backend.Decline(guid).Wait();
+            _backend.DeclineAsync(guid).Wait();
             return Ok();
         }
         catch (DoesNotExistException)
@@ -91,7 +92,7 @@ public class ReservationOperationsController : ControllerBase
         try
         {
             var guid = Guid.Parse(reservationId);
-            _backend.HandOverToBorrower(guid).Wait();
+            _backend.HandOverToBorrowerAsync(guid).Wait();
             return Ok();
         }
         catch (DoesNotExistException)
@@ -111,7 +112,7 @@ public class ReservationOperationsController : ControllerBase
         try
         {
             var guid = Guid.Parse(reservationId);
-            _backend.ReturnToLender(guid).Wait();
+            _backend.ReturnToLenderAsync(guid).Wait();
             return Ok();
         }
         catch (DoesNotExistException)
@@ -121,6 +122,22 @@ public class ReservationOperationsController : ControllerBase
         catch (IllegalReservationOperationException e)
         {
             return Conflict(e.Message);
+        }
+    }
+
+    [HttpGet()]
+    [Authorize(Policy = AuthPolicies.ReservationLenderOrBorrower)]
+    public ActionResult<ReservationDetails> GetReservationDetails(string reservationId)
+    {
+        try
+        {
+            var guid = Guid.Parse(reservationId);
+            var reservation = _backend.GetReservationDetailsAsync(guid).Result;
+            return Ok(reservation);
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"reservation [{reservationId}] could not be found");
         }
     }
 }
