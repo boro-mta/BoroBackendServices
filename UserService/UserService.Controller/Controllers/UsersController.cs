@@ -38,6 +38,21 @@ public class UsersController : ControllerBase
         {
             return NotFound($"user [{e.Id}] was not found");
         }
+    }
+
+    [HttpPost("Me/Update/Image")]
+    public ActionResult UpdateUserImage(UserImageInput imageInput)
+    {
+        try
+        {
+            var userId = User.UserId();
+            _backend.UpdateUserImageAsync(userId, imageInput).Wait();
+            return Ok();
+        }
+        catch (DoesNotExistException e)
+        {
+            return NotFound($"user [{e.Id}] was not found");
+        }
 
     }
 

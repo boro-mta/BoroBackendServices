@@ -1,4 +1,5 @@
 ﻿using Boro.Authentication.Facebook.Models;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
 using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 using UserService.API.Models.Input;
 using UserService.API.Models.Output;
@@ -18,7 +19,18 @@ internal static class UserServiceModelExtensions
         FacebookId = entry.FacebookId,
         Latitude = entry.Latitude,
         Longitude = entry.Longitude,
+        Image = entry.Image?.ToUserImage(),
     };
+
+    internal static UserImage ToUserImage(this UserImages entry)
+    {
+        return new UserImage
+        {
+            ImageId = entry.ImageId,
+            Base64ImageData = entry.ImageData.ToBase64String(),
+            Base64ImageMetaData = entry.ImageMetaData,
+        };
+    }
 
     internal static Users ToTableEntry(this FacebookUserInfo facebookUserInfo, Guid userId, DateTime dateJoined) => new()
     {
@@ -28,8 +40,21 @@ internal static class UserServiceModelExtensions
         LastName = facebookUserInfo.LastName,
         DateJoined = dateJoined,
         Email = facebookUserInfo.Email ?? "",
-        About = ""
+        About = "",
     };
+
+    internal static UserImages ToTableEntry(this UserImageInput input, Guid imageId) => new()
+    {
+        ImageId = imageId,
+        ImageData = input.Base64ImageData.FromBase64String(),
+        ImageMetaData = input.Base64ImageMetaData
+    };
+
+    internal static void UpdateImage(this UserImages entry, UserImageInput input) 
+    {
+        entry.ImageData = input.Base64ImageData.FromBase64String();
+        entry.ImageMetaData = input.Base64ImageMetaData;
+    }
 
     internal static void UpdateUser(this Users entry, UpdateUserInput input)
     {

@@ -18,5 +18,6 @@ public class BoroMainDbContext : DbContext
     public DbSet<Reservations> Reservations { get; set; }
     public DbSet<BlockedDates> BlockedDates { get; set; }
     public DbSet<Users> Users { get; set; }
+    public DbSet<UserImages> UserImages { get; set; }
 
 }

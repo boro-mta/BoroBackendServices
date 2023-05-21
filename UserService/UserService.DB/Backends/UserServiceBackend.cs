@@ -39,6 +39,32 @@ public class UserServiceBackend : IUserServiceBackend
             ?? throw new DoesNotExistException(userId.ToString());
 
         entry.UpdateUser(input);
+        
+        if (input?.Image is not null)
+        {
+            await UpdateUserImageAsync(userId, input.Image);
+        }
+        else
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task UpdateUserImageAsync(Guid userId, UserImageInput imageInput)
+    {
+        _logger.LogInformation("UpdateUserInfoAsync - updating user image for {userId}", userId);
+
+        var imageEntry = await _dbContext.UserImages.SingleOrDefaultAsync(u => u.UserId.Equals(userId));
+        if (imageEntry is null)
+        {
+            var imageId = Guid.NewGuid();
+            imageEntry = imageInput.ToTableEntry(imageId);
+            _dbContext.UserImages.Add(imageEntry);
+        }
+        else
+        {
+            imageEntry.UpdateImage(imageInput);
+        }
 
         await _dbContext.SaveChangesAsync();
     }
