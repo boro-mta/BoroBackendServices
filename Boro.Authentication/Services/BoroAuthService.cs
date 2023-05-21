@@ -46,7 +46,7 @@ internal class BoroAuthService : IBoroAuthService
 
         var tokenHandler = new JwtSecurityTokenHandler();
 
-        return new TokenDetails(tokenHandler.WriteToken(token), expirationTime);
+        return new TokenDetails(tokenHandler.WriteToken(token));
     }
 
     private static Claim CreateClaim((AdditionalClaims claim, string? value) pair) => pair.claim switch

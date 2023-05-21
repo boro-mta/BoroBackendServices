@@ -1,4 +1,5 @@
 ﻿using Boro.Common.Authentication;
+using Boro.Common.Exceptions;
 using Boro.Validations;
 using ItemService.API.Interfaces;
 using ItemService.API.Models.Input;
@@ -41,14 +42,21 @@ public partial class ItemsController : ControllerBase
     [ValidatesGuid("userId")]
     public ActionResult<List<MinimalItemInfo>> GetAllUserItems(string userId)
     {
-        _logger.LogInformation("GetAllUserItems was called with userId: [{userId}]", userId);
+        try
+        {
+            _logger.LogInformation("GetAllUserItems was called with userId: [{userId}]", userId);
 
-        var guid = Guid.Parse(userId);
-        var items = _backend.GetAllUserItemsAsync(guid).Result;
+            var guid = Guid.Parse(userId);
+            var items = _backend.GetAllUserItemsAsync(guid).Result;
 
-        _logger.LogInformation("GetAllUserItems - returning [{count}] items with the following ids: {@items}", items.Count, items.Select(i => i.Id));
+            _logger.LogInformation("GetAllUserItems - returning [{count}] items with the following ids: {@items}", items.Count, items.Select(i => i.Id));
 
-        return items.IsNullOrEmpty() ? NotFound($"user [{userId}] has no items") : Ok(items);
+            return Ok(items);
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"no user with id: [{userId}]");
+        }
     }
 
     [HttpGet("ByRadius")]
@@ -61,7 +69,7 @@ public partial class ItemsController : ControllerBase
 
         _logger.LogInformation("GetAllItemsInRadius - returning [{count}] items with the following ids: {@items}", items.Count, items.Select(i => i.Id));
 
-        return items.IsNullOrEmpty() ? NotFound($"no items found [{radiusInMeters}] meters around [latitude:{latitude}, longitud:{longitude}]") : Ok(items);
+        return Ok(items);
     }
 
     [HttpPost("Add")]

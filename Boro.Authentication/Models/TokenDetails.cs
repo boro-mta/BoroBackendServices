@@ -1,3 +1,3 @@
 ﻿namespace Boro.Authentication.Models;
 
-public record class TokenDetails(string Token, DateTime ExpirationTime);
+public record class TokenDetails(string Token);
