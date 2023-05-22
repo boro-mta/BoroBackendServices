@@ -96,7 +96,7 @@ public class ReservationsController : ControllerBase
 
     [HttpPost("BlockDates")]
     [Authorize(Policy = AuthPolicies.ItemOwner)]
-    public ActionResult<ReservationRequestResult> BlockDates(string itemId, [FromBody][MinLength(1)] List<DateTime> dates)
+    public ActionResult BlockDates(string itemId, [FromBody][MinLength(1)] List<DateTime> dates)
     {
         try
         {
@@ -122,27 +122,23 @@ public class ReservationsController : ControllerBase
 
     [HttpPost("UnblockDates")]
     [Authorize(Policy = AuthPolicies.ItemOwner)]
-    public ActionResult<ReservationRequestResult> UnblockDates(string itemId, [FromBody][MinLength(1)] List<DateTime> dates)
+    public ActionResult UnblockDates(string itemId, [FromBody][MinLength(1)] List<DateTime> dates)
     {
         try
         {
-            _logger.LogInformation("BlockDates was called with id: [{id}], [{@dates}]",
+            _logger.LogInformation("UnblockDates was called with id: [{id}], [{@dates}]",
                                 itemId, dates);
             var guid = Guid.Parse(itemId);
 
             _backend.UnblockDates(guid, dates).Wait();
 
-            _logger.LogInformation("BlockDates - Finished");
+            _logger.LogInformation("UnblockDates - Finished");
 
             return Ok();
         }
         catch (DoesNotExistException)
         {
             return NotFound($"item with id {itemId} was not found");
-        }
-        catch (DateConflictException)
-        {
-            return Conflict("can't block dates where an existing reservation exists");
         }
     }
 }
