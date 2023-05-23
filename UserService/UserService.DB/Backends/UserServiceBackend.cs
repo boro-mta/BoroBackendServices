@@ -25,7 +25,9 @@ public class UserServiceBackend : IUserServiceBackend
     {
         _logger.LogInformation("GetUserProfileAsync - getting user profile for {userId}", userId);
 
-        var entry = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId))
+        var entry = await _dbContext.Users
+            .Include(user => user.Image)
+            .FirstOrDefaultAsync(u => u.UserId.Equals(userId))
             ?? throw new DoesNotExistException(userId.ToString());
         
         return entry.ToUserProfileModel();
