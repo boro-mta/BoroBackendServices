@@ -11,7 +11,6 @@ namespace ItemService.Controller.Controllers;
 
 [Route("Items/Images")]
 [ApiController]
-[Authorize]
 public partial class ImagesController : ControllerBase
 {
     private readonly ILogger _logger;
