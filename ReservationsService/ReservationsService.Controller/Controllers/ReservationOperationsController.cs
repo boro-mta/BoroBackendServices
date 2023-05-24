@@ -27,12 +27,12 @@ public class ReservationOperationsController : ControllerBase
 
     [HttpPost("Approve")]
     [Authorize(Policy = AuthPolicies.ReservationLender)]
-    public ActionResult Approve(string reservationId)
+    public async Task<ActionResult> Approve(string reservationId)
     {
         try
         {
             var guid = Guid.Parse(reservationId);
-            _backend.ApproveAsync(guid).Wait();
+            await _backend.ApproveAsync(guid);
             return Ok();
         }
         catch (DoesNotExistException)
@@ -47,12 +47,12 @@ public class ReservationOperationsController : ControllerBase
 
     [HttpPost("Cancel")]
     [Authorize(Policy = AuthPolicies.ReservationLenderOrBorrower)]
-    public ActionResult Cancel(string reservationId)
+    public async Task<ActionResult> Cancel(string reservationId)
     {
         try
         {
             var guid = Guid.Parse(reservationId);
-            _backend.CancelAsync(guid).Wait();
+            await _backend.CancelAsync(guid);
             return Ok();
         }
         catch (DoesNotExistException)
@@ -67,12 +67,12 @@ public class ReservationOperationsController : ControllerBase
 
     [HttpPost("Decline")]
     [Authorize(Policy = AuthPolicies.ReservationLender)]
-    public ActionResult Decline(string reservationId)
+    public async Task<ActionResult> Decline(string reservationId)
     {
         try
         {
             var guid = Guid.Parse(reservationId);
-            _backend.DeclineAsync(guid).Wait();
+            await _backend.DeclineAsync(guid);
             return Ok();
         }
         catch (DoesNotExistException)
@@ -87,12 +87,12 @@ public class ReservationOperationsController : ControllerBase
 
     [HttpPost("HandOverToBorrower")]
     [Authorize(Policy = AuthPolicies.ReservationLender)]
-    public ActionResult HandOverToBorrower(string reservationId)
+    public async Task<ActionResult> HandOverToBorrower(string reservationId)
     {
         try
         {
             var guid = Guid.Parse(reservationId);
-            _backend.HandOverToBorrowerAsync(guid).Wait();
+            await _backend.HandOverToBorrowerAsync(guid);
             return Ok();
         }
         catch (DoesNotExistException)
@@ -107,12 +107,12 @@ public class ReservationOperationsController : ControllerBase
 
     [HttpPost("ReturnToLender")]
     [Authorize(Policy = AuthPolicies.ReservationBorrower)]
-    public ActionResult ReturnToLender(string reservationId)
+    public async Task<ActionResult> ReturnToLender(string reservationId)
     {
         try
         {
             var guid = Guid.Parse(reservationId);
-            _backend.ReturnToLenderAsync(guid).Wait();
+            await _backend.ReturnToLenderAsync(guid);
             return Ok();
         }
         catch (DoesNotExistException)
@@ -127,12 +127,12 @@ public class ReservationOperationsController : ControllerBase
 
     [HttpGet()]
     [Authorize(Policy = AuthPolicies.ReservationLenderOrBorrower)]
-    public ActionResult<ReservationDetails> GetReservationDetails(string reservationId)
+    public async Task<ActionResult<ReservationDetails>> GetReservationDetails(string reservationId)
     {
         try
         {
             var guid = Guid.Parse(reservationId);
-            var reservation = _backend.GetReservationDetailsAsync(guid).Result;
+            var reservation = await _backend.GetReservationDetailsAsync(guid);
             return Ok(reservation);
         }
         catch (DoesNotExistException)

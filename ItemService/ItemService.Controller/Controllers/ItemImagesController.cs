@@ -14,7 +14,7 @@ namespace ItemService.Controller.Controllers;
 [ApiController]
 [Authorize]
 [ValidatesGuid("itemId")]
-public partial class ItemImagesController : ControllerBase
+public class ItemImagesController : ControllerBase
 {
     private readonly ILogger _logger;
     private readonly IImagesBackend _backend;
@@ -28,7 +28,7 @@ public partial class ItemImagesController : ControllerBase
 
     [HttpPost("Add")]
     [Authorize(Policy = AuthPolicies.ItemOwner)]
-    public ActionResult<Guid> AddImage(string itemId, [FromBody] ItemImageInput image)
+    public async Task<ActionResult<Guid>> AddImage(string itemId, [FromBody] ItemImageInput image)
     {
         try
         {
@@ -36,7 +36,7 @@ public partial class ItemImagesController : ControllerBase
             _logger.LogInformation("AddImage was called with: [{@metadata}, {@imageLength}]",
                 image.Base64ImageMetaData, image.Base64ImageData.Length);
 
-            var imageId = _backend.AddImageAsync(guid, image).Result;
+            var imageId = await _backend.AddImageAsync(guid, image);
 
             _logger.LogInformation("AddImage - Item with [{@id}] was updated with image [{imageId}]", itemId, imageId);
 
@@ -55,14 +55,14 @@ public partial class ItemImagesController : ControllerBase
     }
 
     [HttpGet()]
-    public ActionResult<List<ItemImage>> GetItemImages(string itemId)
+    public async Task<ActionResult<List<ItemImage>>> GetItemImages(string itemId)
     {
         try
         {
             _logger.LogInformation("GetItemImages was called with item id: [{itemId}]", itemId);
             var guid = Guid.Parse(itemId);
 
-            var images = _backend.GetAllItemImagesAsync(guid).Result;
+            var images = await _backend.GetAllItemImagesAsync(guid);
 
             _logger.LogInformation("GetItemImages - Item id: [{@id}]. Retrieved [{count}] images.", 
                 itemId, images.Count);

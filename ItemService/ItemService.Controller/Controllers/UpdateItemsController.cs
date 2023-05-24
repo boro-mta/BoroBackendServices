@@ -26,7 +26,7 @@ public partial class UpdateItemsController : ControllerBase
     }
 
     [HttpPost("Location")]
-    public ActionResult UpdateItemLocation(string itemId, double latitude, double longitude)
+    public async Task<ActionResult> UpdateItemLocation(string itemId, double latitude, double longitude)
     {
         try
         {
@@ -35,7 +35,7 @@ public partial class UpdateItemsController : ControllerBase
 
             var guid = Guid.Parse(itemId);
 
-            _backend.UpdateItemLocation(guid, latitude, longitude).Wait();
+            await _backend.UpdateItemLocation(guid, latitude, longitude);
 
             return Ok();
         }
@@ -46,7 +46,7 @@ public partial class UpdateItemsController : ControllerBase
     }
 
     [HttpPost()]
-    public ActionResult UpdateItemInfo(string itemId, [FromBody] UpdateItemInfoInput updateInput)
+    public async Task<ActionResult> UpdateItemInfo(string itemId, [FromBody] UpdateItemInfoInput updateInput)
     {
         try
         {
@@ -54,7 +54,7 @@ public partial class UpdateItemsController : ControllerBase
                 itemId, updateInput);
 
             var guid = Guid.Parse(itemId);
-            _backend.UpdateItemInfo(guid, updateInput).Wait();
+            await _backend.UpdateItemInfo(guid, updateInput);
 
             return Ok();
         }

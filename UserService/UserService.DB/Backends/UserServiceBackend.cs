@@ -35,7 +35,8 @@ public class UserServiceBackend : IUserServiceBackend
 
     public async Task UpdateUserInfoAsync(Guid userId, UpdateUserInput input)
     {
-        _logger.LogInformation("UpdateUserInfoAsync - updating user {userId} with following info: {@updateInfo}", userId, input);
+        _logger.LogInformation("UpdateUserInfoAsync - updating user {userId} with following info: {about}, {email}, {latitude}, {longitude}, Image Data:  size: {imageSize}, metaData: {metaData}" ,
+            userId, input.About, input.Email, input.Latitude, input.Longitude, input.Image?.Base64ImageData.Length, input.Image?.Base64ImageMetaData);
 
         var entry = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId))
             ?? throw new DoesNotExistException(userId.ToString());
@@ -54,7 +55,8 @@ public class UserServiceBackend : IUserServiceBackend
 
     public async Task UpdateUserImageAsync(Guid userId, UserImageInput imageInput)
     {
-        _logger.LogInformation("UpdateUserInfoAsync - updating user image for {userId}", userId);
+        _logger.LogInformation("UpdateUserInfoAsync - updating user image for {userId} with image data: size: {imageSize}, metaData: {metaData}", 
+            userId, imageInput.Base64ImageData.Length, imageInput.Base64ImageMetaData);
 
         var imageEntry = await _dbContext.UserImages.SingleOrDefaultAsync(u => u.UserId.Equals(userId));
         if (imageEntry is null)

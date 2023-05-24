@@ -26,12 +26,12 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("Me/Update")]
-    public ActionResult UpdateUser(UpdateUserInput updateInput)
+    public async Task<ActionResult> UpdateUser(UpdateUserInput updateInput)
     {
         try
         {
             var userId = User.UserId();
-            _backend.UpdateUserInfoAsync(userId, updateInput).Wait();
+            await _backend.UpdateUserInfoAsync(userId, updateInput);
             return Ok();
         }
         catch (DoesNotExistException e)
@@ -41,12 +41,12 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("Me/Update/Image")]
-    public ActionResult UpdateUserImage(UserImageInput imageInput)
+    public async Task<ActionResult> UpdateUserImage(UserImageInput imageInput)
     {
         try
         {
             var userId = User.UserId();
-            _backend.UpdateUserImageAsync(userId, imageInput).Wait();
+            await _backend.UpdateUserImageAsync(userId, imageInput);
             return Ok();
         }
         catch (DoesNotExistException e)
@@ -58,27 +58,27 @@ public class UsersController : ControllerBase
 
     [HttpGet("{userId}/Profile")]
     [ValidatesGuid("userId")]
-    public ActionResult<UserProfileModel> GetUserProfile(string userId)
+    public async Task<ActionResult<UserProfileModel>> GetUserProfile(string userId)
     {
         _logger.LogInformation("GetUserProfile was called with id: [{userId}]", userId);
 
         var guid = Guid.Parse(userId);
-        var userProfile = _backend.GetUserProfileAsync(guid).Result;
+        var userProfile = await _backend.GetUserProfileAsync(guid);
 
-        _logger.LogInformation("GetUserProfile - Finished with: [{@userProfile}]", userProfile);
+        _logger.LogInformation("GetUserProfile - Finished");
 
         return Ok(userProfile);
     }
 
     [HttpGet("Me/Profile")]
-    public ActionResult<UserProfileModel> GetUserProfile()
+    public async Task<ActionResult<UserProfileModel>> GetUserProfile()
     {
         var userId = User.UserId();
         _logger.LogInformation("GetUserProfile was called with id from context: [{userId}]", userId);
 
-        var userProfile = _backend.GetUserProfileAsync(userId).Result;
+        var userProfile = await _backend.GetUserProfileAsync(userId);
 
-        _logger.LogInformation("GetUserProfile - Finished with: [{@userProfile}]", userProfile);
+        _logger.LogInformation("GetUserProfile - Finished");
 
         return Ok(userProfile);
     }

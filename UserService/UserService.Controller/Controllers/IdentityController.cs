@@ -25,24 +25,24 @@ public class IdentityController : ControllerBase
 
     [HttpPost("RefreshToken")]
     [Authorize]
-    public ActionResult<TokenDetails> RefreshToken()
+    public async Task<ActionResult<TokenDetails>> RefreshToken()
     {
         var userId = User.UserId();
 
-        var tokenDetails = _backend.RefreshTokenAsync(userId).Result;
+        var tokenDetails = await _backend.RefreshTokenAsync(userId);
 
         return Ok(tokenDetails);
     }
 
     [HttpPost("LoginWithFacebook")]
-    public ActionResult<UserLoginResults> LoginWithFacebook(string accessToken, string facebookId)
+    public async Task<ActionResult<UserLoginResults>> LoginWithFacebook(string accessToken, string facebookId)
     {
         try
         {
             _logger.LogInformation("LoginWithFacebook was called with accessToken: [{accessToken}]",
                 accessToken);
 
-            var loginInfo = _backend.LoginWithFacebookAsync(accessToken, facebookId).Result;
+            var loginInfo = await _backend.LoginWithFacebookAsync(accessToken, facebookId);
 
             _logger.LogInformation("LoginWithFacebook - Finished with: [{@loginInfo}]",
                 loginInfo);
@@ -57,14 +57,14 @@ public class IdentityController : ControllerBase
     }
 
     [HttpGet("GetUserToken/{userId}")]
-    public ActionResult<TokenDetails> GetUserToken(string userId)
+    public async Task<ActionResult<TokenDetails>> GetUserToken(string userId)
     {
         try
         {
             _logger.LogInformation("GetUserToken was called with userId: [{userId}]",
                 userId);
             var guid = Guid.Parse(userId);
-            var tokenInfo = _backend.RefreshTokenAsync(guid).Result;
+            var tokenInfo = await _backend.RefreshTokenAsync(guid);
 
             _logger.LogInformation("GetUserToken - Finished with: [{@tokenInfo}]",
                 tokenInfo);

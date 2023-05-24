@@ -23,34 +23,34 @@ public class ReservationsDashboardController : ControllerBase
     }
 
     [HttpGet("Borrower")]
-    public ActionResult<List<ReservationDetails>> GetBorrowersReservationsDashboard(DateTime from, DateTime to)
+    public async Task<ActionResult<List<ReservationDetails>>> GetBorrowersReservationsDashboard(DateTime from, DateTime to)
     {
         var borrower = User.UserId();
-        var reservations = _backend.GetBorrowersDashboard(borrower, from, to).Result;
+        var reservations = await _backend.GetBorrowersDashboard(borrower, from, to);
         return Ok(reservations);
     }
 
     [HttpGet("Borrower/Upcoming")]
-    public ActionResult<List<ReservationDetails>> GetBorrowersUpcoming()
+    public async Task<ActionResult<List<ReservationDetails>>> GetBorrowersUpcoming()
     {
         var borrower = User.UserId();
-        var reservations = _backend.GetBorrowersUpcoming(borrower).Result;
+        var reservations = await _backend.GetBorrowersUpcoming(borrower);
         return Ok(reservations);
     }
 
     [HttpGet("Lender")]
-    public ActionResult<List<ReservationDetails>> GetLendersReservationDashboard(DateTime from, DateTime to)
+    public async Task<ActionResult<List<ReservationDetails>>> GetLendersReservationDashboard(DateTime from, DateTime to)
     {
         var lender = User.UserId();
-        var reservations = _backend.GetLendersDashboard(lender, from, to).Result;
+        var reservations = await _backend.GetLendersDashboard(lender, from, to);
         return Ok(reservations);
     }
 
     [HttpGet("Lender/Upcoming")]
-    public ActionResult<List<ReservationDetails>> GetLendersUpcoming()
+    public async Task<ActionResult<List<ReservationDetails>>> GetLendersUpcoming()
     {
         var lender = User.UserId();
-        var reservations = _backend.GetLendersUpcoming(lender).Result;
+        var reservations = await _backend.GetLendersUpcoming(lender);
         return Ok(reservations);
     }
 }

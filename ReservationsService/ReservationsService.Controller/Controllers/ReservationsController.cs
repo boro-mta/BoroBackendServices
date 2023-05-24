@@ -28,7 +28,7 @@ public class ReservationsController : ControllerBase
     }
 
     [HttpGet("BlockedDates")]
-    public ActionResult<List<DateTime>> GetBlockedDates(string itemId, DateTime from, DateTime to)
+    public async Task<ActionResult<List<DateTime>>> GetBlockedDates(string itemId, DateTime from, DateTime to)
     {
         _logger.LogInformation("GetBlockedDates was called with id: [{id}], from: [{from}], to: [{to}]", 
             itemId, from, to);
@@ -38,7 +38,7 @@ public class ReservationsController : ControllerBase
             return BadRequest("the 'from' date is later than the 'to' date");
         }
         var guid = Guid.Parse(itemId);
-        var dates = _backend.GetBlockedDates(guid, from, to).Result;
+        var dates = await _backend.GetBlockedDates(guid, from, to);
 
         _logger.LogInformation("GetBlockedDates - Finished with: [{@dates}]", dates);
 
@@ -47,7 +47,7 @@ public class ReservationsController : ControllerBase
 
     [HttpGet("Pending")]
     [Authorize(Policy = AuthPolicies.ItemOwner)]
-    public ActionResult<List<ReservedDates>> GetPendingReservations(string itemId, DateTime from, DateTime to)
+    public async Task<ActionResult<List<ReservedDates>>> GetPendingReservations(string itemId, DateTime from, DateTime to)
     {
         _logger.LogInformation("GetPendingReservations was called with item id: [{id}], from: [{from}], to: [{to}]",
             itemId, from, to);
@@ -57,7 +57,7 @@ public class ReservationsController : ControllerBase
             return BadRequest("the 'from' date is later than the 'to' date");
         }
         var guid = Guid.Parse(itemId);
-        List<ReservationDetails> reservations = _backend.GetPendingReservations(guid, from, to).Result;
+        List<ReservationDetails> reservations = await _backend.GetPendingReservations(guid, from, to);
 
         _logger.LogInformation("GetPendingReservations - There are [{count}] pending reservations for [{@itemId}]",
             reservations.Count, guid);
@@ -67,7 +67,7 @@ public class ReservationsController : ControllerBase
 
     [HttpPost("Request")]
     [Authorize(Policy = AuthPolicies.NotItemOwner)]
-    public ActionResult<ReservationRequestResult> RequestReservation(string itemId, [FromBody] ReservationRequestInput reservationRequestInput)
+    public async Task<ActionResult<ReservationRequestResult>> RequestReservation(string itemId, [FromBody] ReservationRequestInput reservationRequestInput)
     {
         try
         {
@@ -76,9 +76,7 @@ public class ReservationsController : ControllerBase
             _logger.LogInformation("RequestReservation was called with id: [{id}], [{@dates}]",
                                 itemId, reservationRequestInput);
 
-            var result = _backend.AddReservationRequest(guid,
-                                                        borrowerId,
-                                                        reservationRequestInput).Result;
+            var result = await _backend.AddReservationRequest(guid, borrowerId, reservationRequestInput);
 
             _logger.LogInformation("RequestReservation - Finished with {@result}", result);
 
@@ -96,7 +94,7 @@ public class ReservationsController : ControllerBase
 
     [HttpPost("BlockDates")]
     [Authorize(Policy = AuthPolicies.ItemOwner)]
-    public ActionResult BlockDates(string itemId, [FromBody][MinLength(1)] List<DateTime> dates)
+    public async Task<ActionResult> BlockDates(string itemId, [FromBody][MinLength(1)] List<DateTime> dates)
     {
         try
         {
@@ -104,7 +102,7 @@ public class ReservationsController : ControllerBase
                                 itemId, dates);
             var guid = Guid.Parse(itemId);
 
-            _backend.BlockDates(guid, dates).Wait();
+            await _backend.BlockDates(guid, dates);
 
             _logger.LogInformation("BlockDates - Finished");
 
@@ -122,7 +120,7 @@ public class ReservationsController : ControllerBase
 
     [HttpPost("UnblockDates")]
     [Authorize(Policy = AuthPolicies.ItemOwner)]
-    public ActionResult UnblockDates(string itemId, [FromBody][MinLength(1)] List<DateTime> dates)
+    public async Task<ActionResult> UnblockDates(string itemId, [FromBody][MinLength(1)] List<DateTime> dates)
     {
         try
         {
@@ -130,7 +128,7 @@ public class ReservationsController : ControllerBase
                                 itemId, dates);
             var guid = Guid.Parse(itemId);
 
-            _backend.UnblockDates(guid, dates).Wait();
+            await _backend.UnblockDates(guid, dates);
 
             _logger.LogInformation("UnblockDates - Finished");
 

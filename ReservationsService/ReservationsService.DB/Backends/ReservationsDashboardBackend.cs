@@ -6,7 +6,6 @@ using ReservationsService.API.Interfaces;
 using ReservationsService.API.Models.Output;
 using ReservationsService.DB.Extensions;
 using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
-using System;
 
 namespace ReservationsService.DB.Backends;
 

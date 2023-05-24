@@ -7,7 +7,6 @@ using ItemService.API.Models.Output;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace ItemService.Controller.Controllers;
 
@@ -27,11 +26,11 @@ public partial class ItemsController : ControllerBase
 
     [HttpGet("{itemId}")]
     [ValidatesGuid("itemId")]
-    public ActionResult<ItemModel> GetItem(string itemId)
+    public async Task<ActionResult<ItemModel>> GetItem(string itemId)
     {
         _logger.LogInformation("GetItem was called with id: [{id}]", itemId);
         var guid = Guid.Parse(itemId);
-        var item = _backend.GetItemAsync(guid).Result;
+        var item = await _backend.GetItemAsync(guid);
 
         _logger.LogInformation("GetItem - Finished with: [{id}]", item?.Id);
         
@@ -40,14 +39,14 @@ public partial class ItemsController : ControllerBase
 
     [HttpGet("OfUser/{userId}")]
     [ValidatesGuid("userId")]
-    public ActionResult<List<MinimalItemInfo>> GetAllUserItems(string userId)
+    public async Task<ActionResult<List<MinimalItemInfo>>> GetAllUserItems(string userId)
     {
         try
         {
             _logger.LogInformation("GetAllUserItems was called with userId: [{userId}]", userId);
 
             var guid = Guid.Parse(userId);
-            var items = _backend.GetAllUserItemsAsync(guid).Result;
+            var items = await _backend.GetAllUserItemsAsync(guid);
 
             _logger.LogInformation("GetAllUserItems - returning [{count}] items with the following ids: {@items}", items.Count, items.Select(i => i.Id));
 
@@ -60,12 +59,12 @@ public partial class ItemsController : ControllerBase
     }
 
     [HttpGet("ByRadius")]
-    public ActionResult<List<ItemLocationDetails>> GetAllItemsInRadius(double latitude, double longitude, double radiusInMeters)
+    public async Task<ActionResult<List<ItemLocationDetails>>> GetAllItemsInRadius(double latitude, double longitude, double radiusInMeters)
     {
         _logger.LogInformation("GetAllItemsInRadius was called with latitude: [{lat}], longitude: [{lon}], radius: [{r}meters]", 
             latitude, longitude, radiusInMeters);
 
-        var items = _backend.GetAllItemsInRadiusAsync(latitude, longitude, radiusInMeters).Result;
+        var items = await _backend.GetAllItemsInRadiusAsync(latitude, longitude, radiusInMeters);
 
         _logger.LogInformation("GetAllItemsInRadius - returning [{count}] items with the following ids: {@items}", items.Count, items.Select(i => i.Id));
 
@@ -74,12 +73,12 @@ public partial class ItemsController : ControllerBase
 
     [HttpPost("Add")]
     [Authorize]
-    public ActionResult<Guid> AddItem([FromBody] ItemInput item)
+    public async Task<ActionResult<Guid>> AddItem([FromBody] ItemInput item)
     {
         var userId = User.UserId();
         _logger.LogInformation("AddItem was called with [{title}, {description}, {ownerId}]", item.Title, item.Description, userId);
 
-        var guid = _backend.AddItemAsync(item, userId).Result;
+        var guid = await _backend.AddItemAsync(item, userId);
 
         _logger.LogInformation("AddItem Finished. New item was created with id: [{guid}]", guid);
 

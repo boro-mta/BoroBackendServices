@@ -1,7 +1,6 @@
 ﻿using Boro.Common.Exceptions;
 using Boro.EntityFramework.DbContexts.BoroMainDb;
 using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
-using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ReservationsService.API.Interfaces;
