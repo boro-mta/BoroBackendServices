@@ -12,6 +12,7 @@ public static class ReservationsTableExtensions
                where r.ItemId.Equals(itemId)
                      && r.StartDate <= endDate
                      && r.EndDate >= startDate
+               orderby r.StartDate
                select r;
     }
 
@@ -20,6 +21,7 @@ public static class ReservationsTableExtensions
         return from r in reservations
                where r.StartDate <= endDate
                      && r.EndDate >= startDate
+               orderby r.StartDate
                select r;
     }
 
@@ -34,6 +36,7 @@ public static class ReservationsTableExtensions
                      && r.StartDate <= endDate
                      && r.EndDate >= startDate
                      && statuses.Select(s => (int)s).ToArray().Contains((int)r.Status)
+               orderby r.StartDate
                select r;
     }
 
@@ -46,6 +49,7 @@ public static class ReservationsTableExtensions
                where r.StartDate <= endDate
                      && r.EndDate >= startDate
                      && statuses.Select(s => (int)s).ToArray().Contains((int)r.Status)
+               orderby r.StartDate
                select r;
     }
 
@@ -54,6 +58,7 @@ public static class ReservationsTableExtensions
     {
         return from r in reservations
                where statuses.Select(s => (int)s).ToArray().Contains((int)r.Status)
+               orderby r.StartDate
                select r;
     }
 
@@ -77,6 +82,7 @@ public static class ReservationsTableExtensions
     {
         return from r in reservations.GetItemResevationsInPeriod(itemId, startDate, endDate)
                where r.Status == ReservationStatus.Pending
+               orderby r.StartDate
                select r;
     }
 

@@ -27,7 +27,7 @@ internal static class UserServiceModelExtensions
         return new UserImage
         {
             ImageId = entry.ImageId,
-            Base64ImageData = entry.ImageData.ToBase64String(),
+            Base64ImageData = entry.ImageData,
             Base64ImageMetaData = entry.ImageMetaData,
         };
     }
@@ -46,13 +46,13 @@ internal static class UserServiceModelExtensions
     internal static UserImages ToTableEntry(this UserImageInput input, Guid imageId) => new()
     {
         ImageId = imageId,
-        ImageData = input.Base64ImageData.FromBase64String(),
+        ImageData = input.Base64ImageData,
         ImageMetaData = input.Base64ImageMetaData
     };
 
     internal static void UpdateImage(this UserImages entry, UserImageInput input) 
     {
-        entry.ImageData = input.Base64ImageData.FromBase64String();
+        entry.ImageData = input.Base64ImageData;
         entry.ImageMetaData = input.Base64ImageMetaData;
     }
 

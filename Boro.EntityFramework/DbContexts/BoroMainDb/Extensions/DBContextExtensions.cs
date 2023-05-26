@@ -21,6 +21,7 @@ public static class DBContextExtensions
                where bd.ItemId.Equals(itemId)
                      && startDate <= bd.Date
                      && bd.Date <= endDate
+               orderby bd.Date
                select bd.Date;
     }
 
