@@ -9,7 +9,7 @@ public class ItemImages
     public Guid ImageId { get; set; }
     public Guid ItemId { get; set; }
     public string ImageMetaData { get; set; }
-    public string ImageData { get; set; }
+    public byte[] ImageData { get; set; }
 
     [ForeignKey("ItemId")]
     public Items Item { get; set; }
