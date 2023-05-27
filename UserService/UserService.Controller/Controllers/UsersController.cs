@@ -76,27 +76,41 @@ public class UsersController : ControllerBase
     [ValidatesGuid("userId")]
     public async Task<ActionResult<UserProfileModel>> GetUserProfile(string userId)
     {
-        _logger.LogInformation("GetUserProfile was called with id: [{userId}]", userId);
+        try
+        {
+            _logger.LogInformation("GetUserProfile was called with id: [{userId}]", userId);
 
-        var guid = Guid.Parse(userId);
-        var userProfile = await _backend.GetUserProfileAsync(guid);
+            var guid = Guid.Parse(userId);
+            var userProfile = await _backend.GetUserProfileAsync(guid);
 
-        _logger.LogInformation("GetUserProfile - Finished");
+            _logger.LogInformation("GetUserProfile - Finished");
 
-        return Ok(userProfile);
+            return Ok(userProfile);
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"user with id: {userId} was not found");
+        }
     }
 
     [HttpGet("Me/Profile")]
     public async Task<ActionResult<UserProfileModel>> GetUserProfile()
     {
-        var userId = User.UserId();
-        _logger.LogInformation("GetUserProfile was called with id from context: [{userId}]", userId);
+        try
+        {
+            var userId = User.UserId();
+            _logger.LogInformation("GetUserProfile was called with id from context: [{userId}]", userId);
 
-        var userProfile = await _backend.GetUserProfileAsync(userId);
+            var userProfile = await _backend.GetUserProfileAsync(userId);
 
-        _logger.LogInformation("GetUserProfile - Finished");
+            _logger.LogInformation("GetUserProfile - Finished");
 
-        return Ok(userProfile);
+            return Ok(userProfile);
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"user with id: {User.UserId()} was not found");
+        }
     }
 
     [HttpGet("Me/Location")]
@@ -175,7 +189,7 @@ public class UsersController : ControllerBase
 
             return Ok(userLocation);
         }
-        catch (DoesNotExistException)
+        catch (DoesNotExistException) 
         {
             return NotFound($"no profile picture found for user {userId}");
         }
