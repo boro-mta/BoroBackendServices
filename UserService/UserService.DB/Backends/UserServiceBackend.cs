@@ -63,7 +63,12 @@ public class UserServiceBackend : IUserServiceBackend
         {
             var imageId = Guid.NewGuid();
             imageEntry = imageInput.ToTableEntry(imageId);
+            imageEntry.UserId = userId;
             _dbContext.UserImages.Add(imageEntry);
+            var entry = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId))
+           ?? throw new DoesNotExistException(userId.ToString());
+            entry.ImageId = imageId;
+            _dbContext.Update(entry);
         }
         else
         {
