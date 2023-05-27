@@ -1,5 +1,6 @@
 ﻿using Boro.Common.Authentication;
 using Boro.Common.Exceptions;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 using Boro.Validations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,21 @@ public class UsersController : ControllerBase
         {
             var userId = User.UserId();
             await _backend.UpdateUserInfoAsync(userId, updateInput);
+            return Ok();
+        }
+        catch (DoesNotExistException e)
+        {
+            return NotFound($"user [{e.Id}] was not found");
+        }
+    }
+
+    [HttpPost("Me/Update/Location")]
+    public async Task<ActionResult> UpdateUserLocation(double latitude, double longitude)
+    {
+        try
+        {
+            var userId = User.UserId();
+            await _backend.UpateUserLocationAsync(userId, latitude, longitude);
             return Ok();
         }
         catch (DoesNotExistException e)
@@ -81,6 +97,88 @@ public class UsersController : ControllerBase
         _logger.LogInformation("GetUserProfile - Finished");
 
         return Ok(userProfile);
+    }
+
+    [HttpGet("Me/Location")]
+    public async Task<ActionResult<LocationDetails>> GetUserLocation()
+    {
+        try
+        {
+            var userId = User.UserId();
+            _logger.LogInformation("GetUserLocation was called with id from context: [{userId}]", userId);
+
+            var userLocation = await _backend.GetUserLocationAsync(userId);
+
+            _logger.LogInformation("GetUserLocation - Finished with {@location}", userLocation);
+
+            return Ok(userLocation);
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"no profile picture found for user {User.UserId()}");
+        }
+    }
+
+    [HttpGet("{userId}/Location")]
+    [ValidatesGuid("userId")]
+    public async Task<ActionResult<LocationDetails>> GetUserLocation(string userId)
+    {
+        try
+        {
+            var guid = Guid.Parse(userId);
+            _logger.LogInformation("GetUserLocation was called with id: [{userId}]", userId);
+
+            var userLocation = await _backend.GetUserLocationAsync(guid);
+
+            _logger.LogInformation("GetUserLocation - Finished with {@location}", userLocation);
+
+            return Ok(userLocation);
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"no profile picture found for user {User.UserId()}");
+        }
+    }
+
+    [HttpGet("Me/ProfilePicture")]
+    public async Task<ActionResult<UserImage>> GetUserPicture()
+    {
+        try
+        {
+            var userId = User.UserId();
+            _logger.LogInformation("GetUserPicture was called with id from context: [{userId}]", userId);
+
+            var userPicture = await _backend.GetUserPicture(userId);
+
+            _logger.LogInformation("GetUserPicture - Finished");
+
+            return Ok(userPicture);
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"no profile picture found for user {User.UserId()}");
+        }
+    }
+
+    [HttpGet("{userId}/ProfilePicture")]
+    [ValidatesGuid("userId")]
+    public async Task<ActionResult<UserImage>> GetUserPicture(string userId)
+    {
+        try
+        {
+            var guid = Guid.Parse(userId);
+            _logger.LogInformation("GetUserPicture was called with id: [{userId}]", userId);
+
+            var userLocation = await _backend.GetUserLocationAsync(guid);
+
+            _logger.LogInformation("GetUserPicture - Finished");
+
+            return Ok(userLocation);
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"no profile picture found for user {userId}");
+        }
     }
 
 }

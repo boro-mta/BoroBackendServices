@@ -72,4 +72,38 @@ public class UserServiceBackend : IUserServiceBackend
 
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<LocationDetails> GetUserLocationAsync(Guid userId)
+    {
+        var locationDetailsQ = from user in _dbContext.Users
+                              where user.UserId == userId
+                              select new LocationDetails(user.Latitude, user.Longitude);
+
+        var locationDetails = await locationDetailsQ.FirstOrDefaultAsync()
+            ?? throw new DoesNotExistException(userId.ToString());
+
+        return locationDetails;
+    }
+
+    public async Task<UserImage> GetUserPicture(Guid userId)
+    {
+        var userImageQ = from image in _dbContext.UserImages
+                         where image.UserId == userId
+                         select image;
+        var firstImage = await userImageQ.FirstOrDefaultAsync()
+            ?? throw new DoesNotExistException(userId.ToString());
+
+        return firstImage.ToUserImage();
+    }
+
+    public async Task UpateUserLocationAsync(Guid userId, double latitude, double longitude)
+    {
+        var entry = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId))
+            ?? throw new DoesNotExistException(userId.ToString());
+
+        entry.Latitude = latitude;
+        entry.Longitude = longitude;
+
+        await _dbContext.SaveChangesAsync();
+    }
 }
