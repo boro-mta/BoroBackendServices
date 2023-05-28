@@ -58,17 +58,20 @@ public class UserServiceBackend : IUserServiceBackend
         _logger.LogInformation("UpdateUserInfoAsync - updating user image for {userId} with image data: size: {imageSize}, metaData: {metaData}", 
             userId, imageInput.Base64ImageData.Length, imageInput.Base64ImageMetaData);
 
+        
+
         var imageEntry = await _dbContext.UserImages.SingleOrDefaultAsync(u => u.UserId.Equals(userId));
         if (imageEntry is null)
         {
             var imageId = Guid.NewGuid();
-            imageEntry = imageInput.ToTableEntry(imageId);
-            imageEntry.UserId = userId;
-            _dbContext.UserImages.Add(imageEntry);
-            var entry = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId))
-           ?? throw new DoesNotExistException(userId.ToString());
-            entry.ImageId = imageId;
-            _dbContext.Update(entry);
+            imageEntry = imageInput.ToTableEntry(imageId, userId);
+            await _dbContext.UserImages.AddAsync(imageEntry);
+
+            var userEntry = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId))
+                ?? throw new DoesNotExistException(userId.ToString());
+
+            userEntry.ImageId = imageId;
+            _dbContext.Update(userEntry);
         }
         else
         {

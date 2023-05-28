@@ -43,9 +43,10 @@ internal static class UserServiceModelExtensions
         About = "",
     };
 
-    internal static UserImages ToTableEntry(this UserImageInput input, Guid imageId) => new()
+    internal static UserImages ToTableEntry(this UserImageInput input, Guid imageId, Guid userId) => new()
     {
         ImageId = imageId,
+        UserId = userId,
         ImageData = input.Base64ImageData.FromBase64String(),
         ImageMetaData = input.Base64ImageMetaData
     };
