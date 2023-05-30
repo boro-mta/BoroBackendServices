@@ -93,7 +93,7 @@ public class UserServiceBackend : IUserServiceBackend
         return locationDetails;
     }
 
-    public async Task<UserImage> GetUserPicture(Guid userId)
+    public async Task<UserImage> GetUserPictureAsync(Guid userId)
     {
         var userImageQ = from image in _dbContext.UserImages
                          where image.UserId == userId

@@ -162,7 +162,7 @@ public class UsersController : ControllerBase
             var userId = User.UserId();
             _logger.LogInformation("GetUserPicture was called with id from context: [{userId}]", userId);
 
-            var userPicture = await _backend.GetUserPicture(userId);
+            var userPicture = await _backend.GetUserPictureAsync(userId);
 
             _logger.LogInformation("GetUserPicture - Finished");
 
@@ -183,7 +183,7 @@ public class UsersController : ControllerBase
             var guid = Guid.Parse(userId);
             _logger.LogInformation("GetUserPicture was called with id: [{userId}]", userId);
 
-            var userLocation = await _backend.GetUserLocationAsync(guid);
+            var userLocation = await _backend.GetUserPictureAsync(guid);
 
             _logger.LogInformation("GetUserPicture - Finished");
 
