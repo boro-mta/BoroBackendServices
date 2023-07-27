@@ -6,4 +6,5 @@ public class UpdateItemInfoInput
     public string? Description { get; set; }
     public string Condition { get; set; } = "";
     public string[] Categories { get; set; }
+    public List<Guid>? ImagesToRemove { get; set; }
 }

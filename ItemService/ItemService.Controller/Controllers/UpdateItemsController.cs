@@ -16,17 +16,75 @@ namespace ItemService.Controller.Controllers;
 public partial class UpdateItemsController : ControllerBase
 {
     private readonly ILogger _logger;
-    private readonly IItemServiceBackend _backend;
+    private readonly IItemServiceBackend _itemBackend;
+    private readonly IImagesBackend _imagesBackend;
 
     public UpdateItemsController(ILoggerFactory loggerFactory,
-        IItemServiceBackend backend)
+        IItemServiceBackend backend,
+        IImagesBackend imagesBackend)
     {
         _logger = loggerFactory.CreateLogger("ItemService");
-        _backend = backend;
+        _itemBackend = backend;
+        _imagesBackend = imagesBackend;
+    }
+
+    [HttpPost("Images/Add")]
+    [Authorize(Policy = AuthPolicies.ItemOwner)]
+    public async Task<ActionResult<List<Guid>>> AddImages(string itemId, [FromBody] ItemImageInput[] images)
+    {
+        try
+        {
+            var guid = Guid.Parse(itemId);
+            _logger.LogInformation("AddImages was called with: [{count}] images",
+                images.Length);
+
+            var imageIds = await _imagesBackend.AddImagesAsync(guid, images);
+
+            _logger.LogInformation("AddImages - Item with [{@id}] was updated with images [{@imageIds}]", itemId, imageIds);
+
+            return Ok(imageIds);
+        }
+        catch (DoesNotExistException e)
+        {
+            _logger.LogError(e, "AddImages - ERROR");
+            return NotFound($"Item with id: {itemId} was not found");
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "AddImages - an error occurred.");
+            return Conflict("Request could not be made");
+        }
+    }
+
+    [HttpPost("Images/Add")]
+    public async Task<ActionResult<Guid>> AddImage(string itemId, [FromBody] ItemImageInput image)
+    {
+        try
+        {
+            var guid = Guid.Parse(itemId);
+            _logger.LogInformation("AddImage was called with: [{@metadata}, {@imageLength}]",
+                image.Base64ImageMetaData, image.Base64ImageData.Length);
+
+            var imageId = await _imagesBackend.AddImageAsync(guid, image);
+
+            _logger.LogInformation("AddImage - Item with [{@id}] was updated with image [{imageId}]", itemId, imageId);
+
+            return Ok();
+        }
+        catch (DoesNotExistException e)
+        {
+            _logger.LogError(e, "AddImage - ERROR");
+            return NotFound($"Item with id: {itemId} was not found");
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(e, "AddImage - an error occurred.");
+            return Conflict("Request could not be made");
+        }
     }
 
     [HttpPost("Location")]
-    public async Task<ActionResult> UpdateItemLocation(string itemId, double latitude, double longitude)
+    public async Task<ActionResult<string>> UpdateItemLocation(string itemId, double latitude, double longitude)
     {
         try
         {
@@ -35,9 +93,9 @@ public partial class UpdateItemsController : ControllerBase
 
             var guid = Guid.Parse(itemId);
 
-            await _backend.UpdateItemLocation(guid, latitude, longitude);
+            await _itemBackend.UpdateItemLocation(guid, latitude, longitude);
 
-            return Ok();
+            return Ok($"item: [{itemId}]. Location updated to lat: [{latitude}], lon: [{longitude}]");
         }
         catch (DoesNotExistException)
         {
@@ -46,7 +104,7 @@ public partial class UpdateItemsController : ControllerBase
     }
 
     [HttpPost()]
-    public async Task<ActionResult> UpdateItemInfo(string itemId, [FromBody] UpdateItemInfoInput updateInput)
+    public async Task<ActionResult<string>> UpdateItemInfo(string itemId, [FromBody] UpdateItemInfoInput updateInput)
     {
         try
         {
@@ -54,9 +112,9 @@ public partial class UpdateItemsController : ControllerBase
                 itemId, updateInput);
 
             var guid = Guid.Parse(itemId);
-            await _backend.UpdateItemInfo(guid, updateInput);
+            await _itemBackend.UpdateItemInfo(guid, updateInput);
 
-            return Ok();
+            return Ok($"item [{itemId}] info updated. [{updateInput.ImagesToRemove?.Count ?? 0}] images deleted.");
         }
         catch (DoesNotExistException)
         {

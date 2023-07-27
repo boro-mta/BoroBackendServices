@@ -14,4 +14,6 @@ public interface IImagesBackend
     Task<List<ItemImage>> GetImagesAsync(IEnumerable<Guid> imageIds);
 
     Task<List<ItemImage>> GetAllItemImagesAsync(Guid itemId);
+
+    Task<List<Guid>> AddImagesAsync(Guid guid, IList<ItemImageInput> images);
 }

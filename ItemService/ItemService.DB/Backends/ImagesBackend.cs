@@ -32,6 +32,16 @@ public class ImagesBackend : IImagesBackend
         return entry.ImageId;
     }
 
+    public async Task<List<Guid>> AddImagesAsync(Guid guid, IList<ItemImageInput> images)
+    {
+        var entries = images.Select(image => image.ToTableEntry(guid)).ToList();
+        
+        await _dbContext.ItemImages.AddRangeAsync(entries);
+        await _dbContext.SaveChangesAsync();
+
+        return entries.Select(entry => entry.ImageId).ToList();
+    }
+
     public async Task DeleteImageAsync(Guid imageId)
     {
         var image = await _dbContext.ItemImages.FirstOrDefaultAsync(image => image.ImageId.Equals(imageId));

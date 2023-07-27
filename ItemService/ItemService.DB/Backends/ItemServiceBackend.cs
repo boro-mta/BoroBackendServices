@@ -130,6 +130,14 @@ public class ItemServiceBackend : IItemServiceBackend
 
         var updatedEntry = entry.UpdateEntry(updateInput);
         _dbContext.Items.Update(updatedEntry);
+
+        var toRemove = updateInput.ImagesToRemove ?? Enumerable.Empty<Guid>();
+        var imagesToDelete = from image in _dbContext.ItemImages
+                            where toRemove.Any(id => image.ImageId == itemId)
+                            select image;
+
+        _dbContext.ItemImages.RemoveRange(imagesToDelete);
+
         await _dbContext.SaveChangesAsync();
     }
 

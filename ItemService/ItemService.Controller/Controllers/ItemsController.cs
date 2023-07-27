@@ -15,13 +15,17 @@ namespace ItemService.Controller.Controllers;
 public partial class ItemsController : ControllerBase
 {
     private readonly ILogger _logger;
-    private readonly IItemServiceBackend _backend;
+    private readonly IItemServiceBackend _itemsBackend;
+    private readonly IImagesBackend _imagesBackend;
+
 
     public ItemsController(ILoggerFactory loggerFactory,
-        IItemServiceBackend backend)
+        IItemServiceBackend backend,
+        IImagesBackend imagesBackend)
     {
         _logger = loggerFactory.CreateLogger("ItemService");
-        _backend = backend;
+        _itemsBackend = backend;
+        _imagesBackend = imagesBackend;
     }
 
     [HttpGet("{itemId}")]
@@ -30,7 +34,7 @@ public partial class ItemsController : ControllerBase
     {
         _logger.LogInformation("GetItem was called with id: [{id}]", itemId);
         var guid = Guid.Parse(itemId);
-        var item = await _backend.GetItemAsync(guid);
+        var item = await _itemsBackend.GetItemAsync(guid);
 
         _logger.LogInformation("GetItem - Finished with: [{id}]", item?.Id);
         
@@ -46,7 +50,7 @@ public partial class ItemsController : ControllerBase
             _logger.LogInformation("GetAllUserItems was called with userId: [{userId}]", userId);
 
             var guid = Guid.Parse(userId);
-            var items = await _backend.GetAllUserItemsAsync(guid);
+            var items = await _itemsBackend.GetAllUserItemsAsync(guid);
 
             _logger.LogInformation("GetAllUserItems - returning [{count}] items with the following ids: {@items}", items.Count, items.Select(i => i.Id));
 
@@ -64,7 +68,7 @@ public partial class ItemsController : ControllerBase
         _logger.LogInformation("GetAllItemsInRadius was called with latitude: [{lat}], longitude: [{lon}], radius: [{r}meters]", 
             latitude, longitude, radiusInMeters);
 
-        var items = await _backend.GetAllItemsInRadiusAsync(latitude, longitude, radiusInMeters);
+        var items = await _itemsBackend.GetAllItemsInRadiusAsync(latitude, longitude, radiusInMeters);
 
         _logger.LogInformation("GetAllItemsInRadius - returning [{count}] items with the following ids: {@items}", items.Count, items.Select(i => i.Id));
 
@@ -78,10 +82,33 @@ public partial class ItemsController : ControllerBase
         var userId = User.UserId();
         _logger.LogInformation("AddItem was called with [{title}, {description}, {ownerId}]", item.Title, item.Description, userId);
 
-        var guid = await _backend.AddItemAsync(item, userId);
+        var guid = await _itemsBackend.AddItemAsync(item, userId);
 
         _logger.LogInformation("AddItem Finished. New item was created with id: [{guid}]", guid);
 
         return Ok(guid);
+    }
+
+    [HttpGet("{itemId}/Images")]
+    [ValidatesGuid("itemId")]
+    public async Task<ActionResult<List<ItemImage>>> GetItemImages(string itemId)
+    {
+        try
+        {
+            _logger.LogInformation("GetItemImages was called with item id: [{itemId}]", itemId);
+            var guid = Guid.Parse(itemId);
+
+            var images = await _imagesBackend.GetAllItemImagesAsync(guid);
+
+            _logger.LogInformation("GetItemImages - Item id: [{@id}]. Retrieved [{count}] images.", 
+                itemId, images.Count);
+
+            return Ok();
+        }
+        catch (DoesNotExistException e)
+        {
+            _logger.LogError(e, "GetItemImages - {@itemId} - ERROR", itemId);
+            return NotFound($"No images were found for item with id: {itemId}");
+        }
     }
 }
