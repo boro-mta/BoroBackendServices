@@ -143,7 +143,7 @@ public class ItemServiceBackend : IItemServiceBackend
 
     public async Task UpdateItemLocation(Guid itemId, double latitude, double longitude)
     {
-        var entry = await _dbContext.Items.FirstOrDefaultAsync()
+        var entry = await _dbContext.Items.FirstOrDefaultAsync(item => item.ItemId.Equals(itemId))
             ?? throw new DoesNotExistException(itemId.ToString());
 
         var updatedEntry = entry.UpdateLocation(latitude, longitude);
