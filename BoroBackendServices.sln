@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserService.DB", "UserServi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boro.Common", "Boro.Common\Boro.Common.csproj", "{D0FD119A-49B7-4E51-88C2-6D400359E539}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boro.Authentication", "Boro.Authentication\Boro.Authentication.csproj", "{61C0AD92-19B8-47A9-8DE0-E42C923B0BCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boro.Authentication", "Boro.Authentication\Boro.Authentication.csproj", "{61C0AD92-19B8-47A9-8DE0-E42C923B0BCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

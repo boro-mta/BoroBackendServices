@@ -28,7 +28,7 @@ public partial class UpdateItemsController : ControllerBase
         _imagesBackend = imagesBackend;
     }
 
-    [HttpPost("Images/Add")]
+    [HttpPost("Images/AddImages")]
     [Authorize(Policy = AuthPolicies.ItemOwner)]
     public async Task<ActionResult<List<Guid>>> AddImages(string itemId, [FromBody] ItemImageInput[] images)
     {
@@ -56,7 +56,7 @@ public partial class UpdateItemsController : ControllerBase
         }
     }
 
-    [HttpPost("Images/Add")]
+    [HttpPost("Images/AddImage")]
     public async Task<ActionResult<Guid>> AddImage(string itemId, [FromBody] ItemImageInput image)
     {
         try
