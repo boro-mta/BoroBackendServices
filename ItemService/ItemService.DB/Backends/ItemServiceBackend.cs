@@ -125,7 +125,7 @@ public class ItemServiceBackend : IItemServiceBackend
 
     public async Task UpdateItemInfo(Guid itemId, UpdateItemInfoInput updateInput)
     {
-        var entry = await _dbContext.Items.FirstOrDefaultAsync() 
+        var entry = await _dbContext.Items.FirstOrDefaultAsync(item => item.ItemId.Equals(itemId)) 
             ?? throw new DoesNotExistException(itemId.ToString());
 
         var updatedEntry = entry.UpdateEntry(updateInput);
