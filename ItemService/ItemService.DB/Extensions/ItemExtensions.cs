@@ -90,4 +90,16 @@ internal static class ItemExtensions
         entry.Longitude = longitude;
         return entry;
     }
+
+    internal static SearchResult ToSearchResult(this Items entry, ItemImages? image)
+    {
+        return new()
+        {
+            Id = entry.ItemId,
+            Title = entry.Title,
+            Latitude = entry.Latitude,
+            Longitude = entry.Longitude,
+            Image = image?.ToItemImageModel()
+        };
+    }
 }

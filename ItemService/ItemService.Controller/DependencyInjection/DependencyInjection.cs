@@ -10,6 +10,7 @@ public static class DependencyInjection
     {
         services.AddTransient<IItemServiceBackend, ItemServiceBackend>();
         services.AddTransient<IImagesBackend, ImagesBackend>();
+        services.AddTransient<IItemsSearchBackend, ItemsSearchBackend>();
 
         return services;
     }
