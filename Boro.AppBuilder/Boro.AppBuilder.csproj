@@ -12,7 +12,9 @@
 	  <ProjectReference Include="..\Boro.Authentication\Boro.Authentication.csproj" />
 	  <ProjectReference Include="..\Boro.EntityFramework\Boro.EntityFramework.csproj" />
 	  <ProjectReference Include="..\Boro.Logging\Boro.Logging.csproj" />
+	  <ProjectReference Include="..\Boro.SendBird\Boro.SendBird.csproj" />
 	  <ProjectReference Include="..\Boro.Validations\Boro.Validations.csproj" />
+	  <ProjectReference Include="..\ChatService\ChatService.Controller\ChatService.Controller.csproj" />
 	  <ProjectReference Include="..\ItemService\ItemService.Controller\ItemService.Controller.csproj" />
 	  <ProjectReference Include="..\ReservationsService\ReservationsService.Controller\ReservationsService.Controller.csproj" />
 	  <ProjectReference Include="..\UserService\UserService.Controller\UserService.Controller.csproj" />

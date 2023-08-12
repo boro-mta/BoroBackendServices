@@ -1,5 +1,4 @@
-﻿using ItemService.API.Models.Input;
-using ItemService.API.Models.Output;
+﻿using ItemService.API.Models.Output;
 
 namespace ItemService.API.Interfaces;
 

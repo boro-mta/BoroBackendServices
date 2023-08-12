@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+	<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
+  </ItemGroup>
+  <ItemGroup>
+	<ProjectReference Include="..\..\Boro.Common\Boro.Common.csproj" />
+	<ProjectReference Include="..\..\Boro.Validations\Boro.Validations.csproj" />
+	<ProjectReference Include="..\ChatService.API\ChatService.API.csproj" />
+	<ProjectReference Include="..\ChatService.SendBird\ChatService.SendBird.csproj" />
+  </ItemGroup>
+
+</Project>

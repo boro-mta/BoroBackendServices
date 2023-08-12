@@ -1,4 +1,5 @@
-﻿using Boro.Authentication.Interfaces;
+﻿using Boro.Authentication.Extensions;
+using Boro.Authentication.Interfaces;
 using Boro.Authentication.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,17 +11,23 @@ namespace Boro.Authentication.Services;
 internal class BoroAuthService : IBoroAuthService
 {
     private readonly JwtSettings _jwtSettings;
+    private readonly ISendBirdIdentityBackend _sendBird;
     private readonly SigningCredentials _signingCredentials;
 
-    public BoroAuthService(JwtSettings jwtSettings)
+    public BoroAuthService(JwtSettings jwtSettings,
+                           ISendBirdIdentityBackend sendBird)
     {
         _jwtSettings = jwtSettings;
+        _sendBird = sendBird;
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
         _signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
     }
 
     public TokenDetails GenerateJwtToken(Guid userId, params (AdditionalClaims claim, string? value)[] additionalClaims)
     {
+        var sendBirdUser = _sendBird.GetSendBirdUserAsync(userId).Result;
+        var sendBirdClaims = sendBirdUser.ToJwtClaims();
+
         IEnumerable<Claim> defaultClaims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
@@ -31,7 +38,10 @@ internal class BoroAuthService : IBoroAuthService
             .Where(pair => !pair.value.IsNullOrEmpty())
             .Select(CreateClaim);
 
-        var claims = defaultClaims.Concat(additionalClaimsQ).ToArray();
+        var claims = Enumerable.Empty<Claim>()
+                               .Concat(defaultClaims)
+                               .Concat(sendBirdClaims)
+                               .Concat(additionalClaimsQ);
 
         var expirationTime = DateTime.UtcNow.AddDays(1);
 

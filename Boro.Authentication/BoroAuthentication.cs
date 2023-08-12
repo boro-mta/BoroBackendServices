@@ -20,6 +20,7 @@ public static class BoroAuthentication
     {
         services.AddTransient<JwtSettings>();
         services.AddTransient<IBoroAuthService, BoroAuthService>();
+        services.AddTransient<ISendBirdIdentityBackend, SendBirdIdentityBackend>();
         services.AddControllers(c => c.Filters.Add<ApiKeyAuthFilter>());
 
         services.AddAuthentication(config =>

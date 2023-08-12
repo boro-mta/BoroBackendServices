@@ -17,6 +17,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Boro.Common\Boro.Common.csproj" />
 	  <ProjectReference Include="..\Boro.EntityFramework\Boro.EntityFramework.csproj" />
+	  <ProjectReference Include="..\Boro.SendBird\Boro.SendBird.csproj" />
 	</ItemGroup>
 
 </Project>

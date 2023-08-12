@@ -3,11 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 using ItemService.Controller.DependencyInjection;
 using ReservationsService.Controller.DependencyInjection;
 using UserService.Controller.DependencyInjection;
+using ChatService.Controller.DependencyInjection;
 using Boro.EntityFramework.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Boro.Logging;
 using Boro.Authentication;
 using Microsoft.OpenApi.Models;
+using Boro.SendBird;
 
 namespace Boro.AppBuilder;
 
@@ -91,7 +93,8 @@ public static class AppBuilder
         builder.Services.AddItemService();
         builder.Services.AddReservationsService();
         builder.Services.AddUserService();
-
+        builder.Services.AddSendBird();
+        builder.Services.AddChatService();
         return builder;
     }
 }

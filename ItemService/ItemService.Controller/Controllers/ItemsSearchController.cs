@@ -1,9 +1,7 @@
 ﻿using ItemService.API.Interfaces;
-using ItemService.API.Models.Input;
 using ItemService.API.Models.Output;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Text.RegularExpressions;
 
 namespace ItemService.Controller.Controllers;
 
