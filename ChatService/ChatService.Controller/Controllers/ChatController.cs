@@ -21,9 +21,9 @@ public class ChatController : ControllerBase
         _chatBackend = chatBackend;
     }
 
-    [HttpPost("sendbird/announce/to/{recepientId}")]
+    [HttpPost("Start/With/{recepientId}")]
     [ValidatesGuid("recepientId")]
-    public async Task<ActionResult> Announce(string recepientId, [FromBody] string message)
+    public async Task<ActionResult> StartChat(string recepientId, [FromBody] string message)
     {
         var userId = User.UserId();
         var recepientGuid = Guid.Parse(recepientId);
