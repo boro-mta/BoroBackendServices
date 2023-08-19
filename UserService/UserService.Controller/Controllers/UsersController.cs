@@ -1,6 +1,5 @@
 ﻿using Boro.Common.Authentication;
 using Boro.Common.Exceptions;
-using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 using Boro.Validations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

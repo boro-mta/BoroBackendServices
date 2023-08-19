@@ -1,10 +1,9 @@
 ﻿using Boro.EntityFramework.DbContexts.BoroMainDb;
 using Boro.SendBird.API;
-using Boro.SendBird.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Boro.SendBird.Extensions;
 using Boro.Authentication.Interfaces;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
 
 namespace Boro.Authentication.Services;
 
@@ -31,14 +30,22 @@ internal class SendBirdIdentityBackend : ISendBirdIdentityBackend
         {
             var boroUser = await _dbContext.Users.SingleAsync(u => u.UserId.Equals(boroUserId));
             var newUser = await _sendBirdClient.CreateNewUserAsync(boroUserId, $"{boroUser.LastName}, {boroUser.FirstName}");
-            var entry = newUser.ToTableEntry();
+            
+            var entry = new SendBirdUsers()
+            {
+                BoroUserId = newUser.BoroUserId,
+                SendBirdUserId = newUser.SendBirdUserId,
+                AccessToken = newUser.AccessToken,
+                Nickname = newUser.Nickname,
+            };
+
             await _dbContext.SendBirdUsers.AddAsync(entry);
             await _dbContext.SaveChangesAsync();
             return newUser;
         }
         else
         {
-            return sendBirdUserEntry.ToSendBirdUser();
+            return new(sendBirdUserEntry.BoroUserId, sendBirdUserEntry.SendBirdUserId, sendBirdUserEntry.AccessToken, sendBirdUserEntry.Nickname);
         }
     }
 }

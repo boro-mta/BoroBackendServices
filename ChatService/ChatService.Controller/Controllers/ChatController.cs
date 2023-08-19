@@ -25,10 +25,10 @@ public class ChatController : ControllerBase
     [ValidatesGuid("recepientId")]
     public async Task<ActionResult> StartChat(string recepientId, [FromBody] string message)
     {
-        var userId = User.UserId();
-        var recepientGuid = Guid.Parse(recepientId);
+        var senderUserId = User.UserId();
+        var recepientUserId = Guid.Parse(recepientId);
 
-        await _chatBackend.SendMessage(userId, recepientGuid, message);
+        await _chatBackend.SendMessageAsync(senderUserId, recepientUserId, message);
 
         return Ok();
     }

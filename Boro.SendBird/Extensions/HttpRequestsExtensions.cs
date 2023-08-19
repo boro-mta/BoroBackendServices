@@ -1,4 +1,5 @@
-﻿using Boro.SendBird.Models;
+﻿using Boro.SendBird.API;
+using Boro.SendBird.Models;
 
 namespace Boro.SendBird.Extensions;
 
@@ -48,4 +49,17 @@ internal static class HttpRequestsExtensions
             }
             """;
     }
+
+    public static SendMessageRequest CreateSendMessageRequest(this SendBirdUser from, string message) => new()
+    {
+        UserId = from.SendBirdUserId,
+        Message = message
+    };
+
+    public static CreateGroupChannelRequest CreateGroupChannelRequest(this IEnumerable<SendBirdUser> users) => new()
+    {
+        UserIds = users.Select(u => u.SendBirdUserId),
+        ChannelName = string.Join("; ", users.Select(user => user.Nickname))
+    };
+
 }

@@ -2,5 +2,5 @@
 
 public interface IChatBackend
 {
-    Task SendMessage(Guid fromUser, Guid toUser, string message);
+    Task SendMessageAsync(Guid fromUser, Guid toUser, string message);
 }

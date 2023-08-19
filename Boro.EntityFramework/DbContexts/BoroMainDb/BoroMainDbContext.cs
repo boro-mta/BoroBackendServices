@@ -19,6 +19,7 @@ public class BoroMainDbContext : DbContext
     public virtual DbSet<BlockedDates> BlockedDates { get; set; }
     public virtual DbSet<Users> Users { get; set; }
     public virtual DbSet<SendBirdUsers> SendBirdUsers { get; set; }
+    public virtual DbSet<SendBirdChannels> SendBirdChannels { get; set; }
     public virtual DbSet<UserImages> UserImages { get; set; }
 
 }

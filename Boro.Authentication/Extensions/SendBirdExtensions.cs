@@ -1,4 +1,4 @@
-﻿using Boro.SendBird.Models;
+﻿using Boro.SendBird.API;
 using System.Security.Claims;
 
 namespace Boro.Authentication.Extensions;

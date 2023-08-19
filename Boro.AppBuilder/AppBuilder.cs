@@ -10,6 +10,7 @@ using Boro.Logging;
 using Boro.Authentication;
 using Microsoft.OpenApi.Models;
 using Boro.SendBird;
+using Boro.Email;
 
 namespace Boro.AppBuilder;
 
@@ -95,6 +96,7 @@ public static class AppBuilder
         builder.Services.AddUserService();
         builder.Services.AddSendBird();
         builder.Services.AddChatService();
+        builder.Services.AddEmailServices();
         return builder;
     }
 }

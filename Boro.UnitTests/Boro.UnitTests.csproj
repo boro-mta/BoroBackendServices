@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Boro.AppBuilder\Boro.AppBuilder.csproj" />
+    <ProjectReference Include="..\Boro.Email\Boro.Email.csproj" />
     <ProjectReference Include="..\ItemService\ItemService.API\ItemService.API.csproj" />
     <ProjectReference Include="..\ReservationsService\ReservationsService.API\ReservationsService.API.csproj" />
     <ProjectReference Include="..\ReservationsService\ReservationsService.DB\ReservationsService.DB.csproj" />

@@ -51,7 +51,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatService.API", "ChatServ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatService.SendBird", "ChatService\ChatService.SendBird\ChatService.SendBird.csproj", "{99C65DF7-70E7-4C55-9B40-111863B768FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boro.SendBird", "Boro.SendBird\Boro.SendBird.csproj", "{CA02630D-65A3-435A-A311-A2FC71B15F0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boro.SendBird", "Boro.SendBird\Boro.SendBird.csproj", "{CA02630D-65A3-435A-A311-A2FC71B15F0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boro.Email", "Boro.Email\Boro.Email.csproj", "{5FCAC090-B204-4C03-B41E-254AAEE5F91A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -143,6 +145,10 @@ Global
 		{CA02630D-65A3-435A-A311-A2FC71B15F0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA02630D-65A3-435A-A311-A2FC71B15F0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA02630D-65A3-435A-A311-A2FC71B15F0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FCAC090-B204-4C03-B41E-254AAEE5F91A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FCAC090-B204-4C03-B41E-254AAEE5F91A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FCAC090-B204-4C03-B41E-254AAEE5F91A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FCAC090-B204-4C03-B41E-254AAEE5F91A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

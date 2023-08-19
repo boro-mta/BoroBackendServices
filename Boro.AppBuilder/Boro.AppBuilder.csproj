@@ -10,6 +10,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Boro.Authentication\Boro.Authentication.csproj" />
+	  <ProjectReference Include="..\Boro.Email\Boro.Email.csproj" />
 	  <ProjectReference Include="..\Boro.EntityFramework\Boro.EntityFramework.csproj" />
 	  <ProjectReference Include="..\Boro.Logging\Boro.Logging.csproj" />
 	  <ProjectReference Include="..\Boro.SendBird\Boro.SendBird.csproj" />
