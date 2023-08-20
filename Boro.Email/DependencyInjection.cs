@@ -10,6 +10,7 @@ public static class DependencyInjection
     {
         services.AddTransient<IEmailService, ElasticEmailService>();
         services.AddTransient<ElasticEmailSettings>();
+        
         return services;
     }
 }

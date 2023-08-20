@@ -7,6 +7,7 @@ using ReservationsService.API.Exceptions;
 using ReservationsService.API.Interfaces;
 using ReservationsService.API.Models.Output;
 using ReservationsService.DB.Extensions;
+using ReservationsService.DB.Services;
 
 namespace ReservationsService.DB.Backends;
 
@@ -14,12 +15,15 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
 {
     private readonly ILogger _logger;
     private readonly BoroMainDbContext _dbContext;
+    private readonly ReservationsEmailNotifier _notifier;
 
     public ReservationsOperationsBackend(ILoggerFactory loggerFactory,
-        BoroMainDbContext dbContext)
+        BoroMainDbContext dbContext,
+        ReservationsEmailNotifier notifier)
     {
         _logger = loggerFactory.CreateLogger("ReservationsService");
         _dbContext = dbContext;
+        _notifier = notifier;
     }
 
     private async Task<Reservations> FindReservationAsync(Guid reservationId)
@@ -38,6 +42,7 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
         }
         entry.Status = ReservationStatus.Approved; 
         await _dbContext.SaveChangesAsync();
+        await _notifier.NotifyApproval(reservationId);
     }
 
     public async Task CancelAsync(Guid reservationId)
@@ -49,6 +54,7 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
         }
         entry.Status = ReservationStatus.Canceled;
         await _dbContext.SaveChangesAsync();
+        await _notifier.NotifyCancellation(reservationId);
     }
 
     public async Task DeclineAsync(Guid reservationId)
@@ -60,6 +66,7 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
         }
         entry.Status = ReservationStatus.Declined;
         await _dbContext.SaveChangesAsync();
+        await _notifier.NotifyDecline(reservationId);
     }
 
     public async Task HandOverToBorrowerAsync(Guid reservationId)
@@ -71,6 +78,7 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
         }
         entry.Status = ReservationStatus.Borrowed;
         await _dbContext.SaveChangesAsync();
+        await _notifier.NotifyHandoverToBorrower(reservationId);
     }
 
     public async Task ReturnToLenderAsync(Guid reservationId)
@@ -82,6 +90,7 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
         }
         entry.Status = ReservationStatus.Returned;
         await _dbContext.SaveChangesAsync();
+        await _notifier.NotifyReturnToLender(reservationId);
     }
 
     public async Task<ReservationDetails> GetReservationDetailsAsync(Guid reservationId)

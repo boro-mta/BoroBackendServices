@@ -18,9 +18,8 @@ public class EmailServiceTests
     [TestMethod]
     public void TrySendEmail()
     {
-        var results = _emailService.SendEmail("alonmore28@gmail.com", "test email title", "this is a test email content").Result;
-
-        Assert.IsNotNull(results);
+        string[] emails = { "alonmore28@gmail.com" };
+        _emailService.SendTextEmailAsync(emails, "test email title", "this is a test email content").Wait();
 
 
     }

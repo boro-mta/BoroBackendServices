@@ -1,8 +1,7 @@
-﻿using Boro.Email.Models;
-
-namespace Boro.Email.API;
+﻿namespace Boro.Email.API;
 
 public interface IEmailService
 {
-    Task<EmailResults> SendEmail(string email, string title, string message);
+    Task SendHTMLEmailAsync(IEnumerable<string> recepients, string emailTitle, string HTMLEmailBody);
+    Task SendTextEmailAsync(IEnumerable<string> recepients, string emailTitle, string textEmailBody);
 }

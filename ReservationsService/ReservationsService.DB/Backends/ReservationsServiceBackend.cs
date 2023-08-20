@@ -1,4 +1,5 @@
 ﻿using Boro.Common.Exceptions;
+using Boro.Email.API;
 using Boro.EntityFramework.DbContexts.BoroMainDb;
 using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using ReservationsService.API.Interfaces;
 using ReservationsService.API.Models.Input;
 using ReservationsService.API.Models.Output;
 using ReservationsService.DB.Extensions;
+using ReservationsService.DB.Services;
 
 namespace ReservationsService.DB.Backends;
 
@@ -14,12 +16,15 @@ public class ReservationsServiceBackend : IReservationsServiceBackend
 {
     private readonly ILogger _logger;
     private readonly BoroMainDbContext _dbContext;
+    private readonly ReservationsEmailNotifier _notifier;
 
     public ReservationsServiceBackend(ILoggerFactory loggerFactory,
-        BoroMainDbContext dbContext)
+        BoroMainDbContext dbContext,
+        ReservationsEmailNotifier notifier)
     {
         _logger = loggerFactory.CreateLogger("ReservationsService");
         _dbContext = dbContext;
+        _notifier = notifier;
     }
 
     public async Task<List<DateTime>> GetBlockedDates(Guid itemId, DateTime startDate, DateTime endDate)
@@ -79,6 +84,8 @@ public class ReservationsServiceBackend : IReservationsServiceBackend
                                                          borrowerId);
         await _dbContext.Reservations.AddAsync(entry);
         await _dbContext.SaveChangesAsync();
+
+        await _notifier.NewReservationRequest(reservationId);
 
         return new ReservationRequestResult
         {
