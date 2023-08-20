@@ -26,11 +26,12 @@ public class UserServiceBackend : IUserServiceBackend
         _logger.LogInformation("GetUserProfileAsync - getting user profile for {userId}", userId);
 
         var entry = await _dbContext.Users
-            .Include(user => user.Image)
             .FirstOrDefaultAsync(u => u.UserId.Equals(userId))
             ?? throw new DoesNotExistException(userId.ToString());
-        
-        return entry.ToUserProfileModel();
+
+        var imageEntry = await _dbContext.UserImages.FirstOrDefaultAsync(image => image.UserId.Equals(userId));
+
+        return entry.ToUserProfileModel(imageEntry);
     }
 
     public async Task UpdateUserInfoAsync(Guid userId, UpdateUserInput input)

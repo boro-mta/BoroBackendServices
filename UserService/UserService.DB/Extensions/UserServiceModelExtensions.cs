@@ -8,7 +8,7 @@ namespace UserService.DB.Extensions;
 
 internal static class UserServiceModelExtensions
 {
-    internal static UserProfileModel ToUserProfileModel(this Users entry) => new()
+    internal static UserProfileModel ToUserProfileModel(this Users entry, UserImages? imageEntry) => new()
     {
         FirstName = entry.FirstName,
         LastName = entry.LastName,
@@ -19,7 +19,7 @@ internal static class UserServiceModelExtensions
         FacebookId = entry.FacebookId,
         Latitude = entry.Latitude,
         Longitude = entry.Longitude,
-        Image = entry.Image?.ToUserImage(),
+        Image = imageEntry?.ToUserImage(),
     };
 
     internal static UserImage ToUserImage(this UserImages entry)
