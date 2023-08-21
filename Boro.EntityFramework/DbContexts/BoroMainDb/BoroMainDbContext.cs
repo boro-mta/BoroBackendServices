@@ -43,5 +43,6 @@ public class BoroMainDbContext : DbContext
     public virtual DbSet<SendBirdUsers> SendBirdUsers { get; set; }
     public virtual DbSet<SendBirdChannels> SendBirdChannels { get; set; }
     public virtual DbSet<UserImages> UserImages { get; set; }
+    public virtual DbSet<Statistics> Statistics { get; set; }
 
 }
