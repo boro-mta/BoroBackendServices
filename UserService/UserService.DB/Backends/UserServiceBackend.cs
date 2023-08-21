@@ -1,5 +1,6 @@
 ﻿using Boro.Common.Exceptions;
 using Boro.EntityFramework.DbContexts.BoroMainDb;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using UserService.API.Interfaces;
@@ -114,5 +115,20 @@ public class UserServiceBackend : IUserServiceBackend
         entry.Longitude = longitude;
 
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<UserStatistics> GetUserStatisticsAsync(Guid userId)
+    {
+        var entry = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId))
+            ?? throw new DoesNotExistException(userId.ToString());
+
+        var stats = await _dbContext.GetUpdatedStatisticsAsync(userId);
+
+        return new UserStatistics()
+        {
+            AmountOfBorrowings = stats.AmountOfBorrowings,
+            AmountOfItems = stats.AmountOfItems,
+            AmountOfLendings = stats.AmountOfLendings,
+        };
     }
 }

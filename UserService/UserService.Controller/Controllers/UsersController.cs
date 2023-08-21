@@ -194,4 +194,25 @@ public class UsersController : ControllerBase
         }
     }
 
+    [HttpGet("{userId}/Statistics")]
+    [ValidatesGuid("userId")]
+    public async Task<ActionResult<UserStatistics>> GetUserStatistics(string userId)
+    {
+        try
+        {
+            var guid = Guid.Parse(userId);
+            _logger.LogInformation("GetUserStatistics was called with id: [{userId}]", userId);
+
+            var statistics = await _backend.GetUserStatisticsAsync(guid);
+
+            _logger.LogInformation("GetUserStatistics - Finished");
+
+            return Ok(statistics);
+        }
+        catch (DoesNotExistException)
+        {
+            return NotFound($"no user was found with id {userId}");
+        }
+    }
+
 }

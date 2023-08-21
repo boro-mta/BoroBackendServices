@@ -11,4 +11,5 @@ public interface IUserServiceBackend
     Task UpateUserLocationAsync(Guid userId, double latitude, double longitude);
     Task UpdateUserImageAsync(Guid userId, UserImageInput imageInput);
     Task UpdateUserInfoAsync(Guid userId, UpdateUserInput input);
+    Task<UserStatistics> GetUserStatisticsAsync(Guid userId);
 }

@@ -13,6 +13,28 @@ public class BoroMainDbContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
 
+    public async Task<Statistics> GetUpdatedStatisticsAsync(Guid userId)
+    {
+        const string rawSql =
+            """
+            DECLARE @uid UNIQUEIDENTIFIER;
+            SET @uid = @p0;
+
+            SELECT
+                @uid as UserId,
+                (SELECT COUNT(*) FROM Reservations WHERE BorrowerId = @uid AND Status = 10) AS AmountOfBorrowings,
+                (SELECT COUNT(*) FROM Reservations WHERE LenderId = @uid AND Status = 10) AS AmountOfLendings,
+                (SELECT COUNT(*) FROM Items WHERE OwnerId = @uid) AS AmountOfItems
+            """
+        ;
+
+        var newStats = Set<Statistics>().FromSqlRaw(rawSql, userId)
+                                        .AsEnumerable()
+                                        .First();
+
+        return await Task.FromResult(newStats);
+    }
+
     public virtual DbSet<Items> Items { get; set; }
     public virtual DbSet<ItemImages> ItemImages { get; set; }
     public virtual DbSet<Reservations> Reservations { get; set; }
