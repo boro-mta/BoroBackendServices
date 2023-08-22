@@ -2,6 +2,7 @@
 using Boro.EntityFramework.DbContexts.BoroMainDb;
 using Boro.EntityFramework.DbContexts.BoroMainDb.Enum;
 using Boro.EntityFramework.DbContexts.BoroMainDb.Tables;
+using Boro.EntityFramework.DbContexts.BoroMainDb.Extensions;
 using Microsoft.Extensions.Logging;
 using ReservationsService.API.Exceptions;
 using ReservationsService.API.Interfaces;
@@ -91,6 +92,8 @@ public class ReservationsOperationsBackend : IReservationsOperationsBackend
         entry.Status = ReservationStatus.Returned;
         await _dbContext.SaveChangesAsync();
         await _notifier.NotifyReturnToLender(reservationId);
+        _ = _dbContext.Scoreboards.UpsertScoresAndGetResult(entry.LenderId);
+        _ = _dbContext.Scoreboards.UpsertScoresAndGetResult(entry.BorrowerId);
     }
 
     public async Task<ReservationDetails> GetReservationDetailsAsync(Guid reservationId)

@@ -215,4 +215,21 @@ public class UsersController : ControllerBase
         }
     }
 
+    [HttpGet("Leaderboard")]
+    public async Task<ActionResult<List<UserStatistics>>> GetLeaderboard()
+    {
+        try
+        {
+            var leaderboard = await _backend.GetTop10UserStatistics();
+
+            return Ok(leaderboard);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "GetLeaderboard - Error");
+
+            return BadRequest();
+        }
+    }
+
 }

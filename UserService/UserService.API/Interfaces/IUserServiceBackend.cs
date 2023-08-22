@@ -12,4 +12,5 @@ public interface IUserServiceBackend
     Task UpdateUserImageAsync(Guid userId, UserImageInput imageInput);
     Task UpdateUserInfoAsync(Guid userId, UpdateUserInput input);
     Task<UserStatistics> GetUserStatisticsAsync(Guid userId);
+    Task<List<UserStatistics>> GetTop10UserStatistics();
 }

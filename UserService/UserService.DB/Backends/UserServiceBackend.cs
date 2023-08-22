@@ -122,13 +122,17 @@ public class UserServiceBackend : IUserServiceBackend
         var entry = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserId.Equals(userId))
             ?? throw new DoesNotExistException(userId.ToString());
 
-        var stats = await _dbContext.GetUpdatedStatisticsAsync(userId);
+        var stats = _dbContext.Scoreboards.UpsertScoresAndGetResult(userId);
 
-        return new UserStatistics()
-        {
-            AmountOfBorrowings = stats.AmountOfBorrowings,
-            AmountOfItems = stats.AmountOfItems,
-            AmountOfLendings = stats.AmountOfLendings,
-        };
+        return stats.ToUserStatistics();
+    }
+
+    public async Task<List<UserStatistics>> GetTop10UserStatistics()
+    {
+        var leaderboard = await _dbContext.Scoreboards.OrderByDescending(s => s.TotalScore)
+                                                      .Take(10)
+                                                      .Select(s => s.ToUserStatistics())
+                                                      .ToListAsync();
+        return leaderboard;
     }
 }

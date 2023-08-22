@@ -72,6 +72,7 @@ public class ItemServiceBackend : IItemServiceBackend
         await _dbContext.Items.AddAsync(entry);
 
         await _dbContext.SaveChangesAsync();
+        _ = _dbContext.Scoreboards.UpsertScoresAndGetResult(userId);
         _logger.LogInformation("AddItem - Successfully added item with [{id}]", entry.ItemId);
         return entry.ItemId;
     }
