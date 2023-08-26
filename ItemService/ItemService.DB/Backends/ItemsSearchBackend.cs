@@ -26,7 +26,7 @@ public class ItemsSearchBackend : IItemsSearchBackend
             partialTitle, latitude, longitude, radiusInMeters, limit);
 
         var items = _dbContext.Items.FilterByRadius(latitude, longitude, radiusInMeters)
-                                    .Where(item => item.Title.Contains(partialTitle))
+                                    .Where(item => item.Title.Contains(partialTitle, StringComparison.InvariantCultureIgnoreCase))
                                     .Take(limit)
                                     .ToList();
 
