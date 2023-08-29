@@ -41,6 +41,27 @@ public partial class ItemsController : ControllerBase
         return item is null ? NotFound($"Item with id: {itemId} was not found") : item;
     }
 
+    [HttpDelete("{itemId}")]
+    [ValidatesGuid("itemId")]
+    [Authorize(Policy = AuthPolicies.ItemOwner)]
+    public async Task<ActionResult> DeleteItem(string itemId)
+    {
+       try
+       {
+         _logger.LogInformation("DeleteItem was called with id: [{id}]", itemId);
+         var guid = Guid.Parse(itemId);
+         await _itemsBackend.DeleteItemAsync(guid);
+ 
+         _logger.LogInformation("DeleteItem - Finished");
+         
+         return Ok($"item with id: {itemId} was deleted");
+       }
+       catch (DoesNotExistException)
+       {
+        return NotFound($"Item with id: {itemId} was not found");
+       }
+    }
+
     [HttpGet("OfUser/{userId}")]
     [ValidatesGuid("userId")]
     public async Task<ActionResult<List<MinimalItemInfo>>> GetAllUserItems(string userId)

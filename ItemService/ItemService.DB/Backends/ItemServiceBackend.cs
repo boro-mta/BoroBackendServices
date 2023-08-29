@@ -151,4 +151,15 @@ public class ItemServiceBackend : IItemServiceBackend
         _dbContext.Items.Update(updatedEntry);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task DeleteItemAsync(Guid itemId)
+    {
+        var entry = await _dbContext.Items.FirstOrDefaultAsync(item => item.ItemId.Equals(itemId))
+            ?? throw new DoesNotExistException(itemId.ToString());
+
+        var images = _dbContext.ItemImages.Where(i => i.ItemId.Equals(itemId));
+        _dbContext.ItemImages.RemoveRange(images);
+        _dbContext.Items.Remove(entry);
+        await _dbContext.SaveChangesAsync();
+    }
 }
